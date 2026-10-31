@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cascadelens"
+dynamic = ["version"]
+description = "Robust root-cause service ranking for microservice incidents under imperfect telemetry."
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+license = { file = "LICENSE" }
+dependencies = [
+    "lightgbm>=4.3",
+    "matplotlib>=3.8",
+    "networkx>=3.2",
+    "numpy>=1.26",
+    "polars>=1.0",
+    "pyarrow>=15.0",
+    "pydantic>=2.6",
+    "pyyaml>=6.0",
+    "scikit-learn>=1.4",
+    "scipy>=1.11",
+    "typer>=0.12",
+]
+
+[project.optional-dependencies]
+dev = [
+    "hypothesis>=6.100",
+    "mypy>=1.10",
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.5",
+    "types-pyyaml>=6.0",
+]
+api = [
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+]
+
+[project.scripts]
+cascadelens = "cascadelens.cli:app"
+
+[tool.hatch.version]
+path = "src/cascadelens/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cascadelens"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "ANN", "RUF"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src", "tests"]
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"

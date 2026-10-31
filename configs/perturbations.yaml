@@ -1,0 +1,58 @@
+# Parameter grids from section 9.1 of the project documentation.
+seed: 0
+perturbations:
+  - id: P1
+    name: random_metric_loss
+    realism: simulated
+    params:
+      rate: [0.1, 0.2, 0.3, 0.5]
+  - id: P2
+    name: failure_correlated_loss
+    realism: simulated
+    params:
+      rate: [0.1, 0.2, 0.3, 0.5]
+  - id: P3
+    name: whole_modality_loss
+    realism: simulated
+  - id: P4
+    name: window_shift
+    realism: simulated
+    params:
+      offset_seconds: [-120, -60, -30, 30, 60, 120]
+  - id: P5
+    name: window_noise
+    realism: simulated
+  - id: P6
+    name: edge_deletion
+    realism: simulated
+    params:
+      rate: [0.1, 0.2, 0.3]
+  - id: P7
+    name: edge_addition
+    realism: simulated
+    params:
+      rate: [0.1, 0.2]
+  - id: P8
+    name: inferred_topology
+    realism: simulated
+  - id: P9
+    name: unseen_fault_type
+    realism: held-out
+    params:
+      split: [lofo]
+  - id: P10
+    name: unseen_system
+    realism: held-out
+    params:
+      split: [loso]
+  - id: P11
+    name: sampling_rate_degradation
+    realism: simulated
+    params:
+      factor: [2, 5]
+  - id: P12
+    name: delayed_series
+    realism: simulated
+  - id: P13
+    name: metric_renaming_unit_drift
+    realism: simulated

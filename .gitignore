@@ -1,0 +1,24 @@
+# Datasets. Anchored so that src/cascadelens/data/ stays tracked.
+/data/
+
+# Environments
+.venv/
+
+# Python and tool caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+.coverage.*
+htmlcov/
+
+# Result caches. Result JSONs under experiments/ are committed.
+.cache/
+results/cache/
+experiments/**/cache/

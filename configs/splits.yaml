@@ -1,0 +1,14 @@
+seed: 0
+group_key: run_id
+strategies:
+  - random
+  - group_run
+  - lofo
+  - loso
+n_folds: 5
+val_fraction: 0.2
+# Runs merge when two of their cases correlate at this level on the signature below.
+near_duplicate_threshold: 0.98
+signature_bins: 64
+processed_dir: data/processed
+output_dir: data/splits

@@ -1,0 +1,9 @@
+# RE1 is the metrics-only suite per RCAEval's documentation. Confirm these names against
+# `cascadelens data audit` once data/raw/ is populated.
+source: rcaeval
+suites:
+  - RE1-OB
+  - RE1-SS
+  - RE1-TT
+raw_dir: data/raw
+processed_dir: data/processed

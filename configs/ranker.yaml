@@ -1,0 +1,6 @@
+seeds: [0, 1, 2, 3, 4]
+retrieval:
+  top_k_choices: [5, 8]
+reranker:
+  objective: lambdarank
+  params: {}

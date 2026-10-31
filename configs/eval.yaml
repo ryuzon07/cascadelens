@@ -1,0 +1,35 @@
+primary_criteria: [S1, S2, S3, S4, S7]
+
+power:
+  seed: 0
+  n_simulations: 2000
+  n_resamples: 4000
+  target_power: 0.8
+  # 0.01 is the first Holm step over the five primary criteria.
+  alphas: [0.05, 0.01]
+  noninferiority_margin: 0.03
+  differences: [0.0, 0.02, 0.04, 0.06, 0.08, 0.10, 0.12, 0.14, 0.16, 0.18, 0.20, 0.22, 0.24, 0.26,
+                0.28, 0.30, 0.34, 0.38]
+  # Every value below is an assumption, not a measurement. The frequency prior sits near 0.20
+  # because each system has five equally common injected services.
+  scenarios:
+    - name: s1_frequency_prior
+      baseline_top1: 0.20
+      within_group_correlation: 0.5
+      paired_correlation: 0.2
+    - name: best_baseline
+      baseline_top1: 0.60
+      within_group_correlation: 0.5
+      paired_correlation: 0.5
+    - name: best_baseline_low_clustering
+      baseline_top1: 0.60
+      within_group_correlation: 0.2
+      paired_correlation: 0.5
+    - name: best_baseline_high_clustering
+      baseline_top1: 0.60
+      within_group_correlation: 0.8
+      paired_correlation: 0.5
+    - name: best_baseline_high_pairing
+      baseline_top1: 0.60
+      within_group_correlation: 0.5
+      paired_correlation: 0.8
