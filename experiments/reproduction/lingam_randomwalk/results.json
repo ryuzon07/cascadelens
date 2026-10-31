@@ -9,7 +9,7 @@
   },
   "config_hash": "a60eeb649a5d94d731517a9d175af171d51700345abaf7ced8282ed24060853a",
   "data_checksum": "b1ae69bc89350088eef88b25483b46d520416ec1bdf2eb9c9e3a4c48690823d3",
-  "git_commit": "888ae835960019c85ff046db3eb7485a685ecc67",
+  "git_commit": "58820b96b0677468bca09bf94ca2685d37a0ede9",
   "metrics": {
     "ac1": {
       "RE1-OB": 0.2,
@@ -106,9 +106,9 @@
       }
     ],
     "seconds_per_case": {
-      "RE1-OB": 6.046196440000087,
-      "RE1-SS": 2.113505857598968,
-      "RE1-TT": 25.59410897600092
+      "RE1-OB": 0.6644596887999987,
+      "RE1-SS": 1.0562384015999997,
+      "RE1-TT": 17.156028147999976
     }
   },
   "seed": 0

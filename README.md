@@ -42,7 +42,7 @@ make all
 ```
 
 This rebuilds the processed data, splits, features and every current table. `PUBLISHED=1 make all`
-also reruns BARO and ICA-LiNGAM, which takes about two hours and needs `make install` for the
+also reruns BARO and ICA-LiNGAM, which takes about 2.5 hours and needs `make install` for the
 `published` extra.
 
 Results are committed under `experiments/`. Each result JSON records its config hash, git commit,

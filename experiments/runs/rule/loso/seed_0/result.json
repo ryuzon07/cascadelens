@@ -13,7 +13,7 @@
   },
   "config_hash": "68004408a54f0cecfeb1daf10f1dc5668e3f7afc2df102f09ef835f06788a10a",
   "data_checksum": "b1ae69bc89350088eef88b25483b46d520416ec1bdf2eb9c9e3a4c48690823d3",
-  "git_commit": "d1f475aa0dfdf437ecd594d066c8b8b4ab826f4c",
+  "git_commit": "58820b96b0677468bca09bf94ca2685d37a0ede9",
   "metrics": {
     "avg5": 0.1877333333333333,
     "folds": [
