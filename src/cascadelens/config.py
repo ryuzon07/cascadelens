@@ -60,7 +60,11 @@ class PerturbationsConfig(StrictModel):
 class RetrievalConfig(StrictModel):
     """Stage 1 candidate retrieval."""
 
-    top_k_choices: list[int]
+    top_k_choices: list[int] = Field(min_length=1)
+    scorer: Literal["lightgbm", "heuristic"] = "lightgbm"
+    cross_fit_folds: int = Field(default=5, ge=2)
+    num_boost_round: int = Field(default=200, ge=1)
+    params: dict[str, Any] = Field(default_factory=dict)
 
 
 class RerankerConfig(StrictModel):
@@ -68,6 +72,16 @@ class RerankerConfig(StrictModel):
 
     objective: Literal["lambdarank"] = "lambdarank"
     params: dict[str, Any] = Field(default_factory=dict)
+    ndcg_at: list[int] = Field(default=[1, 3, 5], min_length=1)
+    num_boost_round: int = Field(default=500, ge=1)
+    early_stopping_rounds: int = Field(default=30, ge=1)
+
+
+class TuningConfig(StrictModel):
+    """The fixed-budget random search."""
+
+    budget: int = Field(default=30, ge=1)
+    seed: int = Field(default=0, ge=0)
 
 
 class RankerConfig(StrictModel):
@@ -76,6 +90,13 @@ class RankerConfig(StrictModel):
     seeds: list[int] = Field(min_length=1)
     retrieval: RetrievalConfig
     reranker: RerankerConfig
+    tuning: TuningConfig = TuningConfig()
+    groups: list[Literal["signal", "temporal", "graph", "structural", "mask"]] = Field(
+        default=["signal", "temporal", "graph", "structural", "mask"], min_length=1
+    )
+    features_config: str = "configs/features.yaml"
+    num_threads: int = Field(default=4, ge=1)
+    structural_dominance: float = Field(default=0.25, gt=0, le=1)
 
 
 class BaselineConfig(StrictModel):

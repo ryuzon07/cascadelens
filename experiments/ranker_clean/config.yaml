@@ -1,0 +1,7 @@
+seed: 0
+n_resamples: 10000
+alpha: 0.05
+methods: [two_stage_ranker, single_stage_ranker]
+s2_margin: 0.12
+prior: frequency
+ranker_config: configs/ranker.yaml

@@ -9,6 +9,7 @@ from cascadelens.baselines.published.cli import app as published_app
 from cascadelens.data.cli import app as data_app
 from cascadelens.eval.cli import app as eval_app
 from cascadelens.features.cli import app as features_app
+from cascadelens.models.cli import diagnose, evaluate, freeze, run_ranker_clean, train
 from cascadelens.splits.cli import app as splits_app
 
 app = typer.Typer(help="CascadeLens experiment pipeline.", no_args_is_help=True)
@@ -19,6 +20,11 @@ app.add_typer(features_app, name="features")
 app.add_typer(experiments_app, name="experiments")
 app.add_typer(published_app, name="published")
 app.add_typer(splits_app, name="splits")
+app.command()(train)
+app.command()(evaluate)
+app.command()(freeze)
+app.command()(diagnose)
+experiments_app.command("ranker-clean")(run_ranker_clean)
 
 NOT_IMPLEMENTED = "not implemented"
 
@@ -42,24 +48,6 @@ def perturb() -> None:
 
 
 @app.command()
-def train() -> None:
-    """Train the CascadeLens ranker."""
-    typer.echo(NOT_IMPLEMENTED)
-
-
-@app.command()
-def evaluate() -> None:
-    """Compute metrics and significance tests."""
-    typer.echo(NOT_IMPLEMENTED)
-
-
-@app.command()
 def report() -> None:
     """Build result tables and figures."""
-    typer.echo(NOT_IMPLEMENTED)
-
-
-@app.command()
-def diagnose() -> None:
-    """Rank likely origin services for a single case."""
     typer.echo(NOT_IMPLEMENTED)

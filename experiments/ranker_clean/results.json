@@ -1,0 +1,1788 @@
+{
+  "config": {
+    "alpha": 0.05,
+    "methods": [
+      "two_stage_ranker",
+      "single_stage_ranker"
+    ],
+    "n_resamples": 10000,
+    "prior": "frequency",
+    "ranker_config": "configs/ranker.yaml",
+    "s2_margin": 0.12,
+    "seed": 0
+  },
+  "config_hash": "06da6b80a679b73e11164e4ed1af6b95e8e1ff73e21a5b733df8b3ea791b530c",
+  "data_checksum": "b1ae69bc89350088eef88b25483b46d520416ec1bdf2eb9c9e3a4c48690823d3",
+  "git_commit": "730077fa76b412ff8706854e936333b74b892cc7",
+  "metrics": {
+    "comparisons": {
+      "S1_vs_frequency": {
+        "Avg@5": {
+          "estimate": 0.36138666666666663,
+          "holm_upper_bound": 0.000999900009999,
+          "lower": 0.29461066666666663,
+          "p_value": 0.00019998000199980003,
+          "upper": 0.4272026666666667,
+          "wilcoxon_p": 2.526444253804602e-11
+        },
+        "Top-1": {
+          "estimate": 0.7066666666666667,
+          "holm_upper_bound": 0.000999900009999,
+          "lower": 0.6063999999999999,
+          "p_value": 0.00019998000199980003,
+          "upper": 0.8016000000000001,
+          "wilcoxon_p": 1.3366734526125356e-12
+        },
+        "Top-3": {
+          "estimate": 0.3738666666666666,
+          "holm_upper_bound": 0.000999900009999,
+          "lower": 0.26453333333333334,
+          "p_value": 0.00019998000199980003,
+          "upper": 0.488,
+          "wilcoxon_p": 3.1365706173162703e-07
+        }
+      },
+      "S2_unshifted_difference": {
+        "estimate": -0.0336,
+        "holm_upper_bound": 0.08199180081991801,
+        "lower": -0.06133333333333333,
+        "p_value": 0.0163983601639836,
+        "upper": -0.006933333333333331,
+        "wilcoxon_p": 0.006635919397676404
+      },
+      "S2_vs_best_baseline": {
+        "estimate": 0.08640000000000009,
+        "holm_upper_bound": 0.000999900009999,
+        "lower": 0.05866666666666676,
+        "p_value": 0.00019998000199980003,
+        "upper": 0.11306666666666676,
+        "wilcoxon_p": 4.23461798643999e-08
+      },
+      "two_stage_vs_single_stage": {
+        "Avg@5": {
+          "estimate": -0.0005333333333333272,
+          "holm_upper_bound": 1.0,
+          "lower": -0.011199999999999991,
+          "p_value": 0.9501049895010499,
+          "upper": 0.010029333333333303,
+          "wilcoxon_p": 0.9329071340069215
+        },
+        "Top-1": {
+          "estimate": -0.005333333333333333,
+          "holm_upper_bound": 1.0,
+          "lower": -0.0304,
+          "p_value": 0.7045295470452955,
+          "upper": 0.018666666666666668,
+          "wilcoxon_p": 0.9677269155547717
+        },
+        "Top-3": {
+          "estimate": 0.0037333333333333337,
+          "holm_upper_bound": 1.0,
+          "lower": -0.006399999999999999,
+          "p_value": 0.5195480451954805,
+          "upper": 0.015466666666666663,
+          "wilcoxon_p": 0.6365702710137531
+        }
+      }
+    },
+    "fold_details": [
+      {
+        "best_iteration": 16.2,
+        "cases": 75,
+        "fold": 0,
+        "k": 8,
+        "method": "two_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.8861085892472216,
+          "feature_fraction": 0.9605540566586678,
+          "lambda_l1": 3.8112463194309405,
+          "lambda_l2": 1.9391085664010437,
+          "learning_rate": 0.1524390931106064,
+          "min_data_in_leaf": 7,
+          "num_leaves": 20
+        },
+        "recall@5": 0.9866666666666667,
+        "recall@8": 0.9866666666666667,
+        "recall_at_chosen_k": 0.9866666666666667,
+        "search_val_top1": 0.9333333333333333,
+        "split": "group_run",
+        "test_top1": 0.9200000000000002,
+        "val_test_gap": -0.006666666666666687,
+        "val_top1": 0.9133333333333333
+      },
+      {
+        "best_iteration": 11.0,
+        "cases": 75,
+        "fold": 1,
+        "k": 8,
+        "method": "two_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.5124507750446846,
+          "feature_fraction": 0.8177698120001053,
+          "lambda_l1": 0.5274449501335908,
+          "lambda_l2": 0.0725530481617153,
+          "learning_rate": 0.04966314963626703,
+          "min_data_in_leaf": 44,
+          "num_leaves": 10
+        },
+        "recall@5": 1.0,
+        "recall@8": 1.0,
+        "recall_at_chosen_k": 1.0,
+        "search_val_top1": 0.9,
+        "split": "group_run",
+        "test_top1": 0.8640000000000001,
+        "val_test_gap": 0.015999999999999993,
+        "val_top1": 0.8799999999999999
+      },
+      {
+        "best_iteration": 16.6,
+        "cases": 75,
+        "fold": 2,
+        "k": 8,
+        "method": "two_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.5124507750446846,
+          "feature_fraction": 0.8177698120001053,
+          "lambda_l1": 0.5274449501335908,
+          "lambda_l2": 0.0725530481617153,
+          "learning_rate": 0.04966314963626703,
+          "min_data_in_leaf": 44,
+          "num_leaves": 10
+        },
+        "recall@5": 1.0,
+        "recall@8": 1.0,
+        "recall_at_chosen_k": 1.0,
+        "search_val_top1": 0.9666666666666666,
+        "split": "group_run",
+        "test_top1": 0.9413333333333334,
+        "val_test_gap": -0.021333333333333336,
+        "val_top1": 0.9199999999999999
+      },
+      {
+        "best_iteration": 16.8,
+        "cases": 75,
+        "fold": 3,
+        "k": 8,
+        "method": "two_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.6502607234939393,
+          "feature_fraction": 0.788067835841048,
+          "lambda_l1": 0.07791809943800615,
+          "lambda_l2": 0.0015073733834536777,
+          "learning_rate": 0.3115477561882068,
+          "min_data_in_leaf": 20,
+          "num_leaves": 22
+        },
+        "recall@5": 1.0,
+        "recall@8": 1.0,
+        "recall_at_chosen_k": 1.0,
+        "search_val_top1": 0.9666666666666666,
+        "split": "group_run",
+        "test_top1": 0.8986666666666666,
+        "val_test_gap": 0.044666666666666674,
+        "val_top1": 0.9433333333333334
+      },
+      {
+        "best_iteration": 15.2,
+        "cases": 75,
+        "fold": 4,
+        "k": 5,
+        "method": "two_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.6359029191182194,
+          "feature_fraction": 0.9101518241399179,
+          "lambda_l1": 0.06758392553449287,
+          "lambda_l2": 0.3249934293277996,
+          "learning_rate": 0.17915959709120477,
+          "min_data_in_leaf": 38,
+          "num_leaves": 13
+        },
+        "recall@5": 0.9866666666666667,
+        "recall@8": 1.0,
+        "recall_at_chosen_k": 0.9866666666666667,
+        "search_val_top1": 1.0,
+        "split": "group_run",
+        "test_top1": 0.9093333333333333,
+        "val_test_gap": 0.08066666666666664,
+        "val_top1": 0.99
+      },
+      {
+        "best_iteration": 20.4,
+        "cases": 75,
+        "fold": 0,
+        "k": 5,
+        "method": "two_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.9259780978672427,
+          "feature_fraction": 0.7830380566591356,
+          "lambda_l1": 0.0033013325579534826,
+          "lambda_l2": 0.5983025132208821,
+          "learning_rate": 0.1594128586697215,
+          "min_data_in_leaf": 30,
+          "num_leaves": 11
+        },
+        "recall@5": 1.0,
+        "recall@8": 1.0,
+        "recall_at_chosen_k": 1.0,
+        "search_val_top1": 0.95,
+        "split": "lofo",
+        "test_top1": 0.9973333333333333,
+        "val_test_gap": -0.06733333333333336,
+        "val_top1": 0.93
+      },
+      {
+        "best_iteration": 5.0,
+        "cases": 75,
+        "fold": 1,
+        "k": 8,
+        "method": "two_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.6119251581370322,
+          "feature_fraction": 0.8889693516257668,
+          "lambda_l1": 0.4076343424741922,
+          "lambda_l2": 0.003982721661453987,
+          "learning_rate": 0.10149607607526197,
+          "min_data_in_leaf": 43,
+          "num_leaves": 13
+        },
+        "recall@5": 1.0,
+        "recall@8": 1.0,
+        "recall_at_chosen_k": 1.0,
+        "search_val_top1": 0.95,
+        "split": "lofo",
+        "test_top1": 0.768,
+        "val_test_gap": 0.17533333333333334,
+        "val_top1": 0.9433333333333334
+      },
+      {
+        "best_iteration": 28.6,
+        "cases": 75,
+        "fold": 2,
+        "k": 5,
+        "method": "two_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.5343948033342271,
+          "feature_fraction": 0.53304155603461,
+          "lambda_l1": 0.196531194848574,
+          "lambda_l2": 0.0011224558916924036,
+          "learning_rate": 0.14446290864959527,
+          "min_data_in_leaf": 16,
+          "num_leaves": 28
+        },
+        "recall@5": 1.0,
+        "recall@8": 1.0,
+        "recall_at_chosen_k": 1.0,
+        "search_val_top1": 1.0,
+        "split": "lofo",
+        "test_top1": 0.9733333333333334,
+        "val_test_gap": -0.023333333333333338,
+        "val_top1": 0.95
+      },
+      {
+        "best_iteration": 21.8,
+        "cases": 75,
+        "fold": 3,
+        "k": 8,
+        "method": "two_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.7112814865893942,
+          "feature_fraction": 0.7715815192033617,
+          "lambda_l1": 0.001601771725700014,
+          "lambda_l2": 0.0024465781860437503,
+          "learning_rate": 0.2748956567305103,
+          "min_data_in_leaf": 12,
+          "num_leaves": 23
+        },
+        "recall@5": 0.8800000000000001,
+        "recall@8": 0.9733333333333334,
+        "recall_at_chosen_k": 0.9733333333333334,
+        "search_val_top1": 0.9666666666666666,
+        "split": "lofo",
+        "test_top1": 0.7333333333333334,
+        "val_test_gap": 0.22333333333333333,
+        "val_top1": 0.9566666666666667
+      },
+      {
+        "best_iteration": 28.8,
+        "cases": 75,
+        "fold": 4,
+        "k": 8,
+        "method": "two_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.7132323001320844,
+          "feature_fraction": 0.5407993485093898,
+          "lambda_l1": 0.0023388560779334503,
+          "lambda_l2": 0.7962874643048217,
+          "learning_rate": 0.04022704942096832,
+          "min_data_in_leaf": 11,
+          "num_leaves": 10
+        },
+        "recall@5": 1.0,
+        "recall@8": 1.0,
+        "recall_at_chosen_k": 1.0,
+        "search_val_top1": 0.9833333333333332,
+        "split": "lofo",
+        "test_top1": 0.9813333333333334,
+        "val_test_gap": -0.028000000000000025,
+        "val_top1": 0.9533333333333334
+      },
+      {
+        "best_iteration": 10.4,
+        "cases": 125,
+        "fold": 0,
+        "k": 5,
+        "method": "two_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.7628295284222228,
+          "feature_fraction": 0.8417076244772256,
+          "lambda_l1": 0.011353223078092816,
+          "lambda_l2": 0.25616182677951094,
+          "learning_rate": 0.054419169888593834,
+          "min_data_in_leaf": 42,
+          "num_leaves": 14
+        },
+        "recall@5": 0.9200000000000002,
+        "recall@8": 0.9360000000000002,
+        "recall_at_chosen_k": 0.9200000000000002,
+        "search_val_top1": 1.0,
+        "split": "loso",
+        "test_top1": 0.7936,
+        "val_test_gap": 0.1944,
+        "val_top1": 0.9879999999999999
+      },
+      {
+        "best_iteration": 26.8,
+        "cases": 125,
+        "fold": 1,
+        "k": 8,
+        "method": "two_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.7112814865893942,
+          "feature_fraction": 0.7715815192033617,
+          "lambda_l1": 0.001601771725700014,
+          "lambda_l2": 0.0024465781860437503,
+          "learning_rate": 0.2748956567305103,
+          "min_data_in_leaf": 12,
+          "num_leaves": 23
+        },
+        "recall@5": 1.0,
+        "recall@8": 1.0,
+        "recall_at_chosen_k": 1.0,
+        "search_val_top1": 1.0,
+        "split": "loso",
+        "test_top1": 0.9663999999999999,
+        "val_test_gap": 0.017600000000000015,
+        "val_top1": 0.984
+      },
+      {
+        "best_iteration": 3.8,
+        "cases": 125,
+        "fold": 2,
+        "k": 5,
+        "method": "two_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.8634221553448804,
+          "feature_fraction": 0.8996908982437505,
+          "lambda_l1": 0.0016573408856459893,
+          "lambda_l2": 0.001159157494795507,
+          "learning_rate": 0.12960747502551423,
+          "min_data_in_leaf": 7,
+          "num_leaves": 22
+        },
+        "recall@5": 0.96,
+        "recall@8": 0.984,
+        "recall_at_chosen_k": 0.96,
+        "search_val_top1": 1.0,
+        "split": "loso",
+        "test_top1": 0.7375999999999999,
+        "val_test_gap": 0.2624,
+        "val_top1": 1.0
+      },
+      {
+        "best_iteration": 64.8,
+        "cases": 75,
+        "fold": 0,
+        "k": null,
+        "method": "single_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.8654759753938612,
+          "feature_fraction": 0.6158636196890888,
+          "lambda_l1": 0.004358752351618623,
+          "lambda_l2": 0.0033611187930427783,
+          "learning_rate": 0.09520375326020675,
+          "min_data_in_leaf": 6,
+          "num_leaves": 31
+        },
+        "search_val_top1": 0.9666666666666666,
+        "split": "group_run",
+        "test_top1": 0.9360000000000002,
+        "val_test_gap": -0.002666666666666684,
+        "val_top1": 0.9333333333333332
+      },
+      {
+        "best_iteration": 14.8,
+        "cases": 75,
+        "fold": 1,
+        "k": null,
+        "method": "single_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.9394467750596339,
+          "feature_fraction": 0.6148331335161242,
+          "lambda_l1": 0.003803029859676615,
+          "lambda_l2": 0.00787150121545088,
+          "learning_rate": 0.0676885273848132,
+          "min_data_in_leaf": 35,
+          "num_leaves": 6
+        },
+        "search_val_top1": 0.9333333333333333,
+        "split": "group_run",
+        "test_top1": 0.9039999999999999,
+        "val_test_gap": 0.019333333333333313,
+        "val_top1": 0.9233333333333332
+      },
+      {
+        "best_iteration": 17.8,
+        "cases": 75,
+        "fold": 2,
+        "k": null,
+        "method": "single_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.5054813103283912,
+          "feature_fraction": 0.8902104034740295,
+          "lambda_l1": 0.1523435828998734,
+          "lambda_l2": 4.5977696680121936,
+          "learning_rate": 0.01788608343829437,
+          "min_data_in_leaf": 9,
+          "num_leaves": 6
+        },
+        "search_val_top1": 0.9666666666666666,
+        "split": "group_run",
+        "test_top1": 0.9279999999999999,
+        "val_test_gap": 0.04199999999999997,
+        "val_top1": 0.97
+      },
+      {
+        "best_iteration": 25.8,
+        "cases": 75,
+        "fold": 3,
+        "k": null,
+        "method": "single_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.5069636526787418,
+          "feature_fraction": 0.5504547282010726,
+          "lambda_l1": 4.835400524558473,
+          "lambda_l2": 1.2270682357476523,
+          "learning_rate": 0.22024199469650918,
+          "min_data_in_leaf": 41,
+          "num_leaves": 10
+        },
+        "search_val_top1": 0.95,
+        "split": "group_run",
+        "test_top1": 0.9119999999999999,
+        "val_test_gap": 0.01466666666666665,
+        "val_top1": 0.9266666666666665
+      },
+      {
+        "best_iteration": 18.4,
+        "cases": 75,
+        "fold": 4,
+        "k": null,
+        "method": "single_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.5604927576126101,
+          "feature_fraction": 0.6450797621866002,
+          "lambda_l1": 0.6326766657265601,
+          "lambda_l2": 0.08387451298931453,
+          "learning_rate": 0.044309493447226414,
+          "min_data_in_leaf": 47,
+          "num_leaves": 13
+        },
+        "search_val_top1": 1.0,
+        "split": "group_run",
+        "test_top1": 0.8799999999999999,
+        "val_test_gap": 0.10666666666666665,
+        "val_top1": 0.9866666666666667
+      },
+      {
+        "best_iteration": 62.2,
+        "cases": 75,
+        "fold": 0,
+        "k": null,
+        "method": "single_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.9938327724689553,
+          "feature_fraction": 0.9258058785424985,
+          "lambda_l1": 2.47466982674981,
+          "lambda_l2": 0.1113690132064559,
+          "learning_rate": 0.05814548490743862,
+          "min_data_in_leaf": 49,
+          "num_leaves": 10
+        },
+        "search_val_top1": 0.95,
+        "split": "lofo",
+        "test_top1": 0.9119999999999999,
+        "val_test_gap": 0.04133333333333331,
+        "val_top1": 0.9533333333333334
+      },
+      {
+        "best_iteration": 12.2,
+        "cases": 75,
+        "fold": 1,
+        "k": null,
+        "method": "single_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.5407993485093898,
+          "feature_fraction": 0.8626337348528696,
+          "lambda_l1": 0.0039395386775239495,
+          "lambda_l2": 0.0023388560779334503,
+          "learning_rate": 0.24883222047630993,
+          "min_data_in_leaf": 23,
+          "num_leaves": 19
+        },
+        "search_val_top1": 0.9666666666666666,
+        "split": "lofo",
+        "test_top1": 0.7706666666666666,
+        "val_test_gap": 0.1693333333333333,
+        "val_top1": 0.9399999999999998
+      },
+      {
+        "best_iteration": 38.0,
+        "cases": 75,
+        "fold": 2,
+        "k": null,
+        "method": "single_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.8453744645148815,
+          "feature_fraction": 0.7142931368955181,
+          "lambda_l1": 0.0012577843895230075,
+          "lambda_l2": 3.0071795310478864,
+          "learning_rate": 0.04985926518390879,
+          "min_data_in_leaf": 33,
+          "num_leaves": 15
+        },
+        "search_val_top1": 0.9833333333333332,
+        "split": "lofo",
+        "test_top1": 0.8720000000000001,
+        "val_test_gap": 0.11466666666666663,
+        "val_top1": 0.9866666666666667
+      },
+      {
+        "best_iteration": 23.8,
+        "cases": 75,
+        "fold": 3,
+        "k": null,
+        "method": "single_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.7715815192033617,
+          "feature_fraction": 0.5485698873998339,
+          "lambda_l1": 0.004335349789326521,
+          "lambda_l2": 0.001601771725700014,
+          "learning_rate": 0.1896418981605107,
+          "min_data_in_leaf": 48,
+          "num_leaves": 7
+        },
+        "search_val_top1": 1.0,
+        "split": "lofo",
+        "test_top1": 0.7466666666666667,
+        "val_test_gap": 0.23999999999999994,
+        "val_top1": 0.9866666666666667
+      },
+      {
+        "best_iteration": 46.2,
+        "cases": 75,
+        "fold": 4,
+        "k": null,
+        "method": "single_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.5252919800843819,
+          "feature_fraction": 0.830210585355299,
+          "lambda_l1": 0.20162421370110198,
+          "lambda_l2": 0.01592523273568511,
+          "learning_rate": 0.05121113267325179,
+          "min_data_in_leaf": 7,
+          "num_leaves": 15
+        },
+        "search_val_top1": 0.95,
+        "split": "lofo",
+        "test_top1": 0.9573333333333334,
+        "val_test_gap": -0.04400000000000004,
+        "val_top1": 0.9133333333333334
+      },
+      {
+        "best_iteration": 12.6,
+        "cases": 125,
+        "fold": 0,
+        "k": null,
+        "method": "single_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.7523122684282693,
+          "feature_fraction": 0.6808554628237297,
+          "lambda_l1": 0.5048427603931616,
+          "lambda_l2": 0.023804945405826606,
+          "learning_rate": 0.02166583714688083,
+          "min_data_in_leaf": 24,
+          "num_leaves": 28
+        },
+        "search_val_top1": 1.0,
+        "split": "loso",
+        "test_top1": 0.6416,
+        "val_test_gap": 0.3264,
+        "val_top1": 0.968
+      },
+      {
+        "best_iteration": 34.4,
+        "cases": 125,
+        "fold": 1,
+        "k": null,
+        "method": "single_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.8634221553448804,
+          "feature_fraction": 0.8996908982437505,
+          "lambda_l1": 0.0016573408856459893,
+          "lambda_l2": 0.001159157494795507,
+          "learning_rate": 0.12960747502551423,
+          "min_data_in_leaf": 7,
+          "num_leaves": 22
+        },
+        "search_val_top1": 1.0,
+        "split": "loso",
+        "test_top1": 0.8879999999999999,
+        "val_test_gap": 0.09200000000000001,
+        "val_top1": 0.9800000000000001
+      },
+      {
+        "best_iteration": 3.0,
+        "cases": 125,
+        "fold": 2,
+        "k": null,
+        "method": "single_stage_ranker",
+        "params": {
+          "bagging_fraction": 0.8634221553448804,
+          "feature_fraction": 0.8996908982437505,
+          "lambda_l1": 0.0016573408856459893,
+          "lambda_l2": 0.001159157494795507,
+          "learning_rate": 0.12960747502551423,
+          "min_data_in_leaf": 7,
+          "num_leaves": 22
+        },
+        "search_val_top1": 1.0,
+        "split": "loso",
+        "test_top1": 0.5648,
+        "val_test_gap": 0.43520000000000003,
+        "val_top1": 1.0
+      }
+    ],
+    "folds": [
+      {
+        "Avg@5": {
+          "estimate": 0.9994666666666667,
+          "lower": 0.9984,
+          "seed_spread": 0.0011925695879999054,
+          "upper": 1.0
+        },
+        "Top-1": {
+          "estimate": 0.9973333333333333,
+          "lower": 0.9920000000000001,
+          "seed_spread": 0.005962847939999428,
+          "upper": 1.0
+        },
+        "Top-3": {
+          "estimate": 1.0,
+          "lower": 1.0,
+          "seed_spread": 0.0,
+          "upper": 1.0
+        },
+        "cases": 75,
+        "floor": 0.042813555628200974,
+        "fold": "cpu",
+        "method": "two_stage_ranker",
+        "split": "lofo"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.9098666666666669,
+          "lower": 0.8341200000000001,
+          "seed_spread": 0.059848698120065054,
+          "upper": 0.9626666666666667
+        },
+        "Top-1": {
+          "estimate": 0.7679999999999999,
+          "lower": 0.656,
+          "seed_spread": 0.17603030042202014,
+          "upper": 0.8693333333333334
+        },
+        "Top-3": {
+          "estimate": 0.9466666666666667,
+          "lower": 0.8666666666666667,
+          "seed_spread": 0.02494438257849297,
+          "upper": 1.0
+        },
+        "cases": 75,
+        "floor": 0.04489568402611884,
+        "fold": "delay",
+        "method": "two_stage_ranker",
+        "split": "lofo"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.9935999999999999,
+          "lower": 0.9872000000000001,
+          "seed_spread": 0.005529717694220737,
+          "upper": 0.9989333333333333
+        },
+        "Top-1": {
+          "estimate": 0.9733333333333334,
+          "lower": 0.9466666666666667,
+          "seed_spread": 0.02108185106778921,
+          "upper": 0.9946666666666666
+        },
+        "Top-3": {
+          "estimate": 1.0,
+          "lower": 1.0,
+          "seed_spread": 0.0,
+          "upper": 1.0
+        },
+        "cases": 75,
+        "floor": 0.04604155104155097,
+        "fold": "disk",
+        "method": "two_stage_ranker",
+        "split": "lofo"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.8437333333333333,
+          "lower": 0.7498533333333333,
+          "seed_spread": 0.04015968127363564,
+          "upper": 0.9301333333333333
+        },
+        "Top-1": {
+          "estimate": 0.7333333333333333,
+          "lower": 0.5813333333333334,
+          "seed_spread": 0.04521553322083513,
+          "upper": 0.8746666666666666
+        },
+        "Top-3": {
+          "estimate": 0.8666666666666667,
+          "lower": 0.7786666666666666,
+          "seed_spread": 0.038873012632302015,
+          "upper": 0.9440000000000002
+        },
+        "cases": 75,
+        "floor": 0.044895684026118834,
+        "fold": "loss",
+        "method": "two_stage_ranker",
+        "split": "lofo"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.9962666666666666,
+          "lower": 0.9920000000000001,
+          "seed_spread": 0.005529717694220711,
+          "upper": 1.0
+        },
+        "Top-1": {
+          "estimate": 0.9813333333333333,
+          "lower": 0.96,
+          "seed_spread": 0.027648588471103623,
+          "upper": 1.0
+        },
+        "Top-3": {
+          "estimate": 1.0,
+          "lower": 1.0,
+          "seed_spread": 0.0,
+          "upper": 1.0
+        },
+        "cases": 75,
+        "floor": 0.04306418219461701,
+        "fold": "mem",
+        "method": "two_stage_ranker",
+        "split": "lofo"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.8784,
+          "lower": 0.7942400000000001,
+          "seed_spread": 0.009863062404750414,
+          "upper": 0.9497599999999999
+        },
+        "Top-1": {
+          "estimate": 0.7936,
+          "lower": 0.688,
+          "seed_spread": 0.04133763418484421,
+          "upper": 0.8864
+        },
+        "Top-3": {
+          "estimate": 0.896,
+          "lower": 0.8064,
+          "seed_spread": 0.00979795897113272,
+          "upper": 0.968
+        },
+        "cases": 125,
+        "floor": 0.07453094274146893,
+        "fold": "online-boutique",
+        "method": "two_stage_ranker",
+        "split": "loso"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.98944,
+          "lower": 0.9728000000000001,
+          "seed_spread": 0.003683476618630825,
+          "upper": 0.9990399999999999
+        },
+        "Top-1": {
+          "estimate": 0.9663999999999999,
+          "lower": 0.9216,
+          "seed_spread": 0.014310835055998667,
+          "upper": 0.9952
+        },
+        "Top-3": {
+          "estimate": 0.9952000000000001,
+          "lower": 0.9856,
+          "seed_spread": 0.004381780460041332,
+          "upper": 1.0
+        },
+        "cases": 125,
+        "floor": 0.04428910220214576,
+        "fold": "sock-shop",
+        "method": "two_stage_ranker",
+        "split": "loso"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.8732800000000001,
+          "lower": 0.805752,
+          "seed_spread": 0.01793856181526276,
+          "upper": 0.9328000000000001
+        },
+        "Top-1": {
+          "estimate": 0.7375999999999999,
+          "lower": 0.6256,
+          "seed_spread": 0.06232816377850387,
+          "upper": 0.8432000000000001
+        },
+        "Top-3": {
+          "estimate": 0.8992,
+          "lower": 0.8304,
+          "seed_spread": 0.018417383093154157,
+          "upper": 0.9584
+        },
+        "cases": 125,
+        "floor": 0.014206349206349172,
+        "fold": "train-ticket",
+        "method": "two_stage_ranker",
+        "split": "loso"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.9759999999999999,
+          "lower": 0.9450666666666666,
+          "seed_spread": 0.015888500383750587,
+          "upper": 0.9967999999999999
+        },
+        "Top-1": {
+          "estimate": 0.912,
+          "lower": 0.8186666666666667,
+          "seed_spread": 0.047702783519995545,
+          "upper": 0.984
+        },
+        "Top-3": {
+          "estimate": 0.9920000000000001,
+          "lower": 0.9760000000000001,
+          "seed_spread": 0.011925695879998857,
+          "upper": 1.0
+        },
+        "cases": 75,
+        "floor": 0.042813555628200974,
+        "fold": "cpu",
+        "method": "single_stage_ranker",
+        "split": "lofo"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.9125333333333333,
+          "lower": 0.8309333333333334,
+          "seed_spread": 0.047605788630282364,
+          "upper": 0.9696
+        },
+        "Top-1": {
+          "estimate": 0.7706666666666667,
+          "lower": 0.6266666666666668,
+          "seed_spread": 0.1297519000074972,
+          "upper": 0.8906666666666666
+        },
+        "Top-3": {
+          "estimate": 0.9440000000000002,
+          "lower": 0.8559999999999999,
+          "seed_spread": 0.033199732261303315,
+          "upper": 1.0
+        },
+        "cases": 75,
+        "floor": 0.04489568402611884,
+        "fold": "delay",
+        "method": "single_stage_ranker",
+        "split": "lofo"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.9536000000000001,
+          "lower": 0.9077333333333333,
+          "seed_spread": 0.008347987115999232,
+          "upper": 0.9871999999999999
+        },
+        "Top-1": {
+          "estimate": 0.8720000000000001,
+          "lower": 0.7706666666666667,
+          "seed_spread": 0.025991451586157188,
+          "upper": 0.9520000000000001
+        },
+        "Top-3": {
+          "estimate": 0.9786666666666668,
+          "lower": 0.9466666666666667,
+          "seed_spread": 0.007302967433402202,
+          "upper": 1.0
+        },
+        "cases": 75,
+        "floor": 0.046041551041550964,
+        "fold": "disk",
+        "method": "single_stage_ranker",
+        "split": "lofo"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.8671999999999999,
+          "lower": 0.7658666666666666,
+          "seed_spread": 0.04371219001097479,
+          "upper": 0.9472133333333331
+        },
+        "Top-1": {
+          "estimate": 0.7466666666666667,
+          "lower": 0.5973333333333333,
+          "seed_spread": 0.07601169500660922,
+          "upper": 0.8773333333333335
+        },
+        "Top-3": {
+          "estimate": 0.8986666666666665,
+          "lower": 0.7973333333333333,
+          "seed_spread": 0.044820630170590965,
+          "upper": 0.9733333333333334
+        },
+        "cases": 75,
+        "floor": 0.04489568402611885,
+        "fold": "loss",
+        "method": "single_stage_ranker",
+        "split": "lofo"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.9882666666666667,
+          "lower": 0.9813333333333333,
+          "seed_spread": 0.014678782874157721,
+          "upper": 0.9946666666666666
+        },
+        "Top-1": {
+          "estimate": 0.9573333333333333,
+          "lower": 0.9333333333333333,
+          "seed_spread": 0.044621868081817374,
+          "upper": 0.9786666666666668
+        },
+        "Top-3": {
+          "estimate": 0.9973333333333333,
+          "lower": 0.9920000000000001,
+          "seed_spread": 0.005962847939999428,
+          "upper": 1.0
+        },
+        "cases": 75,
+        "floor": 0.043064182194617,
+        "fold": "mem",
+        "method": "single_stage_ranker",
+        "split": "lofo"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.82624,
+          "lower": 0.75744,
+          "seed_spread": 0.06142416462598403,
+          "upper": 0.8896
+        },
+        "Top-1": {
+          "estimate": 0.6416,
+          "lower": 0.5072,
+          "seed_spread": 0.07491862251803622,
+          "upper": 0.7696399999999994
+        },
+        "Top-3": {
+          "estimate": 0.8687999999999999,
+          "lower": 0.8032,
+          "seed_spread": 0.07496132336078384,
+          "upper": 0.9264000000000001
+        },
+        "cases": 125,
+        "floor": 0.07453094274146893,
+        "fold": "online-boutique",
+        "method": "single_stage_ranker",
+        "split": "loso"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.9692799999999999,
+          "lower": 0.9478399999999999,
+          "seed_spread": 0.018116070214039413,
+          "upper": 0.9872
+        },
+        "Top-1": {
+          "estimate": 0.8880000000000001,
+          "lower": 0.8160000000000001,
+          "seed_spread": 0.06499230723708768,
+          "upper": 0.9488
+        },
+        "Top-3": {
+          "estimate": 0.9935999999999999,
+          "lower": 0.984,
+          "seed_spread": 0.00669328021227261,
+          "upper": 1.0
+        },
+        "cases": 125,
+        "floor": 0.04428910220214574,
+        "fold": "sock-shop",
+        "method": "single_stage_ranker",
+        "split": "loso"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.73344,
+          "lower": 0.6419199999999999,
+          "seed_spread": 0.07025986051793726,
+          "upper": 0.8188799999999999
+        },
+        "Top-1": {
+          "estimate": 0.5648,
+          "lower": 0.4464,
+          "seed_spread": 0.14627098140096,
+          "upper": 0.6816399999999994
+        },
+        "Top-3": {
+          "estimate": 0.7711999999999999,
+          "lower": 0.68,
+          "seed_spread": 0.05324659613533996,
+          "upper": 0.8543999999999999
+        },
+        "cases": 125,
+        "floor": 0.014206349206349172,
+        "fold": "train-ticket",
+        "method": "single_stage_ranker",
+        "split": "loso"
+      }
+    ],
+    "group_importance_group_run": {
+      "single_stage_ranker": {
+        "graph": 0.005270498783191394,
+        "mask": 0.000654174157093457,
+        "signal": 0.9899872446604501,
+        "structural": 0.00223502528449459,
+        "temporal": 0.00185305711477046
+      },
+      "two_stage_ranker": {
+        "graph": 0.004109376051549581,
+        "mask": 0.0006764436672742856,
+        "signal": 0.9899051576719607,
+        "structural": 0.0027688880945486,
+        "temporal": 0.002540134514666657
+      }
+    },
+    "group_run": [
+      {
+        "Avg@5": {
+          "estimate": 0.9613866666666666,
+          "lower": 0.9391999999999999,
+          "seed_spread": 0.008865212913404927,
+          "upper": 0.9805866666666667
+        },
+        "Top-1": {
+          "estimate": 0.9066666666666666,
+          "lower": 0.8586666666666667,
+          "seed_spread": 0.024801433650317704,
+          "upper": 0.9493333333333334
+        },
+        "Top-3": {
+          "estimate": 0.9738666666666668,
+          "lower": 0.9551999999999999,
+          "seed_spread": 0.005129435749779009,
+          "upper": 0.9898666666666667
+        },
+        "cases": 375,
+        "floor": 0.044342131383321326,
+        "fold": "pooled",
+        "method": "two_stage_ranker",
+        "split": "group_run"
+      },
+      {
+        "Avg@5": {
+          "estimate": 0.9619200000000001,
+          "lower": 0.9370666666666667,
+          "seed_spread": 0.004643370423398157,
+          "upper": 0.9822933333333332
+        },
+        "Top-1": {
+          "estimate": 0.912,
+          "lower": 0.8672,
+          "seed_spread": 0.010498677165349095,
+          "upper": 0.9503999999999999
+        },
+        "Top-3": {
+          "estimate": 0.9701333333333334,
+          "lower": 0.944,
+          "seed_spread": 0.005781195570314355,
+          "upper": 0.9909333333333334
+        },
+        "cases": 375,
+        "floor": 0.04434213138332132,
+        "fold": "pooled",
+        "method": "single_stage_ranker",
+        "split": "group_run"
+      }
+    ],
+    "importance": [
+      {
+        "fold": 0,
+        "groups": {
+          "graph": 0.002005747762874578,
+          "mask": 0.0029155016085601116,
+          "signal": 0.9889426648641472,
+          "structural": 0.004796582052488649,
+          "temporal": 0.0013395037119296803
+        },
+        "method": "two_stage_ranker",
+        "split": "group_run",
+        "top_columns": {
+          "signal_cpu_anomaly_duration": 0.03712868090107481,
+          "signal_cpu_peak_magnitude": 0.04798128524585467,
+          "signal_cpu_relative_change": 0.03218257795503405,
+          "signal_latency_baseline_median": 0.04419430266752523,
+          "signal_latency_max_z": 0.020162041529147502,
+          "signal_latency_peak_magnitude": 0.028600702872197868,
+          "signal_latency_relative_change": 0.2453341227557751,
+          "signal_memory_anomaly_duration": 0.06484508245731178,
+          "signal_memory_changepoint": 0.2776039839894174,
+          "signal_memory_relative_change": 0.08207430897381038
+        }
+      },
+      {
+        "fold": 1,
+        "groups": {
+          "graph": 0.002957236379442124,
+          "mask": 0.0,
+          "signal": 0.9942372710748114,
+          "structural": 0.001378721281281523,
+          "temporal": 0.001426771264464979
+        },
+        "method": "two_stage_ranker",
+        "split": "group_run",
+        "top_columns": {
+          "signal_cpu_max_z": 0.02325797861807722,
+          "signal_cpu_peak_magnitude": 0.03578325033051856,
+          "signal_latency_anomaly_duration": 0.03378938875018884,
+          "signal_latency_baseline_median": 0.015196972537339176,
+          "signal_latency_changepoint": 0.034597372545676235,
+          "signal_latency_relative_change": 0.29547484511621025,
+          "signal_memory_anomaly_duration": 0.15503641963131556,
+          "signal_memory_changepoint": 0.26932680716270985,
+          "signal_memory_relative_change": 0.04620442725742908,
+          "signal_traffic_baseline_median": 0.019251404663944198
+        }
+      },
+      {
+        "fold": 2,
+        "groups": {
+          "graph": 0.004217539142569537,
+          "mask": 0.0,
+          "signal": 0.9926349206941134,
+          "structural": 0.0012797837049046215,
+          "temporal": 0.0018677564584121233
+        },
+        "method": "two_stage_ranker",
+        "split": "group_run",
+        "top_columns": {
+          "signal_cpu_changepoint": 0.03142975397080623,
+          "signal_cpu_peak_magnitude": 0.06969306438895295,
+          "signal_latency_baseline_median": 0.04926438674486927,
+          "signal_latency_changepoint": 0.02900908614619093,
+          "signal_latency_max_z": 0.02657542161516179,
+          "signal_latency_relative_change": 0.3365664893343461,
+          "signal_memory_anomaly_duration": 0.07605239041416444,
+          "signal_memory_changepoint": 0.19218639750170666,
+          "signal_memory_max_z": 0.02261798903220385,
+          "signal_memory_relative_change": 0.08372342120642855
+        }
+      },
+      {
+        "fold": 3,
+        "groups": {
+          "graph": 0.010399420042484358,
+          "mask": 0.0004667167278113168,
+          "signal": 0.9817645489816749,
+          "structural": 0.005170441616588658,
+          "temporal": 0.0021988726314408837
+        },
+        "method": "two_stage_ranker",
+        "split": "group_run",
+        "top_columns": {
+          "signal_cpu_changepoint": 0.031812870489416736,
+          "signal_cpu_peak_magnitude": 0.07521665681828185,
+          "signal_cpu_relative_change": 0.022394619677612145,
+          "signal_latency_baseline_median": 0.038914847240044466,
+          "signal_latency_max_z": 0.023192323535064008,
+          "signal_latency_peak_magnitude": 0.02156760345566234,
+          "signal_latency_relative_change": 0.2893678034736845,
+          "signal_memory_anomaly_duration": 0.058485569139729895,
+          "signal_memory_changepoint": 0.14081615697708663,
+          "signal_memory_relative_change": 0.09036061873335023
+        }
+      },
+      {
+        "fold": 4,
+        "groups": {
+          "graph": 0.0009669369303773077,
+          "mask": 0.0,
+          "signal": 0.9919463827450574,
+          "structural": 0.0012189118174795494,
+          "temporal": 0.005867768507085616
+        },
+        "method": "two_stage_ranker",
+        "split": "group_run",
+        "top_columns": {
+          "signal_cpu_peak_magnitude": 0.03141190050800043,
+          "signal_cpu_relative_change": 0.08976054507109266,
+          "signal_latency_baseline_mad": 0.017067791820860257,
+          "signal_latency_baseline_median": 0.04233742185330437,
+          "signal_latency_max_z": 0.017417996619296654,
+          "signal_latency_relative_change": 0.2636136652745201,
+          "signal_memory_anomaly_duration": 0.10830478697277975,
+          "signal_memory_changepoint": 0.13503803057841499,
+          "signal_memory_max_z": 0.024115806141874484,
+          "signal_memory_relative_change": 0.17851993692268442
+        }
+      },
+      {
+        "fold": 0,
+        "groups": {
+          "graph": 0.002140334285252409,
+          "mask": 0.00016032266555121303,
+          "signal": 0.9941318986280538,
+          "structural": 0.0018035731238844497,
+          "temporal": 0.001763871297258144
+        },
+        "method": "two_stage_ranker",
+        "split": "lofo",
+        "top_columns": {
+          "signal_cpu_max_z": 0.0368995626710547,
+          "signal_latency_baseline_median": 0.028250754311793618,
+          "signal_latency_changepoint": 0.019067357667378826,
+          "signal_latency_max_z": 0.01864795880942549,
+          "signal_latency_relative_change": 0.2422726828818622,
+          "signal_memory_anomaly_duration": 0.07970643717910397,
+          "signal_memory_changepoint": 0.205292733486493,
+          "signal_memory_max_z": 0.021596484492373214,
+          "signal_memory_relative_change": 0.16935341408881294,
+          "signal_traffic_baseline_median": 0.02358283597866838
+        }
+      },
+      {
+        "fold": 1,
+        "groups": {
+          "graph": 0.003164932054871724,
+          "mask": 0.0,
+          "signal": 0.9948307847682349,
+          "structural": 0.001106817431996468,
+          "temporal": 0.0008974657448968454
+        },
+        "method": "two_stage_ranker",
+        "split": "lofo",
+        "top_columns": {
+          "signal_cpu_anomaly_duration": 0.024925127607057247,
+          "signal_cpu_changepoint": 0.024853985586756187,
+          "signal_cpu_max_z": 0.021257893245540734,
+          "signal_cpu_peak_magnitude": 0.03072900876800323,
+          "signal_latency_baseline_median": 0.029960894604197753,
+          "signal_latency_peak_magnitude": 0.07848167541736971,
+          "signal_latency_relative_change": 0.12712143629475497,
+          "signal_memory_anomaly_duration": 0.11779120754836425,
+          "signal_memory_changepoint": 0.31940974135702166,
+          "signal_memory_relative_change": 0.155481098961333
+        }
+      },
+      {
+        "fold": 2,
+        "groups": {
+          "graph": 0.005383397135238172,
+          "mask": 0.00016102106490362264,
+          "signal": 0.9824090777009686,
+          "structural": 0.005229981491880548,
+          "temporal": 0.006816522607009073
+        },
+        "method": "two_stage_ranker",
+        "split": "lofo",
+        "top_columns": {
+          "signal_cpu_max_z": 0.02618452328122845,
+          "signal_cpu_relative_change": 0.029749672196886047,
+          "signal_latency_baseline_median": 0.05219566453011763,
+          "signal_latency_changepoint": 0.026825496072601783,
+          "signal_latency_max_z": 0.04025286911308527,
+          "signal_latency_peak_magnitude": 0.026925868785482022,
+          "signal_latency_relative_change": 0.21719923348675835,
+          "signal_memory_anomaly_duration": 0.04754966877590691,
+          "signal_memory_changepoint": 0.19482181938444296,
+          "signal_memory_relative_change": 0.12005688632899333
+        }
+      },
+      {
+        "fold": 3,
+        "groups": {
+          "graph": 0.007756055497939992,
+          "mask": 0.0037555864417746507,
+          "signal": 0.9772931462460361,
+          "structural": 0.004875471746247601,
+          "temporal": 0.006319740068001492
+        },
+        "method": "two_stage_ranker",
+        "split": "lofo",
+        "top_columns": {
+          "signal_cpu_changepoint": 0.04921644852317445,
+          "signal_cpu_peak_magnitude": 0.05972628573357821,
+          "signal_latency_baseline_mad": 0.01716537415524829,
+          "signal_latency_baseline_median": 0.03847746193238168,
+          "signal_latency_max_z": 0.02133175732730501,
+          "signal_latency_peak_magnitude": 0.027156391804286216,
+          "signal_latency_relative_change": 0.23457826187363925,
+          "signal_memory_anomaly_duration": 0.114135989928341,
+          "signal_memory_changepoint": 0.19018023330400335,
+          "signal_memory_relative_change": 0.09460104243291448
+        }
+      },
+      {
+        "fold": 4,
+        "groups": {
+          "graph": 0.0025776268918975913,
+          "mask": 0.00042407360441588184,
+          "signal": 0.9932217218423901,
+          "structural": 0.0022114966429507723,
+          "temporal": 0.0015650810183455996
+        },
+        "method": "two_stage_ranker",
+        "split": "lofo",
+        "top_columns": {
+          "signal_cpu_anomaly_duration": 0.030205184794433255,
+          "signal_cpu_max_z": 0.03409078175142044,
+          "signal_cpu_peak_magnitude": 0.05925972154005259,
+          "signal_latency_anomaly_duration": 0.05039781207461626,
+          "signal_latency_changepoint": 0.0650385945274638,
+          "signal_latency_max_z": 0.037418381226497474,
+          "signal_latency_relative_change": 0.29059860970343,
+          "signal_memory_anomaly_duration": 0.08285540138226197,
+          "signal_memory_changepoint": 0.12092164244312067,
+          "signal_memory_relative_change": 0.03961763015446311
+        }
+      },
+      {
+        "fold": 0,
+        "groups": {
+          "graph": 1.7535395453418696e-05,
+          "mask": 0.0,
+          "signal": 0.9961930554345367,
+          "structural": 0.0005719843831434777,
+          "temporal": 0.003217424786866265
+        },
+        "method": "two_stage_ranker",
+        "split": "loso",
+        "top_columns": {
+          "signal_cpu_peak_magnitude": 0.019728749026879672,
+          "signal_error_max_z": 0.01017955824369655,
+          "signal_latency_anomaly_duration": 0.04183208791266902,
+          "signal_latency_changepoint": 0.02094654288476288,
+          "signal_latency_max_z": 0.009504794231386534,
+          "signal_latency_relative_change": 0.4301503781180457,
+          "signal_memory_anomaly_duration": 0.03772635751189462,
+          "signal_memory_changepoint": 0.24747302235605875,
+          "signal_memory_relative_change": 0.12028778934884188,
+          "signal_traffic_baseline_median": 0.011718239655209402
+        }
+      },
+      {
+        "fold": 1,
+        "groups": {
+          "graph": 0.01456900142235996,
+          "mask": 0.002839893856265704,
+          "signal": 0.9692104028692954,
+          "structural": 0.004190248790895581,
+          "temporal": 0.009190453061183428
+        },
+        "method": "two_stage_ranker",
+        "split": "loso",
+        "top_columns": {
+          "signal_cpu_max_z": 0.03451921074447989,
+          "signal_cpu_peak_magnitude": 0.14649882460515756,
+          "signal_latency_anomaly_duration": 0.024686891486328393,
+          "signal_latency_baseline_mad": 0.027350998074356238,
+          "signal_latency_baseline_median": 0.044113204606513655,
+          "signal_latency_relative_change": 0.16981417376545668,
+          "signal_memory_anomaly_duration": 0.07051470586215877,
+          "signal_memory_changepoint": 0.12761834004772626,
+          "signal_memory_relative_change": 0.08327305790576797,
+          "signal_traffic_peak_magnitude": 0.02504876634265832
+        }
+      },
+      {
+        "fold": 2,
+        "groups": {
+          "graph": 0.006459548376418798,
+          "mask": 0.0014032393865086733,
+          "signal": 0.9810855585507712,
+          "structural": 0.006412062648187163,
+          "temporal": 0.004639591038114296
+        },
+        "method": "two_stage_ranker",
+        "split": "loso",
+        "top_columns": {
+          "signal_cpu_anomaly_duration": 0.016764361646765424,
+          "signal_cpu_changepoint": 0.030298427943398674,
+          "signal_cpu_relative_change": 0.04231720766301468,
+          "signal_latency_baseline_median": 0.0666567856621086,
+          "signal_latency_max_z": 0.04212616815455026,
+          "signal_latency_peak_magnitude": 0.03459676910650139,
+          "signal_latency_relative_change": 0.1994315416547136,
+          "signal_memory_anomaly_duration": 0.20038818092436875,
+          "signal_memory_changepoint": 0.09605835463293166,
+          "signal_memory_relative_change": 0.10431700129209431
+        }
+      },
+      {
+        "fold": 0,
+        "groups": {
+          "graph": 0.009213357295254394,
+          "mask": 0.002540190096203675,
+          "signal": 0.9787725571996209,
+          "structural": 0.004704897102598341,
+          "temporal": 0.004768998306322721
+        },
+        "method": "single_stage_ranker",
+        "split": "group_run",
+        "top_columns": {
+          "signal_cpu_changepoint": 0.016511612691187887,
+          "signal_cpu_peak_magnitude": 0.05936106398636891,
+          "signal_latency_anomaly_duration": 0.1783739365899891,
+          "signal_latency_baseline_median": 0.022196056623388194,
+          "signal_latency_changepoint": 0.03497916577179131,
+          "signal_latency_peak_magnitude": 0.05200652983676207,
+          "signal_latency_relative_change": 0.3704266643431441,
+          "signal_memory_changepoint": 0.0678332668336494,
+          "signal_memory_max_z": 0.028262724032211972,
+          "signal_memory_relative_change": 0.027695711120855566
+        }
+      },
+      {
+        "fold": 1,
+        "groups": {
+          "graph": 0.0,
+          "mask": 0.0,
+          "signal": 0.9995461702523132,
+          "structural": 0.0,
+          "temporal": 0.0004538297476868651
+        },
+        "method": "single_stage_ranker",
+        "split": "group_run",
+        "top_columns": {
+          "signal_cpu_max_z": 0.014974396478490207,
+          "signal_cpu_peak_magnitude": 0.06699185498000108,
+          "signal_latency_anomaly_duration": 0.2108412505286581,
+          "signal_latency_baseline_median": 0.03466261013029292,
+          "signal_latency_changepoint": 0.03450315998845268,
+          "signal_latency_max_z": 0.023371685269213384,
+          "signal_latency_peak_magnitude": 0.04359277824280742,
+          "signal_latency_relative_change": 0.3534208915115101,
+          "signal_memory_changepoint": 0.10960819679215814,
+          "signal_memory_max_z": 0.03368646163748743
+        }
+      },
+      {
+        "fold": 2,
+        "groups": {
+          "graph": 0.0030966316678996486,
+          "mask": 0.0,
+          "signal": 0.9957120058210308,
+          "structural": 0.0011913625110694433,
+          "temporal": 0.0
+        },
+        "method": "single_stage_ranker",
+        "split": "group_run",
+        "top_columns": {
+          "signal_cpu_changepoint": 0.03109266429591559,
+          "signal_cpu_max_z": 0.015687632324163717,
+          "signal_cpu_peak_magnitude": 0.08707954541967652,
+          "signal_latency_anomaly_duration": 0.13142514552091294,
+          "signal_latency_changepoint": 0.02038935798891368,
+          "signal_latency_relative_change": 0.583619630288624,
+          "signal_memory_anomaly_duration": 0.02520564439943481,
+          "signal_memory_changepoint": 0.026748673509805455,
+          "signal_memory_max_z": 0.015365169113083926,
+          "signal_memory_relative_change": 0.02343243026038359
+        }
+      },
+      {
+        "fold": 3,
+        "groups": {
+          "graph": 0.00990655918956714,
+          "mask": 0.0006661750305434023,
+          "signal": 0.9877289680105678,
+          "structural": 0.001698297769321866,
+          "temporal": 0.0
+        },
+        "method": "single_stage_ranker",
+        "split": "group_run",
+        "top_columns": {
+          "signal_cpu_peak_magnitude": 0.03264315382398465,
+          "signal_latency_anomaly_duration": 0.1407979067686313,
+          "signal_latency_baseline_median": 0.046232384069791965,
+          "signal_latency_changepoint": 0.030534851812119825,
+          "signal_latency_max_z": 0.028085658747141112,
+          "signal_latency_peak_magnitude": 0.06170589604074874,
+          "signal_latency_relative_change": 0.28857596008441255,
+          "signal_memory_anomaly_duration": 0.05517547610474562,
+          "signal_memory_changepoint": 0.12332539689694151,
+          "signal_memory_relative_change": 0.04454582063874539
+        }
+      },
+      {
+        "fold": 4,
+        "groups": {
+          "graph": 0.00413594576323578,
+          "mask": 6.450565872020784e-05,
+          "signal": 0.9881765220187182,
+          "structural": 0.0035805690394833,
+          "temporal": 0.004042457519842715
+        },
+        "method": "single_stage_ranker",
+        "split": "group_run",
+        "top_columns": {
+          "signal_cpu_changepoint": 0.030627129834136374,
+          "signal_cpu_peak_magnitude": 0.05791898749656321,
+          "signal_latency_anomaly_duration": 0.16872221344903035,
+          "signal_latency_baseline_median": 0.02773786679291182,
+          "signal_latency_changepoint": 0.03402881552714283,
+          "signal_latency_max_z": 0.026530760155129805,
+          "signal_latency_peak_magnitude": 0.053929084397544014,
+          "signal_latency_relative_change": 0.43700169650513,
+          "signal_memory_changepoint": 0.02688649324713734,
+          "signal_memory_relative_change": 0.025603984170345206
+        }
+      },
+      {
+        "fold": 0,
+        "groups": {
+          "graph": 0.007609325167650357,
+          "mask": 0.0,
+          "signal": 0.9914675474638708,
+          "structural": 0.0008163634913821628,
+          "temporal": 0.00010676387709687861
+        },
+        "method": "single_stage_ranker",
+        "split": "lofo",
+        "top_columns": {
+          "signal_cpu_anomaly_duration": 0.008935565694584018,
+          "signal_cpu_max_z": 0.02022423485828558,
+          "signal_cpu_peak_magnitude": 0.008593142353074682,
+          "signal_error_changepoint": 0.011631975664809122,
+          "signal_latency_anomaly_duration": 0.16595858164719698,
+          "signal_latency_baseline_median": 0.015296258848320874,
+          "signal_latency_relative_change": 0.5806531725946867,
+          "signal_memory_changepoint": 0.04357996001459734,
+          "signal_memory_max_z": 0.025410806184437494,
+          "signal_memory_relative_change": 0.059285501370004844
+        }
+      },
+      {
+        "fold": 1,
+        "groups": {
+          "graph": 0.01563202813515034,
+          "mask": 2.6944313516199594e-06,
+          "signal": 0.9801202346372645,
+          "structural": 0.0026947883448852324,
+          "temporal": 0.0015502544513483658
+        },
+        "method": "single_stage_ranker",
+        "split": "lofo",
+        "top_columns": {
+          "signal_cpu_anomaly_duration": 0.019313025152900447,
+          "signal_cpu_max_z": 0.01543486573431245,
+          "signal_cpu_peak_magnitude": 0.14772738270485622,
+          "signal_latency_anomaly_duration": 0.10816666131884548,
+          "signal_latency_baseline_median": 0.02198196826521348,
+          "signal_latency_changepoint": 0.015752758786737507,
+          "signal_latency_relative_change": 0.45768403855665174,
+          "signal_memory_anomaly_duration": 0.016485235967990022,
+          "signal_memory_changepoint": 0.04662447962546352,
+          "signal_memory_relative_change": 0.06262566954926933
+        }
+      },
+      {
+        "fold": 2,
+        "groups": {
+          "graph": 0.009328661531258926,
+          "mask": 5.158218821326786e-06,
+          "signal": 0.9879012410113881,
+          "structural": 0.0020348810525659213,
+          "temporal": 0.0007300581859657508
+        },
+        "method": "single_stage_ranker",
+        "split": "lofo",
+        "top_columns": {
+          "signal_cpu_anomaly_duration": 0.021562896155058076,
+          "signal_cpu_changepoint": 0.05502776868979624,
+          "signal_cpu_peak_magnitude": 0.030141536762860893,
+          "signal_latency_anomaly_duration": 0.1434323796384817,
+          "signal_latency_baseline_median": 0.03895844795736605,
+          "signal_latency_changepoint": 0.03803728404960113,
+          "signal_latency_max_z": 0.03890054461006186,
+          "signal_latency_relative_change": 0.4171968329718846,
+          "signal_memory_changepoint": 0.06508488472797733,
+          "signal_memory_max_z": 0.043079550730682876
+        }
+      },
+      {
+        "fold": 3,
+        "groups": {
+          "graph": 0.0017738665098088607,
+          "mask": 0.0020556198688672814,
+          "signal": 0.9909089284244857,
+          "structural": 0.0037437707852096586,
+          "temporal": 0.001517814411628311
+        },
+        "method": "single_stage_ranker",
+        "split": "lofo",
+        "top_columns": {
+          "signal_cpu_changepoint": 0.035707490068888355,
+          "signal_cpu_max_z": 0.024713799321990634,
+          "signal_cpu_peak_magnitude": 0.045775186451693206,
+          "signal_latency_anomaly_duration": 0.07832324161025157,
+          "signal_latency_max_z": 0.050097121810444165,
+          "signal_latency_peak_magnitude": 0.0530136472862223,
+          "signal_latency_relative_change": 0.2870016621678296,
+          "signal_memory_changepoint": 0.20315752987811245,
+          "signal_memory_max_z": 0.06691762172717522,
+          "signal_memory_relative_change": 0.02862498532236125
+        }
+      },
+      {
+        "fold": 4,
+        "groups": {
+          "graph": 0.011377971990221093,
+          "mask": 2.9644496563982068e-05,
+          "signal": 0.9769454473011774,
+          "structural": 0.006065885942159607,
+          "temporal": 0.005581050269877553
+        },
+        "method": "single_stage_ranker",
+        "split": "lofo",
+        "top_columns": {
+          "signal_cpu_changepoint": 0.023790302091509268,
+          "signal_cpu_max_z": 0.01978322451029769,
+          "signal_cpu_peak_magnitude": 0.09686503973697116,
+          "signal_latency_anomaly_duration": 0.15359385629571387,
+          "signal_latency_baseline_median": 0.024153508047525488,
+          "signal_latency_changepoint": 0.02260185932056793,
+          "signal_latency_peak_magnitude": 0.032801030307762616,
+          "signal_latency_relative_change": 0.45703039879458807,
+          "signal_memory_changepoint": 0.038166666187591215,
+          "signal_memory_relative_change": 0.020785884171868038
+        }
+      },
+      {
+        "fold": 0,
+        "groups": {
+          "graph": 0.0026539658608382617,
+          "mask": 0.0011189510965926774,
+          "signal": 0.9915494592655968,
+          "structural": 0.0005429779561851287,
+          "temporal": 0.004134645820787593
+        },
+        "method": "single_stage_ranker",
+        "split": "loso",
+        "top_columns": {
+          "signal_cpu_peak_magnitude": 0.011868952054467594,
+          "signal_latency_anomaly_duration": 0.2108945281880099,
+          "signal_latency_baseline_median": 0.012558523343219375,
+          "signal_latency_changepoint": 0.020324701910890735,
+          "signal_latency_peak_magnitude": 0.014753508607208856,
+          "signal_latency_relative_change": 0.45680750563306055,
+          "signal_memory_anomaly_duration": 0.017201541124086773,
+          "signal_memory_changepoint": 0.02995081493995707,
+          "signal_memory_max_z": 0.15180073501023322,
+          "signal_memory_relative_change": 0.015303530683161443
+        }
+      },
+      {
+        "fold": 1,
+        "groups": {
+          "graph": 0.011288522652106702,
+          "mask": 5.435896548652895e-05,
+          "signal": 0.9811802743893894,
+          "structural": 0.002914092961520332,
+          "temporal": 0.004562751031496964
+        },
+        "method": "single_stage_ranker",
+        "split": "loso",
+        "top_columns": {
+          "signal_cpu_max_z": 0.015519033326105939,
+          "signal_cpu_peak_magnitude": 0.1941631935259616,
+          "signal_latency_anomaly_duration": 0.14853967634223336,
+          "signal_latency_baseline_median": 0.02309225617355782,
+          "signal_latency_changepoint": 0.017485535852681318,
+          "signal_latency_relative_change": 0.365167979473357,
+          "signal_memory_baseline_median": 0.04347343446741393,
+          "signal_memory_changepoint": 0.032900497887311496,
+          "signal_memory_max_z": 0.020087200688191077,
+          "signal_memory_relative_change": 0.018388092807920402
+        }
+      },
+      {
+        "fold": 2,
+        "groups": {
+          "graph": 0.02623068010115376,
+          "mask": 0.0,
+          "signal": 0.9727741333141046,
+          "structural": 0.0008381751831874933,
+          "temporal": 0.0001570114015541801
+        },
+        "method": "single_stage_ranker",
+        "split": "loso",
+        "top_columns": {
+          "graph_upstream_anomalous_fraction": 0.0243359925776847,
+          "signal_cpu_baseline_median": 0.02025623077251338,
+          "signal_cpu_changepoint": 0.012721878093851044,
+          "signal_cpu_peak_magnitude": 0.1660965849316078,
+          "signal_latency_baseline_median": 0.045441868078535695,
+          "signal_latency_peak_magnitude": 0.04193916161209336,
+          "signal_latency_relative_change": 0.5670068286558809,
+          "signal_memory_anomaly_duration": 0.024608884252209834,
+          "signal_memory_relative_change": 0.017721714439378013,
+          "signal_traffic_baseline_median": 0.017086997464785772
+        }
+      }
+    ],
+    "ranker_config_hash": "6fd7f76234e5079f09d9417c4500768ba7852e7307083f7ecf62e894f3903761",
+    "retrieval_recall_at_chosen_k": {
+      "group_run": 0.9946666666666667,
+      "lofo": 0.9946666666666667,
+      "loso": 0.96
+    },
+    "s1_interval_excludes_zero": true,
+    "s2_comparator": {
+      "method": "lightgbm_flat",
+      "top1": 0.9402666666666667
+    },
+    "s2_interval_above_zero": true,
+    "s2_margin": 0.12,
+    "status": "exploratory",
+    "warnings": []
+  },
+  "seed": 0
+}

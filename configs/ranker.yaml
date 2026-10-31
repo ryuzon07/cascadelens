@@ -1,6 +1,26 @@
 seeds: [0, 1, 2, 3, 4]
+# Feature groups the ranker reads. Removing one is how a group is ablated.
+groups: [signal, temporal, graph, structural, mask]
+features_config: configs/features.yaml
+num_threads: 4
+# A single structural column above this share of total gain prints a warning.
+structural_dominance: 0.25
 retrieval:
+  scorer: lightgbm  # or heuristic: max z-score minus onset rank
   top_k_choices: [5, 8]
+  cross_fit_folds: 5
+  num_boost_round: 200
+  # Stage 1 is fixed, not searched, so the ranker's search budget equals the flat baseline's.
+  params:
+    learning_rate: 0.05
+    num_leaves: 15
+    min_data_in_leaf: 10
 reranker:
   objective: lambdarank
+  ndcg_at: [1, 3, 5]
+  num_boost_round: 500
+  early_stopping_rounds: 30
   params: {}
+tuning:
+  budget: 30  # Equal to lightgbm_flat, and K is drawn inside these 30 configurations.
+  seed: 0
