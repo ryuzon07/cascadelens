@@ -1,4 +1,5 @@
-# Parameter grids from section 9.1 of the project documentation.
+# Parameter grids from section 9.1 of the project documentation. Each entry is a cartesian product.
+# Anything left out takes the default in its parameter schema under src/cascadelens/perturb/.
 seed: 0
 perturbations:
   - id: P1
@@ -6,14 +7,19 @@ perturbations:
     realism: simulated
     params:
       rate: [0.1, 0.2, 0.3, 0.5]
+      level: [series, sample]
   - id: P2
     name: failure_correlated_loss
     realism: simulated
     params:
       rate: [0.1, 0.2, 0.3, 0.5]
+      near_boost: [3.0]
+      after_boost: [3.0]
   - id: P3
     name: whole_modality_loss
     realism: simulated
+    params:
+      family: [error, latency, cpu, memory, disk, network, traffic]
   - id: P4
     name: window_shift
     realism: simulated
@@ -22,6 +28,8 @@ perturbations:
   - id: P5
     name: window_noise
     realism: simulated
+    params:
+      max_jitter_seconds: [30, 60]
   - id: P6
     name: edge_deletion
     realism: simulated
@@ -35,6 +43,8 @@ perturbations:
   - id: P8
     name: inferred_topology
     realism: simulated
+    params:
+      method: [correlation, lagged]
   - id: P9
     name: unseen_fault_type
     realism: held-out
@@ -53,6 +63,12 @@ perturbations:
   - id: P12
     name: delayed_series
     realism: simulated
+    params:
+      max_offset_seconds: [15]
+      late_fraction: [0.1]
   - id: P13
     name: metric_renaming_unit_drift
     realism: simulated
+    params:
+      mode: [rename, rescale]
+      service_fraction: [0.3]

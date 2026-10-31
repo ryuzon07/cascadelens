@@ -10,6 +10,7 @@ from cascadelens.data.cli import app as data_app
 from cascadelens.eval.cli import app as eval_app
 from cascadelens.features.cli import app as features_app
 from cascadelens.models.cli import diagnose, evaluate, freeze, run_ranker_clean, train
+from cascadelens.perturb.cli import app as perturb_app
 from cascadelens.splits.cli import app as splits_app
 
 app = typer.Typer(help="CascadeLens experiment pipeline.", no_args_is_help=True)
@@ -19,6 +20,7 @@ app.add_typer(eval_app, name="eval")
 app.add_typer(features_app, name="features")
 app.add_typer(experiments_app, name="experiments")
 app.add_typer(published_app, name="published")
+app.add_typer(perturb_app, name="perturb")
 app.add_typer(splits_app, name="splits")
 app.command()(train)
 app.command()(evaluate)
@@ -38,12 +40,6 @@ def version() -> None:
 @app.command()
 def ingest() -> None:
     """Ingest benchmark data into the unified Case schema."""
-    typer.echo(NOT_IMPLEMENTED)
-
-
-@app.command()
-def perturb() -> None:
-    """Generate seeded perturbed Case variants."""
     typer.echo(NOT_IMPLEMENTED)
 
 
