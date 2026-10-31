@@ -11,12 +11,14 @@ kept well short of the middle. The split reads the window bounds only. It never 
 time, and a shifted window would shift it.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+from typing import Literal
 
 import polars as pl
 
 from cascadelens.config import StrictModel
 from cascadelens.data.schema import CaseRecord, TopologyEdge
+from cascadelens.features.inference import InferenceSettings, infer_topology
 from cascadelens.features.simple import (
     MAD_TO_SIGMA,
     RELATIVE_SCALE_FLOOR,
@@ -43,6 +45,13 @@ class MaskSettings(StrictModel):
     """Missingness feature settings."""
 
     stop_gap_seconds: int = 30
+
+
+class TopologySettings(StrictModel):
+    """Where the call graph comes from."""
+
+    source: Literal["recorded", "inferred_if_missing"] = "recorded"
+    inference: InferenceSettings = InferenceSettings()
 
 
 @dataclass(frozen=True)
@@ -147,6 +156,7 @@ class CaseContext:
     signal: SignalSettings
     graph: GraphSettings
     mask: MaskSettings
+    topology_inferred: bool = False
 
     @classmethod
     def build(
@@ -155,10 +165,17 @@ class CaseContext:
         signal: SignalSettings,
         graph: GraphSettings,
         mask: MaskSettings,
+        topology: TopologySettings | None = None,
     ) -> "CaseContext":
-        """Score the case once."""
+        """Score the case once, inferring a graph when the config allows and none exists."""
         samples = scored_samples(case, signal)
         found = onsets(samples, signal)
+        choice = topology if topology is not None else TopologySettings()
+        inferred = False
+        if choice.source == "inferred_if_missing" and not case.topology:
+            edges = infer_topology(samples, choice.inference)
+            inferred = edges is not None
+            case = replace(case, topology=edges)
         return cls(
             case=case,
             services=all_services(case),
@@ -167,6 +184,7 @@ class CaseContext:
             signal=signal,
             graph=graph,
             mask=mask,
+            topology_inferred=inferred,
         )
 
     def frame(self) -> pl.DataFrame:

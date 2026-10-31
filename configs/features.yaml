@@ -9,5 +9,14 @@ graph:
   pagerank_alpha: 0.85
 mask:
   stop_gap_seconds: 30
+# RE1 records no call graph. Set by stability across repetitions, never by root-cause accuracy.
+topology:
+  source: inferred_if_missing
+  inference:
+    families: [latency]
+    bin_seconds: 15
+    threshold: 0.6
+    max_lag_bins: 3
+    direction_margin: 0.05
 processed_dir: data/processed
 output_dir: data/features

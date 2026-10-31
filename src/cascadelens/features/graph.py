@@ -4,8 +4,9 @@ Two groups live here so ablations can drop them apart. ``graph`` depends on whic
 anomalous in this case. ``structural`` depends on the graph alone, which is fixed per system, so it
 can fingerprint a service; the identity probe covers it (PRD 8.1, 6.5).
 
-A case with no topology gets NaN everywhere and ``graph_topology_available`` = 0. A service absent
-from an existing graph gets NaN too, while the flag stays 1: the flag describes the case.
+A case with no topology gets NaN and ``graph_topology_available`` = 0. A service absent from an
+existing graph gets NaN too, while the flag stays 1: the flag describes the case.
+``graph_topology_inferred`` = 1 marks a graph from ``features/inference.py``, not a recorded one.
 """
 
 import math
@@ -23,6 +24,7 @@ GRAPH_COLUMNS = (
     f"{GRAPH_PREFIX}downstream_anomalous_fraction",
     f"{GRAPH_PREFIX}personalized_pagerank",
     f"{GRAPH_PREFIX}topology_available",
+    f"{GRAPH_PREFIX}topology_inferred",
 )
 STRUCTURAL_COLUMNS = (
     f"{STRUCTURAL_PREFIX}in_degree",
@@ -48,7 +50,9 @@ def graph_features(context: CaseContext) -> pl.DataFrame:
     count = len(context.services)
     if graph is None:
         empty = {name: [math.nan] * count for name in GRAPH_COLUMNS}
-        return _table(context, {**empty, GRAPH_COLUMNS[3]: [0.0] * count})
+        return _table(
+            context, {**empty, GRAPH_COLUMNS[3]: [0.0] * count, GRAPH_COLUMNS[4]: [0.0] * count}
+        )
     anomalous = set(context.onsets) & set(graph)
     reversed_graph = graph.reverse(copy=False)
     ranks: dict[str, float] = {}
@@ -73,6 +77,7 @@ def graph_features(context: CaseContext) -> pl.DataFrame:
             GRAPH_COLUMNS[1]: downstream,
             GRAPH_COLUMNS[2]: [ranks.get(service, math.nan) for service in context.services],
             GRAPH_COLUMNS[3]: [1.0] * count,
+            GRAPH_COLUMNS[4]: [float(context.topology_inferred)] * count,
         },
     )
 

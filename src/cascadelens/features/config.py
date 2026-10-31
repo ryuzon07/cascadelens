@@ -5,7 +5,7 @@ from typing import Literal
 from pydantic import Field
 
 from cascadelens.config import StrictModel
-from cascadelens.features.context import GraphSettings, MaskSettings
+from cascadelens.features.context import GraphSettings, MaskSettings, TopologySettings
 from cascadelens.features.simple import SignalSettings
 
 GroupName = Literal["signal", "temporal", "graph", "structural", "mask"]
@@ -18,5 +18,6 @@ class FeaturesConfig(StrictModel):
     signal: SignalSettings = SignalSettings()
     graph: GraphSettings = GraphSettings()
     mask: MaskSettings = MaskSettings()
+    topology: TopologySettings = TopologySettings()
     processed_dir: str = "data/processed"
     output_dir: str = "data/features"

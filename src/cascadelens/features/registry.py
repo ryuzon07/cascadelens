@@ -53,7 +53,7 @@ def feature_columns(groups: Sequence[GroupName]) -> list[str]:
 
 def build_case_features(case: FeatureInput, config: FeaturesConfig) -> pl.DataFrame:
     """Build the feature table of one case, looking at that case alone."""
-    context = CaseContext.build(case, config.signal, config.graph, config.mask)
+    context = CaseContext.build(case, config.signal, config.graph, config.mask, config.topology)
     table = context.frame()
     for name, group in REGISTRY.items():
         if name in config.groups:
