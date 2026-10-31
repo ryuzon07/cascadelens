@@ -13,7 +13,7 @@ from cascadelens.baselines.rule import RuleOnset, RuleUpstream
 from cascadelens.baselines.runner import BASELINES, load_baseline_config, run_baseline
 from cascadelens.cli import app
 from cascadelens.config import BaselineConfig
-from cascadelens.data.schema import Case, TopologyEdge
+from cascadelens.data.schema import METRICS_SCHEMA, Case, TopologyEdge
 from cascadelens.eval.metrics import per_case_outcomes
 from cascadelens.features.simple import FEATURE_COLUMNS
 
@@ -164,6 +164,46 @@ def test_rule_upstream_without_topology_is_max_anomaly() -> None:
     case = make_case(onsets={"a": 100, "b": None})
 
     assert fitted(RuleUpstream).predict(handle(case))["service"][0] == "a"
+
+
+def test_rule_upstream_breaks_capped_ties_by_duration_not_name() -> None:
+    metrics = pl.concat(
+        [
+            pl.DataFrame(
+                {
+                    "service": [service] * 200,
+                    "metric": ["cpu"] * 200,
+                    "timestamp": list(range(1000, 1200)),
+                    "value": [0.0] * start + [5000.0] * (200 - start),
+                },
+                schema=METRICS_SCHEMA,
+            )
+            for service, start in (("aaa", 180), ("zzz", 100))
+        ]
+    )
+    case = make_case().model_copy(update={"metrics": metrics})
+
+    table = fitted(RuleUpstream).predict(handle(case))
+
+    assert table["service"].to_list() == ["zzz", "aaa"]
+
+
+def test_rule_upstream_duration_never_overrides_a_real_peak_difference() -> None:
+    def series(service: str, level: float, start: int) -> pl.DataFrame:
+        return pl.DataFrame(
+            {
+                "service": [service] * 200,
+                "metric": ["cpu"] * 200,
+                "timestamp": list(range(1000, 1200)),
+                "value": [1.0, 2.0, 3.0, 2.0] * 15 + [2.0] * (start - 60) + [level] * (200 - start),
+            },
+            schema=METRICS_SCHEMA,
+        )
+
+    metrics = pl.concat([series("short", 40.0, 190), series("long", 20.0, 100)])
+    case = make_case().model_copy(update={"metrics": metrics})
+
+    assert fitted(RuleUpstream).predict(handle(case))["service"][0] == "short"
 
 
 def test_rule_upstream_demotes_a_service_with_anomalous_callee() -> None:

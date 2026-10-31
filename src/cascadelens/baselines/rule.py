@@ -13,9 +13,10 @@ import polars as pl
 
 from cascadelens.baselines.base import Baseline, CaseHandle, score_table
 from cascadelens.config import BaselineConfig
-from cascadelens.features.simple import SignalSettings
+from cascadelens.features.simple import FEATURE_COLUMNS, SignalSettings
 
 NO_ONSET_SCORE = -2.0
+DURATION_COLUMNS = [column for column in FEATURE_COLUMNS if column.endswith("anomaly_duration")]
 
 
 class _Rule(Baseline):
@@ -59,21 +60,31 @@ class RuleUpstream(_Rule):
     name = "rule_upstream"
 
     def predict(self, case: CaseHandle) -> pl.DataFrame:
-        """Score by peak z-score, below every candidate for services with anomalous upstream."""
+        """Score by rank of peak z-score, then duration, with anomalous-upstream services last.
+
+        Peaks often tie at the z-score cap, so the longest anomaly breaks the tie before names do.
+        """
         summary = self.cache.get(case, self._settings)
         rows = list(summary.iter_rows(named=True))
-        peaks = {row["service"]: row["max_z"] or 0.0 for row in rows}
+        durations = summary.select(
+            pl.max_horizontal(pl.col(DURATION_COLUMNS)).fill_null(0.0)
+        ).to_series()
+        keys = {
+            row["service"]: (row["max_z"] or 0.0, duration)
+            for row, duration in zip(rows, durations, strict=True)
+        }
+        positions = {key: float(index) for index, key in enumerate(sorted(set(keys.values())))}
         anomalous = {row["service"] for row in rows if row["onset"] is not None}
         blocked = {
             edge.caller
             for edge in case.record.topology or ()
             if edge.callee in anomalous and edge.callee != edge.caller
         }
-        penalty = max(peaks.values(), default=0.0) + 1.0
+        penalty = float(len(positions))
         return score_table(
             case.record.case_id,
             {
-                service: peak - penalty if service in blocked else peak
-                for service, peak in peaks.items()
+                service: positions[key] - penalty if service in blocked else positions[key]
+                for service, key in keys.items()
             },
         )
