@@ -1,7 +1,8 @@
-# NOT YET COMMITTED
+# Pre-registration
 
-This pre-registration is a draft. It takes effect only once it is committed, together with the
-week-1 power analysis, before any model result exists. The commit hash is the timestamp.
+This file binds the CascadeLens ranker from the commit that adds this sentence. The commit hash is
+the timestamp. It was committed after the baseline results below, not before every model result as
+first planned, and "Status when fixed" says exactly what was and was not already known.
 
 # Pre-registered success criteria
 
@@ -17,6 +18,69 @@ week-1 power analysis, before any model result exists. The commit hash is the ti
 
 **Outcome policy:** if S2 or S3 fails, report it as a finding. The harness, the leakage analysis and the negative result still stand as contributions. Overlapping-CI comparisons are not used anywhere; all comparisons are paired.
 
+# Status when fixed
+
+**No ranker result exists.** The Stage 1 retrieval, the Stage 2 ranker, calibration and abstention
+are not implemented, and no perturbation has been run, so S1, S3, S4 and S5 are blind for the
+ranker.
+
+**These results were already known**, and they are in the commit history before this file took
+effect:
+
+| Criterion | Already known | Effect |
+| --- | --- | --- |
+| S1 | Frequency prior Top-1 on group_run: 20.0% | The S1 comparator is known. The ranker is not |
+| S2 | LightGBM flat Top-1 on group_run: 94.0%. BARO: 30.1% | The 12-point margin was set before these existed, but committed after them, so history alone cannot show that order |
+| S3 | Clean scores of the plain flat baseline. No masked baseline and no perturbed score exists | The clean half of the comparison is partly known |
+| S6 | Nothing | Blind |
+| S7 | Reproduction is finished: BARO passes, ICA-LiNGAM RW misses on Sock Shop by 1.4 points | **S7 is not blind.** Report it as an observed result, not a pre-registered test |
+
+S7 also departs from a blind protocol in one way. The first BARO run used `data.csv` and failed, and
+the passing run reads `simple_data.csv`. The tolerance was set per method before running, on Avg@5,
+because no published AC@1 exists for RE1. See `docs/reproduction/PLAN.md`, including its amendments.
+
+Features were built before this file took effect. No threshold or feature was chosen using ranker
+results, because none exist. One fix to the simple features came after seeing baseline test scores:
+a flat zero baseline now falls back to a scale of 1, as RobustScaler does, because services were
+tying at the z-score cap. It raised LightGBM flat on group_run from 89.0% to 94.0%.
+
+**S2 target.** Read literally, "best reproduced baseline" means a published method, which is BARO at
+30.1% on these inputs. That reading was fixed knowing LightGBM flat scores 94.0%, so it would be the
+easy choice. S2 therefore uses the stricter reading: the comparator is the best baseline of any
+kind at evaluation time, supervised or not. On current numbers that is LightGBM flat, so passing
+needs a ranker Top-1 of about 82% or more, with the interval clearing the margin. The comparison
+with BARO is reported as well, as exploratory.
+
+# Power analysis
+
+From `docs/power_analysis.md`: 75 groups, 375 cases, 2,000 simulations per point and 4,000
+group-bootstrap resamples, with target power 80%. All correlations and the 0.60 baseline are
+assumed, not measured. The analysis leaves out variation from training on different folds, so real
+power is likely to be lower.
+
+| Scenario | Baseline Top-1 | Within-group correlation | Paired correlation | MDE at alpha 0.05 (points) | MDE at alpha 0.01 (points) | Power of the S2 margin at no true difference |
+| --- | --- | --- | --- | --- | --- | --- |
+| s1_frequency_prior | 0.20 | 0.5 | 0.2 | 12.5 | 15.4 | 0.83 |
+| best_baseline | 0.60 | 0.5 | 0.5 | 11.4 | 13.8 | 0.81 |
+| best_baseline_low_clustering | 0.60 | 0.2 | 0.5 | 9.5 | 11.5 | 0.94 |
+| best_baseline_high_clustering | 0.60 | 0.8 | 0.5 | 13.7 | 16.5 | 0.66 |
+| best_baseline_high_pairing | 0.60 | 0.5 | 0.8 | 8.3 | 10.0 | 0.97 |
+
+MDE is the minimum detectable Top-1 difference at 80% power. Alpha 0.01 is the first Holm step over
+the five primary criteria.
+
+**Claim language these numbers require:**
+
+- **S1:** well powered for any useful ranker.
+- **S2:** see "S2 margin" below.
+- **S3:** only large effects are detectable. Scaling, not simulation, gives an MDE of about 11 to 16
+  points, or 14 to 20 after Holm, so a null result means no effect of about 15 points or more. It
+  does not mean no effect.
+- **S4:** not covered by this analysis. A rough separate simulation suggested gains of 6 to 10
+  points are detectable and gains of 3 to 5 are not, with optimistic assumptions.
+- **All:** every figure assumes the 75 groups are tested across five folds. A one-shot test of 15
+  groups would raise each MDE about 2.2 times, so the protocol stays cross-validated.
+
 # S2 margin
 
 The 12-point margin replaces the 3-point margin of PRD section 5.5. It was set from simulated power
@@ -29,7 +93,8 @@ on the 75 groups, before any model result existed, and not from what a ranker is
   and a paired correlation of 0.5. Power there, at no true difference, is 81% at alpha 0.05.
 - **Sensitivity:** at alpha 0.05, power is 66% with a within-group correlation of 0.8 and 94% with
   0.2. Under Holm, S2 is tested between alpha 0.01 and 0.05; at 0.01 the central power is 61%.
-- **Assumptions:** these correlations and the 0.60 baseline are assumed, not measured.
+- **Assumptions:** these correlations and the 0.60 baseline are assumed, not measured. The
+  central scenario predates the 94.0% baseline, and a baseline that strong may behave differently.
 
 **Claim language:** passing S2 means only that a Top-1 deficit of 12 points or more is ruled out. It
 does not show that the ranker matches the baseline or is within a few points of it. The estimate and

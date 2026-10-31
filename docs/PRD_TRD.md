@@ -119,7 +119,7 @@ Commit this section, with the power analysis from week 1, before any model resul
 | ID | Criterion | Test | Role |
 | --- | --- | --- | --- |
 | S1 | Ranker beats frequency prior on group\_run | Paired group-bootstrap CI of the Top-1 difference excludes zero | Primary |
-| S2 | Ranker on clean data is within a few Top-1 points of the best reproduced baseline, or better | Paired difference; margin of 3 points stated in advance | Primary |
+| S2 | Ranker on clean data is non-inferior to the best reproduced baseline: its Top-1 is not worse by 12 points or more | Paired group-bootstrap on `ranker - baseline + 0.12`; the interval must lie above zero, and its p-value joins the Holm family | Primary |
 | S3 | Under 30% failure-correlated loss the ranker's margin over baselines is larger than on clean data | Paired bootstrap on the difference of differences; includes the augmentation-matched LightGBM | Primary |
 | S4 | Selective Top-1 at 50% coverage is above full-coverage Top-1 and above random abstention | Paired bootstrap; AURC versus random and oracle | Primary |
 | S5 | ECE after calibration is lower than before | Bootstrap CI on ECE difference; reliability diagram shown | Secondary |
