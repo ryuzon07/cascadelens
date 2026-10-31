@@ -44,7 +44,7 @@ Under LOSO the frequency prior has no seen service, so it ties all candidates an
 | Method | Split | Fold | Cases | Random floor | Top-1 | Top-3 | Avg@5 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | rule | group_run | pooled | 375 | 4.4 | 6.1 [3.5, 9.1] | 18.1 [13.9, 22.7] | 18.8 [14.7, 22.9] |
-| rule_upstream | group_run | pooled | 375 | 4.4 | 20.5 [12.5, 28.8] | 30.7 [20.8, 40.8] | 30.6 [21.4, 40.1] |
+| rule_upstream | group_run | pooled | 375 | 4.4 | 28.0 [20.5, 35.7] | 45.3 [36.3, 54.7] | 45.8 [37.8, 54.0] |
 
 ### Unsupervised: LOFO per fold
 
@@ -55,11 +55,11 @@ Under LOSO the frequency prior has no seen service, so it ties all candidates an
 | rule | lofo | disk | 75 | 4.6 | 12.0 [5.3, 20.0] | 25.3 [14.7, 37.3] | 24.5 [13.6, 36.0] |
 | rule | lofo | loss | 75 | 4.5 | 5.3 [1.3, 10.7] | 22.7 [12.0, 33.3] | 24.5 [15.5, 33.9] |
 | rule | lofo | mem | 75 | 4.3 | 6.7 [0.0, 17.3] | 12.0 [4.0, 22.7] | 14.7 [6.4, 24.3] |
-| rule_upstream | lofo | cpu | 75 | 4.3 | 25.3 [6.7, 45.3] | 29.3 [9.3, 53.3] | 29.9 [10.1, 51.5] |
-| rule_upstream | lofo | delay | 75 | 4.5 | 17.3 [0.0, 37.3] | 30.7 [10.7, 53.3] | 30.7 [11.5, 52.0] |
-| rule_upstream | lofo | disk | 75 | 4.6 | 22.7 [6.7, 42.7] | 42.7 [20.0, 66.7] | 38.4 [17.6, 60.5] |
-| rule_upstream | lofo | loss | 75 | 4.5 | 14.7 [0.0, 32.0] | 20.0 [2.7, 40.0] | 23.5 [7.2, 42.7] |
-| rule_upstream | lofo | mem | 75 | 4.3 | 22.7 [6.7, 41.3] | 30.7 [10.7, 53.3] | 30.7 [11.2, 52.3] |
+| rule_upstream | lofo | cpu | 75 | 4.3 | 30.7 [13.3, 49.3] | 40.0 [21.3, 60.0] | 45.1 [28.8, 62.1] |
+| rule_upstream | lofo | delay | 75 | 4.5 | 24.0 [9.3, 42.7] | 42.7 [22.7, 62.7] | 42.1 [24.5, 60.5] |
+| rule_upstream | lofo | disk | 75 | 4.6 | 37.3 [21.3, 53.4] | 72.0 [56.0, 86.7] | 66.7 [52.8, 79.5] |
+| rule_upstream | lofo | loss | 75 | 4.5 | 22.7 [9.3, 38.7] | 32.0 [14.7, 50.7] | 35.7 [19.5, 53.3] |
+| rule_upstream | lofo | mem | 75 | 4.3 | 25.3 [9.3, 45.3] | 40.0 [20.0, 61.3] | 39.5 [20.5, 59.7] |
 
 ### Unsupervised: LOSO per fold
 
@@ -68,6 +68,6 @@ Under LOSO the frequency prior has no seen service, so it ties all candidates an
 | rule | loso | online-boutique | 125 | 7.5 | 14.4 [8.0, 20.8] | 28.0 [20.0, 36.0] | 30.2 [22.9, 37.9] |
 | rule | loso | sock-shop | 125 | 4.4 | 3.2 [0.0, 7.2] | 21.6 [13.6, 29.6] | 21.8 [15.8, 28.2] |
 | rule | loso | train-ticket | 125 | 1.4 | 0.8 [0.0, 2.4] | 4.8 [1.6, 9.6] | 4.3 [1.6, 7.7] |
-| rule_upstream | loso | online-boutique | 125 | 7.5 | 61.6 [47.2, 75.2] | 86.4 [75.2, 96.0] | 83.7 [74.4, 91.5] |
-| rule_upstream | loso | sock-shop | 125 | 4.4 | 0.0 [0.0, 0.0] | 5.6 [0.0, 14.4] | 8.2 [2.4, 15.2] |
-| rule_upstream | loso | train-ticket | 125 | 1.4 | 0.0 [0.0, 0.0] | 0.0 [0.0, 0.0] | 0.0 [0.0, 0.0] |
+| rule_upstream | loso | online-boutique | 125 | 7.5 | 63.2 [49.6, 76.0] | 88.0 [76.8, 96.8] | 85.1 [76.0, 92.8] |
+| rule_upstream | loso | sock-shop | 125 | 4.4 | 13.6 [8.0, 20.0] | 29.6 [22.4, 36.8] | 30.6 [24.0, 37.3] |
+| rule_upstream | loso | train-ticket | 125 | 1.4 | 7.2 [2.4, 12.8] | 18.4 [7.2, 32.0] | 21.8 [12.2, 32.8] |

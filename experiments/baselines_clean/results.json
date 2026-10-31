@@ -12,7 +12,7 @@
   },
   "config_hash": "39be63f57ac2a6271db93ecb20fa7d3d7fdaf4637500a0705df3908ed884f668",
   "data_checksum": "b1ae69bc89350088eef88b25483b46d520416ec1bdf2eb9c9e3a4c48690823d3",
-  "git_commit": "0f23f24b48db573e497dc9b79a860bcd17ec08d0",
+  "git_commit": "d1f475aa0dfdf437ecd594d066c8b8b4ab826f4c",
   "metrics": {
     "folds": [
       {
@@ -35,7 +35,7 @@
           "upper": 0.8666666666666667
         },
         "cases": 75,
-        "floor": 0.042813555628200974,
+        "floor": 0.04281355562820097,
         "fold": "cpu",
         "method": "frequency",
         "split": "lofo"
@@ -60,7 +60,7 @@
           "upper": 0.8
         },
         "cases": 75,
-        "floor": 0.04489568402611884,
+        "floor": 0.04489568402611885,
         "fold": "delay",
         "method": "frequency",
         "split": "lofo"
@@ -160,7 +160,7 @@
           "upper": 0.8
         },
         "cases": 125,
-        "floor": 0.07453094274146894,
+        "floor": 0.07453094274146893,
         "fold": "online-boutique",
         "method": "frequency",
         "split": "loso"
@@ -185,7 +185,7 @@
           "upper": 0.0
         },
         "cases": 125,
-        "floor": 0.04428910220214577,
+        "floor": 0.044289102202145755,
         "fold": "sock-shop",
         "method": "frequency",
         "split": "loso"
@@ -235,7 +235,7 @@
           "upper": 1.0
         },
         "cases": 75,
-        "floor": 0.04281355562820096,
+        "floor": 0.042813555628200974,
         "fold": "cpu",
         "method": "lightgbm_flat",
         "split": "lofo"
@@ -260,7 +260,7 @@
           "upper": 1.0
         },
         "cases": 75,
-        "floor": 0.04489568402611885,
+        "floor": 0.044895684026118834,
         "fold": "delay",
         "method": "lightgbm_flat",
         "split": "lofo"
@@ -285,7 +285,7 @@
           "upper": 1.0
         },
         "cases": 75,
-        "floor": 0.04604155104155097,
+        "floor": 0.046041551041550964,
         "fold": "disk",
         "method": "lightgbm_flat",
         "split": "lofo"
@@ -335,7 +335,7 @@
           "upper": 1.0
         },
         "cases": 75,
-        "floor": 0.043064182194617,
+        "floor": 0.04306418219461701,
         "fold": "mem",
         "method": "lightgbm_flat",
         "split": "lofo"
@@ -385,7 +385,7 @@
           "upper": 1.0
         },
         "cases": 125,
-        "floor": 0.04428910220214575,
+        "floor": 0.04428910220214574,
         "fold": "sock-shop",
         "method": "lightgbm_flat",
         "split": "loso"
@@ -435,7 +435,7 @@
           "upper": 0.2
         },
         "cases": 75,
-        "floor": 0.04281355562820096,
+        "floor": 0.04281355562820095,
         "fold": "cpu",
         "method": "rule",
         "split": "lofo"
@@ -460,7 +460,7 @@
           "upper": 0.28
         },
         "cases": 75,
-        "floor": 0.04489568402611883,
+        "floor": 0.04489568402611885,
         "fold": "delay",
         "method": "rule",
         "split": "lofo"
@@ -485,7 +485,7 @@
           "upper": 0.37333333333333335
         },
         "cases": 75,
-        "floor": 0.04604155104155104,
+        "floor": 0.046041551041550964,
         "fold": "disk",
         "method": "rule",
         "split": "lofo"
@@ -510,7 +510,7 @@
           "upper": 0.3333333333333333
         },
         "cases": 75,
-        "floor": 0.044895684026118834,
+        "floor": 0.04489568402611884,
         "fold": "loss",
         "method": "rule",
         "split": "lofo"
@@ -535,7 +535,7 @@
           "upper": 0.22666666666666666
         },
         "cases": 75,
-        "floor": 0.043064182194617,
+        "floor": 0.043064182194616996,
         "fold": "mem",
         "method": "rule",
         "split": "lofo"
@@ -585,7 +585,7 @@
           "upper": 0.296
         },
         "cases": 125,
-        "floor": 0.04428910220214576,
+        "floor": 0.044289102202145755,
         "fold": "sock-shop",
         "method": "rule",
         "split": "loso"
@@ -617,47 +617,47 @@
       },
       {
         "Avg@5": {
-          "estimate": 0.29866666666666664,
-          "lower": 0.10133333333333333,
+          "estimate": 0.4506666666666666,
+          "lower": 0.28800000000000003,
           "seed_spread": 0.0,
-          "upper": 0.5146666666666668
+          "upper": 0.6213333333333334
         },
         "Top-1": {
-          "estimate": 0.25333333333333335,
-          "lower": 0.06666666666666667,
+          "estimate": 0.30666666666666664,
+          "lower": 0.13333333333333333,
           "seed_spread": 0.0,
-          "upper": 0.4533333333333333
+          "upper": 0.49333333333333335
         },
         "Top-3": {
-          "estimate": 0.29333333333333333,
-          "lower": 0.09333333333333334,
+          "estimate": 0.4,
+          "lower": 0.21333333333333335,
           "seed_spread": 0.0,
-          "upper": 0.5333333333333333
+          "upper": 0.6
         },
         "cases": 75,
-        "floor": 0.042813555628200974,
+        "floor": 0.04281355562820096,
         "fold": "cpu",
         "method": "rule_upstream",
         "split": "lofo"
       },
       {
         "Avg@5": {
-          "estimate": 0.30666666666666664,
-          "lower": 0.11466666666666667,
+          "estimate": 0.42133333333333334,
+          "lower": 0.24533333333333338,
           "seed_spread": 0.0,
-          "upper": 0.52
+          "upper": 0.6053333333333334
         },
         "Top-1": {
-          "estimate": 0.17333333333333334,
-          "lower": 0.0,
+          "estimate": 0.24,
+          "lower": 0.09333333333333334,
           "seed_spread": 0.0,
-          "upper": 0.37333333333333335
+          "upper": 0.4266666666666667
         },
         "Top-3": {
-          "estimate": 0.30666666666666664,
-          "lower": 0.10666666666666667,
+          "estimate": 0.4266666666666667,
+          "lower": 0.22666666666666666,
           "seed_spread": 0.0,
-          "upper": 0.5333333333333333
+          "upper": 0.6266666666666667
         },
         "cases": 75,
         "floor": 0.04489568402611885,
@@ -667,72 +667,72 @@
       },
       {
         "Avg@5": {
-          "estimate": 0.384,
-          "lower": 0.176,
+          "estimate": 0.6666666666666665,
+          "lower": 0.528,
           "seed_spread": 0.0,
-          "upper": 0.6053333333333333
+          "upper": 0.7946666666666666
         },
         "Top-1": {
-          "estimate": 0.22666666666666666,
-          "lower": 0.06666666666666667,
+          "estimate": 0.37333333333333335,
+          "lower": 0.21333333333333335,
           "seed_spread": 0.0,
-          "upper": 0.4266666666666667
+          "upper": 0.5336666666666618
         },
         "Top-3": {
-          "estimate": 0.4266666666666667,
-          "lower": 0.2,
+          "estimate": 0.72,
+          "lower": 0.56,
           "seed_spread": 0.0,
-          "upper": 0.6666666666666666
+          "upper": 0.8666666666666667
         },
         "cases": 75,
-        "floor": 0.046041551041550964,
+        "floor": 0.046041551041551,
         "fold": "disk",
         "method": "rule_upstream",
         "split": "lofo"
       },
       {
         "Avg@5": {
-          "estimate": 0.2346666666666667,
-          "lower": 0.07200000000000001,
+          "estimate": 0.3573333333333334,
+          "lower": 0.19466666666666668,
           "seed_spread": 0.0,
-          "upper": 0.4266666666666667
+          "upper": 0.5333333333333333
         },
         "Top-1": {
-          "estimate": 0.14666666666666667,
-          "lower": 0.0,
+          "estimate": 0.22666666666666666,
+          "lower": 0.09333333333333334,
           "seed_spread": 0.0,
-          "upper": 0.32
+          "upper": 0.38666666666666666
         },
         "Top-3": {
-          "estimate": 0.2,
-          "lower": 0.02666666666666667,
+          "estimate": 0.32,
+          "lower": 0.14666666666666667,
           "seed_spread": 0.0,
-          "upper": 0.4
+          "upper": 0.5066666666666667
         },
         "cases": 75,
-        "floor": 0.044895684026118834,
+        "floor": 0.04489568402611885,
         "fold": "loss",
         "method": "rule_upstream",
         "split": "lofo"
       },
       {
         "Avg@5": {
-          "estimate": 0.30666666666666664,
-          "lower": 0.112,
+          "estimate": 0.39466666666666667,
+          "lower": 0.20533333333333334,
           "seed_spread": 0.0,
-          "upper": 0.5226666666666667
+          "upper": 0.5973333333333334
         },
         "Top-1": {
-          "estimate": 0.22666666666666666,
-          "lower": 0.06666666666666667,
+          "estimate": 0.25333333333333335,
+          "lower": 0.09333333333333334,
           "seed_spread": 0.0,
-          "upper": 0.41333333333333333
+          "upper": 0.4533333333333333
         },
         "Top-3": {
-          "estimate": 0.30666666666666664,
-          "lower": 0.10666666666666667,
+          "estimate": 0.4,
+          "lower": 0.2,
           "seed_spread": 0.0,
-          "upper": 0.5333333333333333
+          "upper": 0.6133333333333333
         },
         "cases": 75,
         "floor": 0.04306418219461701,
@@ -742,22 +742,22 @@
       },
       {
         "Avg@5": {
-          "estimate": 0.8368000000000001,
-          "lower": 0.744,
+          "estimate": 0.8512000000000001,
+          "lower": 0.76,
           "seed_spread": 0.0,
-          "upper": 0.9152
+          "upper": 0.928
         },
         "Top-1": {
-          "estimate": 0.616,
-          "lower": 0.472,
+          "estimate": 0.632,
+          "lower": 0.496,
           "seed_spread": 0.0,
-          "upper": 0.752
+          "upper": 0.76
         },
         "Top-3": {
-          "estimate": 0.864,
-          "lower": 0.752,
+          "estimate": 0.88,
+          "lower": 0.768,
           "seed_spread": 0.0,
-          "upper": 0.96
+          "upper": 0.968
         },
         "cases": 125,
         "floor": 0.07453094274146893,
@@ -767,47 +767,47 @@
       },
       {
         "Avg@5": {
-          "estimate": 0.0816,
-          "lower": 0.024,
+          "estimate": 0.30560000000000004,
+          "lower": 0.24,
           "seed_spread": 0.0,
-          "upper": 0.152
+          "upper": 0.37279999999999996
         },
         "Top-1": {
-          "estimate": 0.0,
-          "lower": 0.0,
+          "estimate": 0.136,
+          "lower": 0.08,
           "seed_spread": 0.0,
-          "upper": 0.0
+          "upper": 0.2
         },
         "Top-3": {
-          "estimate": 0.056,
-          "lower": 0.0,
+          "estimate": 0.296,
+          "lower": 0.224,
           "seed_spread": 0.0,
-          "upper": 0.144
+          "upper": 0.368
         },
         "cases": 125,
-        "floor": 0.04428910220214575,
+        "floor": 0.04428910220214576,
         "fold": "sock-shop",
         "method": "rule_upstream",
         "split": "loso"
       },
       {
         "Avg@5": {
-          "estimate": 0.0,
-          "lower": 0.0,
+          "estimate": 0.21760000000000002,
+          "lower": 0.1216,
           "seed_spread": 0.0,
-          "upper": 0.0
+          "upper": 0.328
         },
         "Top-1": {
-          "estimate": 0.0,
-          "lower": 0.0,
+          "estimate": 0.072,
+          "lower": 0.024,
           "seed_spread": 0.0,
-          "upper": 0.0
+          "upper": 0.128
         },
         "Top-3": {
-          "estimate": 0.0,
-          "lower": 0.0,
+          "estimate": 0.184,
+          "lower": 0.072,
           "seed_spread": 0.0,
-          "upper": 0.0
+          "upper": 0.32
         },
         "cases": 125,
         "floor": 0.014206349206349172,
@@ -894,25 +894,25 @@
       },
       {
         "Avg@5": {
-          "estimate": 0.3061333333333333,
-          "lower": 0.21386666666666668,
+          "estimate": 0.45813333333333334,
+          "lower": 0.37813333333333343,
           "seed_spread": 0.0,
-          "upper": 0.4005333333333333
+          "upper": 0.5402666666666667
         },
         "Top-1": {
-          "estimate": 0.20533333333333334,
-          "lower": 0.12533333333333332,
+          "estimate": 0.28,
+          "lower": 0.20533333333333334,
           "seed_spread": 0.0,
-          "upper": 0.288
+          "upper": 0.35733333333333334
         },
         "Top-3": {
-          "estimate": 0.30666666666666664,
-          "lower": 0.208,
+          "estimate": 0.4533333333333333,
+          "lower": 0.3626666666666667,
           "seed_spread": 0.0,
-          "upper": 0.408
+          "upper": 0.5466666666666666
         },
         "cases": 375,
-        "floor": 0.044342131383321326,
+        "floor": 0.04434213138332132,
         "fold": "pooled",
         "method": "rule_upstream",
         "split": "group_run"
