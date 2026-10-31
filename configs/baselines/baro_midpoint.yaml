@@ -1,0 +1,7 @@
+name: baro_midpoint
+supervised: false
+seeds: [0]
+# Sensitivity check only: the middle of the window sits next to the true injection.
+params:
+  method: baro
+  cut_fraction: 0.5

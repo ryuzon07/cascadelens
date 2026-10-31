@@ -16,7 +16,7 @@ jobs:
         with:
           enable-cache: true
       - name: Install
-        run: uv sync --frozen --all-extras
+        run: uv sync --frozen --extra dev --extra api
       - name: Ruff
         run: make lint
       - name: Mypy

@@ -1,0 +1,7 @@
+name: lingam_randomwalk
+supervised: false
+seeds: [0]
+# Reads no anomaly time. ICA and the walk are seeded per case. All metrics are infeasible for it.
+params:
+  method: lingam_randomwalk
+  metric_set: key

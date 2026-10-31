@@ -1,3 +1,7 @@
 name: baro
 supervised: false
 seeds: [0]
+# The anomaly time is 25% into the window, from the window bounds alone. Never inject_time.
+params:
+  method: baro
+  cut_fraction: 0.25

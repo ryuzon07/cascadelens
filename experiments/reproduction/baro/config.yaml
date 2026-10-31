@@ -1,0 +1,4 @@
+method: baro
+seeds: [0]
+length: 20
+data_file: simple_data.csv

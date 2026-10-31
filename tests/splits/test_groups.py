@@ -136,9 +136,11 @@ def test_signature_does_not_depend_on_row_order() -> None:
     rows = [("api", "cpu", step, float(step % 3)) for step in range(16)]
     frame = pl.DataFrame(rows, schema=METRICS_SCHEMA, orient="row")
 
-    np.testing.assert_array_equal(
+    # Parallel means can differ in the last bit, so exact equality would be flaky.
+    np.testing.assert_allclose(
         case_signature(frame.lazy(), 0, 16, BINS),
         case_signature(frame.reverse().lazy(), 0, 16, BINS),
+        rtol=1e-12,
     )
 
 

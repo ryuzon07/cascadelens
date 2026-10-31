@@ -1,0 +1,115 @@
+{
+  "config": {
+    "name": "baro",
+    "params": {},
+    "seeds": [
+      0
+    ],
+    "supervised": false
+  },
+  "config_hash": "002dd5238835f64912d6351e04f0210d03037d34921a922500dc170e663a1f64",
+  "data_checksum": "b1ae69bc89350088eef88b25483b46d520416ec1bdf2eb9c9e3a4c48690823d3",
+  "git_commit": "888ae835960019c85ff046db3eb7485a685ecc67",
+  "metrics": {
+    "ac1": {
+      "RE1-OB": 0.736,
+      "RE1-SS": 0.848,
+      "RE1-TT": 0.56
+    },
+    "comparison": {
+      "RE1-OB": {
+        "difference": -0.01000000000000012,
+        "our_mean": 0.8959999999999999,
+        "ours": {
+          "cpu": 0.984,
+          "delay": 0.9199999999999999,
+          "disk": 0.9359999999999999,
+          "loss": 0.648,
+          "mem": 0.992
+        },
+        "passed": true,
+        "published": {
+          "cpu": 0.97,
+          "delay": 0.98,
+          "disk": 0.91,
+          "loss": 0.67,
+          "mem": 1.0
+        },
+        "published_mean": 0.906
+      },
+      "RE1-SS": {
+        "difference": 0.006000000000000005,
+        "our_mean": 0.96,
+        "ours": {
+          "cpu": 0.984,
+          "delay": 0.984,
+          "disk": 0.96,
+          "loss": 0.8879999999999999,
+          "mem": 0.984
+        },
+        "passed": true,
+        "published": {
+          "cpu": 1.0,
+          "delay": 0.98,
+          "disk": 0.94,
+          "loss": 0.87,
+          "mem": 0.98
+        },
+        "published_mean": 0.954
+      },
+      "RE1-TT": {
+        "difference": -0.04679999999999995,
+        "our_mean": 0.7792,
+        "ours": {
+          "cpu": 0.8719999999999999,
+          "delay": 0.576,
+          "disk": 0.8879999999999999,
+          "loss": 0.632,
+          "mem": 0.9280000000000002
+        },
+        "passed": true,
+        "published": {
+          "cpu": 0.9,
+          "delay": 0.77,
+          "disk": 0.84,
+          "loss": 0.66,
+          "mem": 0.96
+        },
+        "published_mean": 0.826
+      }
+    },
+    "data_file": "simple_data.csv",
+    "failed_cases": 0,
+    "per_seed": [
+      {
+        "RE1-OB": {
+          "cpu": 0.984,
+          "delay": 0.9199999999999999,
+          "disk": 0.9359999999999999,
+          "loss": 0.648,
+          "mem": 0.992
+        },
+        "RE1-SS": {
+          "cpu": 0.984,
+          "delay": 0.984,
+          "disk": 0.96,
+          "loss": 0.8879999999999999,
+          "mem": 0.984
+        },
+        "RE1-TT": {
+          "cpu": 0.8719999999999999,
+          "delay": 0.576,
+          "disk": 0.8879999999999999,
+          "loss": 0.632,
+          "mem": 0.9280000000000002
+        }
+      }
+    ],
+    "seconds_per_case": {
+      "RE1-OB": 0.08029942479846068,
+      "RE1-SS": 0.07563226880203001,
+      "RE1-TT": 0.38752978640049696
+    }
+  },
+  "seed": 0
+}

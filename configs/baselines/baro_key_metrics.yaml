@@ -1,0 +1,8 @@
+name: baro_key_metrics
+supervised: false
+seeds: [0]
+# BARO on the metric set lingam_randomwalk can run on. Not the identical-inputs result.
+params:
+  method: baro
+  cut_fraction: 0.25
+  metric_set: key
