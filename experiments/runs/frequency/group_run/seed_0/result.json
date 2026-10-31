@@ -1,0 +1,67 @@
+{
+  "config": {
+    "name": "frequency",
+    "params": {},
+    "seeds": [
+      0
+    ],
+    "supervised": true
+  },
+  "config_hash": "77fb56ed38c0b24bea9539a6e02163fbe46533d243367fb21ae6c1843e09abc2",
+  "data_checksum": "b1ae69bc89350088eef88b25483b46d520416ec1bdf2eb9c9e3a4c48690823d3",
+  "git_commit": "0f23f24b48db573e497dc9b79a860bcd17ec08d0",
+  "metrics": {
+    "avg5": 0.6000000000000001,
+    "folds": [
+      {
+        "avg5": 0.6000000000000001,
+        "fold": 0,
+        "held_out": null,
+        "n_cases": 75,
+        "top1": 0.2,
+        "top3": 0.6
+      },
+      {
+        "avg5": 0.6000000000000001,
+        "fold": 1,
+        "held_out": null,
+        "n_cases": 75,
+        "top1": 0.2,
+        "top3": 0.6
+      },
+      {
+        "avg5": 0.6000000000000001,
+        "fold": 2,
+        "held_out": null,
+        "n_cases": 75,
+        "top1": 0.2,
+        "top3": 0.6
+      },
+      {
+        "avg5": 0.6,
+        "fold": 3,
+        "held_out": null,
+        "n_cases": 75,
+        "top1": 0.2,
+        "top3": 0.6
+      },
+      {
+        "avg5": 0.6000000000000001,
+        "fold": 4,
+        "held_out": null,
+        "n_cases": 75,
+        "top1": 0.2,
+        "top3": 0.6
+      }
+    ],
+    "leaky_split": false,
+    "method": "frequency",
+    "missing_truth": 0,
+    "n_cases": 375,
+    "n_predictions": 13307,
+    "split": "group_run",
+    "top1": 0.2,
+    "top3": 0.6
+  },
+  "seed": 0
+}

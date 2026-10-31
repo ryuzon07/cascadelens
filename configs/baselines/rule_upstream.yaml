@@ -1,0 +1,8 @@
+name: rule_upstream
+supervised: false
+seeds: [0]
+# Fixed in advance and never tuned. Without topology this is a max-anomaly ranking.
+params:
+  baseline_fraction: 0.25
+  z_threshold: 3.0
+  min_consecutive: 5

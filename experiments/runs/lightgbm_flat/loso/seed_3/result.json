@@ -1,0 +1,66 @@
+{
+  "config": {
+    "name": "lightgbm_flat",
+    "params": {
+      "masking_augmentation": false,
+      "num_boost_round": 100,
+      "num_threads": 4,
+      "search_budget": 30,
+      "search_seed": 0,
+      "signal": {
+        "baseline_fraction": 0.25,
+        "min_consecutive": 5,
+        "z_threshold": 3.0
+      }
+    },
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "supervised": true
+  },
+  "config_hash": "1e63d6525f47769da4155197b32985970cde49246a1c1236c884588c2f7c3a98",
+  "data_checksum": "b1ae69bc89350088eef88b25483b46d520416ec1bdf2eb9c9e3a4c48690823d3",
+  "git_commit": "0f23f24b48db573e497dc9b79a860bcd17ec08d0",
+  "metrics": {
+    "avg5": 0.8709333333333332,
+    "folds": [
+      {
+        "avg5": 0.7087999999999999,
+        "fold": 0,
+        "held_out": "online-boutique",
+        "n_cases": 125,
+        "top1": 0.464,
+        "top3": 0.752
+      },
+      {
+        "avg5": 0.9855999999999998,
+        "fold": 1,
+        "held_out": "sock-shop",
+        "n_cases": 125,
+        "top1": 0.928,
+        "top3": 1.0
+      },
+      {
+        "avg5": 0.9184,
+        "fold": 2,
+        "held_out": "train-ticket",
+        "n_cases": 125,
+        "top1": 0.888,
+        "top3": 0.928
+      }
+    ],
+    "leaky_split": false,
+    "method": "lightgbm_flat",
+    "missing_truth": 0,
+    "n_cases": 375,
+    "n_predictions": 13307,
+    "split": "loso",
+    "top1": 0.76,
+    "top3": 0.8933333333333333
+  },
+  "seed": 3
+}

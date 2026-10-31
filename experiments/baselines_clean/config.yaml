@@ -1,0 +1,4 @@
+seed: 0
+n_resamples: 10000
+alpha: 0.05
+methods: [frequency, lightgbm_flat, rule, rule_upstream]

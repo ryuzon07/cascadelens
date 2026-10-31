@@ -1,0 +1,71 @@
+{
+  "config": {
+    "name": "rule",
+    "params": {
+      "baseline_fraction": 0.25,
+      "min_consecutive": 5,
+      "z_threshold": 3.0
+    },
+    "seeds": [
+      0
+    ],
+    "supervised": false
+  },
+  "config_hash": "68004408a54f0cecfeb1daf10f1dc5668e3f7afc2df102f09ef835f06788a10a",
+  "data_checksum": "b1ae69bc89350088eef88b25483b46d520416ec1bdf2eb9c9e3a4c48690823d3",
+  "git_commit": "0f23f24b48db573e497dc9b79a860bcd17ec08d0",
+  "metrics": {
+    "avg5": 0.18773333333333328,
+    "folds": [
+      {
+        "avg5": 0.2373333333333334,
+        "fold": 0,
+        "held_out": null,
+        "n_cases": 75,
+        "top1": 0.08,
+        "top3": 0.25333333333333335
+      },
+      {
+        "avg5": 0.16799999999999998,
+        "fold": 1,
+        "held_out": null,
+        "n_cases": 75,
+        "top1": 0.04,
+        "top3": 0.16
+      },
+      {
+        "avg5": 0.15466666666666667,
+        "fold": 2,
+        "held_out": null,
+        "n_cases": 75,
+        "top1": 0.06666666666666667,
+        "top3": 0.13333333333333333
+      },
+      {
+        "avg5": 0.18133333333333335,
+        "fold": 3,
+        "held_out": null,
+        "n_cases": 75,
+        "top1": 0.05333333333333334,
+        "top3": 0.17333333333333334
+      },
+      {
+        "avg5": 0.19733333333333336,
+        "fold": 4,
+        "held_out": null,
+        "n_cases": 75,
+        "top1": 0.06666666666666667,
+        "top3": 0.18666666666666668
+      }
+    ],
+    "leaky_split": false,
+    "method": "rule",
+    "missing_truth": 0,
+    "n_cases": 375,
+    "n_predictions": 13307,
+    "split": "group_run",
+    "top1": 0.06133333333333333,
+    "top3": 0.18133333333333335
+  },
+  "seed": 0
+}

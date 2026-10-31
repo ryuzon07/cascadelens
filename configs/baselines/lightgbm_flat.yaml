@@ -3,3 +3,11 @@ supervised: true
 seeds: [0, 1, 2, 3, 4]
 params:
   masking_augmentation: false
+  search_budget: 30
+  search_seed: 0
+  num_boost_round: 100
+  num_threads: 4
+  signal:
+    baseline_fraction: 0.25
+    z_threshold: 3.0
+    min_consecutive: 5
