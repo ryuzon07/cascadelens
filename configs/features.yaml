@@ -1,0 +1,13 @@
+groups: [signal, temporal, graph, structural, mask]
+# Fixed in advance and shared with the rule baseline. The baseline ends well before the injection,
+# which sits near 50% of the window. None of these values read inject_time.
+signal:
+  baseline_fraction: 0.25
+  z_threshold: 3.0
+  min_consecutive: 5
+graph:
+  pagerank_alpha: 0.85
+mask:
+  stop_gap_seconds: 30
+processed_dir: data/processed
+output_dir: data/features

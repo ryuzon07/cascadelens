@@ -8,12 +8,14 @@ from cascadelens.baselines.cli import experiments_app
 from cascadelens.baselines.published.cli import app as published_app
 from cascadelens.data.cli import app as data_app
 from cascadelens.eval.cli import app as eval_app
+from cascadelens.features.cli import app as features_app
 from cascadelens.splits.cli import app as splits_app
 
 app = typer.Typer(help="CascadeLens experiment pipeline.", no_args_is_help=True)
 app.add_typer(baselines_app, name="baselines")
 app.add_typer(data_app, name="data")
 app.add_typer(eval_app, name="eval")
+app.add_typer(features_app, name="features")
 app.add_typer(experiments_app, name="experiments")
 app.add_typer(published_app, name="published")
 app.add_typer(splits_app, name="splits")
