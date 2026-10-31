@@ -100,3 +100,17 @@ on the 75 groups, before any model result existed, and not from what a ranker is
 does not show that the ranker matches the baseline or is within a few points of it. The estimate and
 its interval are reported either way. Failing S2 means such a deficit could not be ruled out, not
 that the ranker is worse.
+
+# Amendments
+
+These changes came after this file took effect. None used a ranker result, because none exists.
+
+**2026-10-31: inferred call graphs.** "Status when fixed" says features were built before this file
+took effect. That was true then. RE1 records no topology, so the graph features were empty, and a
+later commit (`18f9016`) infers one graph per case from pre-incident latency. Its settings were
+chosen by stability across repetitions, with no label. The criteria are unchanged. The inferred graph
+is unvalidated against real call graphs, so the graph group must be ablated.
+
+**2026-10-31: `rule_upstream` tie-break.** After seeing its test scores, `rule_upstream` was changed
+to break z-score cap ties by anomaly duration (commit `d1f475a`), which raised its group_run Top-1
+from 20.5% to 28.0%. It is not the best baseline, so no criterion's comparator moved.

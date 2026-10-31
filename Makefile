@@ -17,7 +17,7 @@ test:
 	$(RUN) pytest --cov=cascadelens --cov-report=term-missing
 
 smoke:
-	$(RUN) cascadelens version
+	$(RUN) python scripts/smoke.py
 
 all:
-	@echo "TODO: make all will run the full pipeline once later parts exist"
+	UV=$(UV) bash scripts/reproduce_all.sh

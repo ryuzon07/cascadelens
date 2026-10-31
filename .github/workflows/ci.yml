@@ -23,3 +23,5 @@ jobs:
         run: make typecheck
       - name: Pytest
         run: make test
+      - name: Smoke
+        run: make smoke
