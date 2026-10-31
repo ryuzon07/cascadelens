@@ -7,7 +7,7 @@ correlation ``paired_correlation`` between the two methods at both levels. The m
 each method is exact for any correlation.
 
 Every assumption is a parameter. The simulation treats the outcomes of each case as given, so it
-leaves out variation from training on different folds, which can only lower real power. Latent
+leaves out variation from training on different folds, which is likely to lower real power. Latent
 draws are shared across the differences of a scenario, which keeps its power curve smooth.
 
 One matrix of resample counts is shared by all simulations of a scenario. It is drawn without
@@ -290,7 +290,7 @@ def render_report(
         "- Power depends on the number of groups far more than on the number of cases, and "
         "repetitions of one run add little when they tend to succeed or fail together.",
         "- The simulation holds each case's outcomes as given, so it leaves out variation from "
-        "training on different folds. Real power can only be lower.",
+        "training on different folds, so real power is likely to be lower.",
         "- S3 and S4 are not simulated here. A difference of differences has a standard error "
         "about sqrt(2 * (1 - r)) times that of one difference, where r correlates the clean and "
         "perturbed margins across groups.",
