@@ -35,6 +35,7 @@ dev = [
 ]
 api = [
     "fastapi>=0.110",
+    "sqlmodel>=0.0.22",
     "uvicorn>=0.29",
 ]
 demo = [

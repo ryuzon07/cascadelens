@@ -20,7 +20,7 @@ from cascadelens.config import StrictModel
 from cascadelens.data.schema import METRICS_SCHEMA, TopologyEdge
 from cascadelens.eval.metrics import ranked
 from cascadelens.features.config import FeaturesConfig
-from cascadelens.features.context import FeatureInput
+from cascadelens.features.context import CaseContext, FeatureInput
 from cascadelens.features.mask import MISSING_COLUMN
 from cascadelens.features.registry import REGISTRY
 from cascadelens.models.artifacts import load_artifact, read_sidecar
@@ -270,6 +270,35 @@ def _notes(table: pl.DataFrame, ranked_count: int, calibrated: bool) -> list[str
     return notes
 
 
+def _feature_input(case_input: CaseInput) -> FeatureInput:
+    moment = pl.col("timestamp")
+    metrics = case_input.metrics.with_columns(pl.col("value").fill_nan(None)).filter(
+        (moment >= case_input.window_start) & (moment <= case_input.window_end)
+    )
+    if metrics.is_empty():
+        raise RankerError("The case has no samples inside its window")
+    return FeatureInput(
+        case_id=case_input.case_id,
+        metrics=metrics,
+        window_start=case_input.window_start,
+        window_end=case_input.window_end,
+        topology=case_input.topology,
+        known_services=(),
+    )
+
+
+def case_context(case_input: CaseInput, model: LoadedModel) -> CaseContext:
+    """Return the context features read: onsets, scored samples and any inferred graph."""
+    settings = model.features
+    return CaseContext.build(
+        _feature_input(case_input),
+        settings.signal,
+        settings.graph,
+        settings.mask,
+        settings.topology,
+    )
+
+
 def diagnose(case_input: CaseInput, model_dir: Path | LoadedModel) -> DiagnoseResult:
     """Run feature extraction, Stage 1, Stage 2, calibration and abstention on one case.
 
@@ -278,20 +307,7 @@ def diagnose(case_input: CaseInput, model_dir: Path | LoadedModel) -> DiagnoseRe
     """
     started = time.perf_counter()
     model = model_dir if isinstance(model_dir, LoadedModel) else load_model(model_dir)
-    moment = pl.col("timestamp")
-    metrics = case_input.metrics.with_columns(pl.col("value").fill_nan(None)).filter(
-        (moment >= case_input.window_start) & (moment <= case_input.window_end)
-    )
-    if metrics.is_empty():
-        raise RankerError("The case has no samples inside its window")
-    view = FeatureInput(
-        case_id=case_input.case_id,
-        metrics=metrics,
-        window_start=case_input.window_start,
-        window_end=case_input.window_end,
-        topology=case_input.topology,
-        known_services=(),
-    )
+    view = _feature_input(case_input)
     scored = score_case(view, model.fold, model.features, model.calibration)
     ranking = _ranking(scored.table, scored.predictions, model.fold)
     return DiagnoseResult(

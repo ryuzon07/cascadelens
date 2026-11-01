@@ -8,15 +8,19 @@ import json
 from pathlib import Path
 from typing import Any, NoReturn
 
-import yaml
 from fastapi import FastAPI, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.exceptions import HTTPException, RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from cascadelens import __version__
+from cascadelens.api.incidents import IncidentService
+from cascadelens.api.model_report import frozen_config_hash, read_metrics
+from cascadelens.api.store import Store, open_engine
+from cascadelens.api.v1 import ApiFailure, build_router
 from cascadelens.baselines.base import BaselineError
 from cascadelens.eval.errors import EvalError
 from cascadelens.features.context import FeatureError
@@ -32,7 +36,14 @@ from cascadelens.inference import (
 from cascadelens.models.diagnose import DISCLAIMER
 
 DEFAULT_MAX_BODY_BYTES = 25_000_000
-FROZEN_DIR = Path("configs/frozen")
+API_PREFIX = "/api/v1"
+SCHEMA_REFERENCE = "#/components/schemas/{model}"
+STATUS_CODES = {
+    404: "not_found",
+    405: "method_not_allowed",
+    413: "body_too_large",
+    422: "validation_error",
+}
 CALIBRATION_RESULTS = Path("experiments/calibration/results.json")
 RANKER_RESULTS = Path("experiments/ranker_clean/results.json")
 ROBUSTNESS_RESULTS = Path("experiments/robustness/results.json")
@@ -46,13 +57,9 @@ class ApiSettings(BaseModel):
     root: Path = Path()
     max_body_bytes: int = DEFAULT_MAX_BODY_BYTES
     window_tolerance_seconds: int = DEFAULT_TOLERANCE_SECONDS
-
-
-def _read(path: Path) -> dict[str, Any] | None:
-    if not path.is_file():
-        return None
-    metrics: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))["metrics"]
-    return metrics
+    # Without a path, incidents last as long as the process.
+    database: Path | None = None
+    cors_origins: tuple[str, ...] = ()
 
 
 def _top1(rows: list[dict[str, Any]], method: str) -> dict[str, float] | None:
@@ -65,9 +72,9 @@ def _top1(rows: list[dict[str, Any]], method: str) -> dict[str, float] | None:
 
 def headline_metrics(root: Path) -> dict[str, Any]:
     """Return headline numbers from the committed result JSONs, or null where one is absent."""
-    ranker = _read(root / RANKER_RESULTS)
-    robustness = _read(root / ROBUSTNESS_RESULTS)
-    calibration = _read(root / CALIBRATION_RESULTS)
+    ranker = read_metrics(root / RANKER_RESULTS)
+    robustness = read_metrics(root / ROBUSTNESS_RESULTS)
+    calibration = read_metrics(root / CALIBRATION_RESULTS)
     return {
         "status": ranker["status"] if ranker else None,
         "two_stage_top1_group_run": _top1(ranker["group_run"], "two_stage_ranker")
@@ -80,18 +87,14 @@ def headline_metrics(root: Path) -> dict[str, Any]:
     }
 
 
-def frozen_config_hash(config_hash: str, root: Path) -> str | None:
-    """Return the model's config hash if a frozen record holds it, or null."""
-    for path in sorted((root / FROZEN_DIR).glob("*.yaml")):
-        with path.open(encoding="utf-8") as handle:
-            record = yaml.safe_load(handle)
-        if record.get("config_hash") == config_hash:
-            return config_hash
-    return None
-
-
-def _error(status: int, detail: str) -> JSONResponse:
-    return JSONResponse({"detail": detail, "disclaimer": DISCLAIMER}, status_code=status)
+def _error(request: Request, status: int, detail: str, code: str | None = None) -> JSONResponse:
+    """Return an error, in the ``/api/v1`` shape under that prefix."""
+    if not request.url.path.startswith(API_PREFIX):
+        return JSONResponse({"detail": detail, "disclaimer": DISCLAIMER}, status_code=status)
+    name = code or STATUS_CODES.get(status, "internal_error")
+    return JSONResponse(
+        {"error": {"code": name, "message": detail}, "disclaimer": DISCLAIMER}, status_code=status
+    )
 
 
 def _field_errors(error: ValidationError | RequestValidationError) -> str:
@@ -140,16 +143,26 @@ def _payload(body: bytes) -> CasePayload:
 
 def _install_handlers(app: FastAPI) -> None:
     @app.exception_handler(StarletteHTTPException)
-    async def http_failure(_: Request, error: StarletteHTTPException) -> JSONResponse:
-        return _error(error.status_code, str(error.detail))
+    async def http_failure(request: Request, error: StarletteHTTPException) -> JSONResponse:
+        return _error(request, error.status_code, str(error.detail))
 
     @app.exception_handler(RequestValidationError)
-    async def invalid(_: Request, error: RequestValidationError) -> JSONResponse:
-        return _error(422, _field_errors(error))
+    async def invalid(request: Request, error: RequestValidationError) -> JSONResponse:
+        return _error(request, 422, _field_errors(error))
+
+    @app.exception_handler(ApiFailure)
+    async def refused(request: Request, error: ApiFailure) -> JSONResponse:
+        return _error(request, error.status, error.message, error.code)
+
+    for failure in CASE_FAILURES:
+
+        @app.exception_handler(failure)
+        async def invalid_case(request: Request, error: Exception) -> JSONResponse:
+            return _error(request, 422, str(error), "invalid_case")
 
     @app.exception_handler(Exception)
-    async def unexpected(_: Request, __: Exception) -> JSONResponse:
-        return _error(500, "The case could not be analysed")
+    async def unexpected(request: Request, __: Exception) -> JSONResponse:
+        return _error(request, 500, "The case could not be analysed")
 
 
 def create_app(settings: ApiSettings, model: LoadedModel | None = None) -> FastAPI:
@@ -165,6 +178,21 @@ def create_app(settings: ApiSettings, model: LoadedModel | None = None) -> FastA
         redoc_url=None,
     )
     _install_handlers(app)
+    if settings.cors_origins:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=list(settings.cors_origins),
+            allow_methods=["GET", "POST", "PUT"],
+            allow_headers=["content-type"],
+        )
+    service = IncidentService(
+        Store(open_engine(settings.database)), loaded, settings.window_tolerance_seconds
+    )
+
+    async def read_body(request: Request) -> bytes:
+        return await _body(request, settings.max_body_bytes)
+
+    app.include_router(build_router(service, settings.root, read_body))
 
     @app.get("/health")
     def health() -> dict[str, Any]:
@@ -186,7 +214,11 @@ def create_app(settings: ApiSettings, model: LoadedModel | None = None) -> FastA
         openapi_extra={
             "requestBody": {
                 "required": True,
-                "content": {"application/json": {"schema": CasePayload.model_json_schema()}},
+                "content": {
+                    "application/json": {
+                        "schema": CasePayload.model_json_schema(ref_template=SCHEMA_REFERENCE)
+                    }
+                },
             }
         },
     )

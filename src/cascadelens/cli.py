@@ -1,5 +1,6 @@
 """Command-line entry point."""
 
+import os
 from enum import StrEnum
 from pathlib import Path
 from typing import Annotated
@@ -30,6 +31,10 @@ from cascadelens.models.cli import (
 )
 from cascadelens.perturb.cli import app as perturb_app
 from cascadelens.splits.cli import app as splits_app
+
+ALL_INTERFACES = "0.0.0.0"
+CORS_VARIABLE = "CASCADELENS_CORS_ORIGINS"
+DEFAULT_DATABASE = Path("data/app.db")
 
 app = typer.Typer(help="CascadeLens experiment pipeline.", no_args_is_help=True)
 app.add_typer(baselines_app, name="baselines")
@@ -136,6 +141,9 @@ def serve(
     max_body_bytes: Annotated[
         int, typer.Option("--max-body-bytes", help="Largest accepted request body.")
     ] = 25_000_000,
+    database: Annotated[
+        Path, typer.Option("--database", help="SQLite file holding incidents and settings.")
+    ] = DEFAULT_DATABASE,
 ) -> None:
     """Start the local read-only API. Needs the api extra."""
     try:
@@ -145,9 +153,17 @@ def serve(
     except ImportError as error:
         typer.echo("serve needs the api extra: uv sync --extra api", err=True)
         raise typer.Exit(code=1) from error
+    if host == ALL_INTERFACES:
+        typer.echo("WARNING: this API has no authentication. Never expose it publicly.", err=True)
+    origins = tuple(item for item in os.environ.get(CORS_VARIABLE, "").split(",") if item)
     try:
         directory = model if model is not None else latest_artifact()
-        settings = ApiSettings(model_dir=directory, max_body_bytes=max_body_bytes)
+        settings = ApiSettings(
+            model_dir=directory,
+            max_body_bytes=max_body_bytes,
+            database=database,
+            cors_origins=origins,
+        )
         application = create_app(settings)
     except FAILURES as error:
         raise _failed("serve", error) from error

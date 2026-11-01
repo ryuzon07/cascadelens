@@ -1,0 +1,2302 @@
+{
+  "components": {
+    "schemas": {
+      "CheckValue": {
+        "description": "A pass or fail from a committed result. Null means the result is missing.",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "passed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Passed"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "passed",
+          "source"
+        ],
+        "title": "CheckValue",
+        "type": "object"
+      },
+      "CoverageCell": {
+        "description": "The share of expected samples present for one service and metric family.",
+        "properties": {
+          "coverage": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Coverage",
+            "type": "number"
+          },
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "samples": {
+            "title": "Samples",
+            "type": "integer"
+          },
+          "service": {
+            "title": "Service",
+            "type": "string"
+          }
+        },
+        "required": [
+          "service",
+          "family",
+          "coverage",
+          "samples"
+        ],
+        "title": "CoverageCell",
+        "type": "object"
+      },
+      "DiagnoseResult": {
+        "description": "A ranking of likely origin services, for a person to check.",
+        "properties": {
+          "abstain": {
+            "title": "Abstain",
+            "type": "boolean"
+          },
+          "calibrated": {
+            "title": "Calibrated",
+            "type": "boolean"
+          },
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "disclaimer": {
+            "default": "ranking of likely origin services, not proof of causation",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "model_version": {
+            "title": "Model Version",
+            "type": "string"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Notes",
+            "type": "array"
+          },
+          "ranking": {
+            "items": {
+              "$ref": "#/components/schemas/RankedService"
+            },
+            "title": "Ranking",
+            "type": "array"
+          },
+          "timing": {
+            "$ref": "#/components/schemas/Timing"
+          }
+        },
+        "required": [
+          "case_id",
+          "ranking",
+          "confidence",
+          "calibrated",
+          "abstain",
+          "notes",
+          "model_version",
+          "timing"
+        ],
+        "title": "DiagnoseResult",
+        "type": "object"
+      },
+      "ErrorDetail": {
+        "description": "A failure a client can act on.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ErrorDetail",
+        "type": "object"
+      },
+      "ErrorResponse": {
+        "description": "The body of every 4xx and 5xx under ``/api/v1``.",
+        "properties": {
+          "disclaimer": {
+            "default": "ranking of likely origin services, not proof of causation",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "error": {
+            "$ref": "#/components/schemas/ErrorDetail"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "title": "ErrorResponse",
+        "type": "object"
+      },
+      "Evidence": {
+        "description": "Why a service ranks where it does. Null means the case could not support the value.",
+        "properties": {
+          "missing_frac": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Missing Frac"
+          },
+          "onset_rank": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Onset Rank"
+          },
+          "top_groups": {
+            "items": {
+              "$ref": "#/components/schemas/GroupContribution"
+            },
+            "title": "Top Groups",
+            "type": "array"
+          },
+          "upstream_anom_ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Upstream Anom Ratio"
+          }
+        },
+        "required": [
+          "onset_rank",
+          "upstream_anom_ratio",
+          "missing_frac",
+          "top_groups"
+        ],
+        "title": "Evidence",
+        "type": "object"
+      },
+      "GraphEdge": {
+        "description": "One call. ``on_anomalous_path`` means anomalous callers lead along it to the top suspect.",
+        "properties": {
+          "callee": {
+            "title": "Callee",
+            "type": "string"
+          },
+          "caller": {
+            "title": "Caller",
+            "type": "string"
+          },
+          "inferred": {
+            "title": "Inferred",
+            "type": "boolean"
+          },
+          "on_anomalous_path": {
+            "title": "On Anomalous Path",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "caller",
+          "callee",
+          "inferred",
+          "on_anomalous_path"
+        ],
+        "title": "GraphEdge",
+        "type": "object"
+      },
+      "GraphNode": {
+        "description": "One service. ``state`` comes from the diagnosis, never from the service's name.",
+        "properties": {
+          "has_telemetry": {
+            "title": "Has Telemetry",
+            "type": "boolean"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "service": {
+            "title": "Service",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "top_suspect",
+              "suspect",
+              "anomalous",
+              "healthy",
+              "no_telemetry"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "service",
+          "state",
+          "score",
+          "has_telemetry"
+        ],
+        "title": "GraphNode",
+        "type": "object"
+      },
+      "GroupContribution": {
+        "description": "The summed LightGBM contribution of one feature group to a service's score.",
+        "properties": {
+          "contribution": {
+            "title": "Contribution",
+            "type": "number"
+          },
+          "group": {
+            "title": "Group",
+            "type": "string"
+          }
+        },
+        "required": [
+          "group",
+          "contribution"
+        ],
+        "title": "GroupContribution",
+        "type": "object"
+      },
+      "IncidentCoverage": {
+        "description": "Telemetry coverage of an incident.",
+        "properties": {
+          "cells": {
+            "items": {
+              "$ref": "#/components/schemas/CoverageCell"
+            },
+            "title": "Cells",
+            "type": "array"
+          },
+          "disclaimer": {
+            "default": "ranking of likely origin services, not proof of causation",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "families": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Families",
+            "type": "array"
+          },
+          "overall": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Overall",
+            "type": "number"
+          },
+          "services": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Services",
+            "type": "array"
+          }
+        },
+        "required": [
+          "services",
+          "families",
+          "cells",
+          "overall"
+        ],
+        "title": "IncidentCoverage",
+        "type": "object"
+      },
+      "IncidentCreate": {
+        "additionalProperties": false,
+        "description": "A case, the same body as ``POST /diagnose``, with a title and a severity.",
+        "properties": {
+          "case_id": {
+            "default": "case",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Case Id",
+            "type": "string"
+          },
+          "metrics": {
+            "items": {
+              "$ref": "#/components/schemas/MetricRow"
+            },
+            "minItems": 1,
+            "title": "Metrics",
+            "type": "array"
+          },
+          "severity": {
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "topology": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/TopologyEdge"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Topology"
+          },
+          "window": {
+            "$ref": "#/components/schemas/Window"
+          }
+        },
+        "required": [
+          "metrics",
+          "window",
+          "title",
+          "severity"
+        ],
+        "title": "IncidentCreate",
+        "type": "object"
+      },
+      "IncidentDetail": {
+        "description": "An incident with its latest diagnosis.",
+        "properties": {
+          "abstain_threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abstain Threshold"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "integer"
+          },
+          "decision": {
+            "enum": [
+              "confident",
+              "abstained",
+              "uncalibrated"
+            ],
+            "title": "Decision",
+            "type": "string"
+          },
+          "diagnosed_at": {
+            "title": "Diagnosed At",
+            "type": "integer"
+          },
+          "diagnosis": {
+            "$ref": "#/components/schemas/DiagnoseResult"
+          },
+          "disclaimer": {
+            "default": "ranking of likely origin services, not proof of causation",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "is_demo": {
+            "title": "Is Demo",
+            "type": "boolean"
+          },
+          "owner": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner"
+          },
+          "sample_count": {
+            "title": "Sample Count",
+            "type": "integer"
+          },
+          "service_count": {
+            "title": "Service Count",
+            "type": "integer"
+          },
+          "severity": {
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "needs_feedback",
+              "closed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "top_score": {
+            "title": "Top Score",
+            "type": "number"
+          },
+          "top_service": {
+            "title": "Top Service",
+            "type": "string"
+          },
+          "topology_source": {
+            "enum": [
+              "provided",
+              "inferred",
+              "none"
+            ],
+            "title": "Topology Source",
+            "type": "string"
+          },
+          "window_end": {
+            "title": "Window End",
+            "type": "integer"
+          },
+          "window_start": {
+            "title": "Window Start",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "severity",
+          "status",
+          "owner",
+          "is_demo",
+          "window_start",
+          "window_end",
+          "created_at",
+          "top_service",
+          "top_score",
+          "confidence",
+          "decision",
+          "service_count",
+          "sample_count",
+          "topology_source",
+          "diagnosed_at",
+          "abstain_threshold",
+          "diagnosis"
+        ],
+        "title": "IncidentDetail",
+        "type": "object"
+      },
+      "IncidentGraph": {
+        "description": "The dependency graph of an incident.",
+        "properties": {
+          "disclaimer": {
+            "default": "ranking of likely origin services, not proof of causation",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "edges": {
+            "items": {
+              "$ref": "#/components/schemas/GraphEdge"
+            },
+            "title": "Edges",
+            "type": "array"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/components/schemas/GraphNode"
+            },
+            "title": "Nodes",
+            "type": "array"
+          },
+          "topology_source": {
+            "enum": [
+              "provided",
+              "inferred",
+              "none"
+            ],
+            "title": "Topology Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nodes",
+          "edges",
+          "topology_source"
+        ],
+        "title": "IncidentGraph",
+        "type": "object"
+      },
+      "IncidentPage": {
+        "description": "A page of incidents. ``next_cursor`` is null on the last page.",
+        "properties": {
+          "disclaimer": {
+            "default": "ranking of likely origin services, not proof of causation",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/IncidentSummary"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items",
+          "next_cursor"
+        ],
+        "title": "IncidentPage",
+        "type": "object"
+      },
+      "IncidentSummary": {
+        "description": "One row of the incident list.",
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "integer"
+          },
+          "decision": {
+            "enum": [
+              "confident",
+              "abstained",
+              "uncalibrated"
+            ],
+            "title": "Decision",
+            "type": "string"
+          },
+          "disclaimer": {
+            "default": "ranking of likely origin services, not proof of causation",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "is_demo": {
+            "title": "Is Demo",
+            "type": "boolean"
+          },
+          "owner": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner"
+          },
+          "severity": {
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "needs_feedback",
+              "closed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "top_score": {
+            "title": "Top Score",
+            "type": "number"
+          },
+          "top_service": {
+            "title": "Top Service",
+            "type": "string"
+          },
+          "window_end": {
+            "title": "Window End",
+            "type": "integer"
+          },
+          "window_start": {
+            "title": "Window Start",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "severity",
+          "status",
+          "owner",
+          "is_demo",
+          "window_start",
+          "window_end",
+          "created_at",
+          "top_service",
+          "top_score",
+          "confidence",
+          "decision"
+        ],
+        "title": "IncidentSummary",
+        "type": "object"
+      },
+      "IncidentTimeline": {
+        "description": "Every service's timeline. Before ``baseline_end`` is the pre-incident reference.",
+        "properties": {
+          "baseline_end": {
+            "title": "Baseline End",
+            "type": "integer"
+          },
+          "disclaimer": {
+            "default": "ranking of likely origin services, not proof of causation",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "services": {
+            "items": {
+              "$ref": "#/components/schemas/ServiceTimeline"
+            },
+            "title": "Services",
+            "type": "array"
+          },
+          "window_end": {
+            "title": "Window End",
+            "type": "integer"
+          },
+          "window_start": {
+            "title": "Window Start",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "window_start",
+          "window_end",
+          "baseline_end",
+          "services"
+        ],
+        "title": "IncidentTimeline",
+        "type": "object"
+      },
+      "Integration": {
+        "description": "A configuration record. Nothing connects to this system.",
+        "properties": {
+          "configured": {
+            "default": false,
+            "title": "Configured",
+            "type": "boolean"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "status": {
+            "const": "configuration only",
+            "default": "configuration only",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "kind"
+        ],
+        "title": "Integration",
+        "type": "object"
+      },
+      "IntegrationList": {
+        "description": "Every configuration record.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Integration"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "read_only": {
+            "title": "Read Only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "items",
+          "read_only"
+        ],
+        "title": "IntegrationList",
+        "type": "object"
+      },
+      "MetricRow": {
+        "additionalProperties": false,
+        "description": "One sample. A null value means the sample is missing.",
+        "properties": {
+          "metric": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Metric",
+            "type": "string"
+          },
+          "service": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Service",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "integer"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "service",
+          "metric",
+          "ts",
+          "value"
+        ],
+        "title": "MetricRow",
+        "type": "object"
+      },
+      "ModelReport": {
+        "description": "The saved model's provenance and the committed results behind the Model screen.",
+        "properties": {
+          "abstain_threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abstain Threshold"
+          },
+          "calibrated": {
+            "title": "Calibrated",
+            "type": "boolean"
+          },
+          "checks": {
+            "items": {
+              "$ref": "#/components/schemas/CheckValue"
+            },
+            "title": "Checks",
+            "type": "array"
+          },
+          "config_hash": {
+            "title": "Config Hash",
+            "type": "string"
+          },
+          "disclaimer": {
+            "default": "ranking of likely origin services, not proof of causation",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "feature_config_hash": {
+            "title": "Feature Config Hash",
+            "type": "string"
+          },
+          "fold": {
+            "title": "Fold",
+            "type": "integer"
+          },
+          "frozen_config_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Frozen Config Hash"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "model_version": {
+            "title": "Model Version",
+            "type": "string"
+          },
+          "result_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result Status"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/ResultValue"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "integer"
+          },
+          "split": {
+            "title": "Split",
+            "type": "string"
+          },
+          "training_data_checksum": {
+            "title": "Training Data Checksum",
+            "type": "string"
+          }
+        },
+        "required": [
+          "model_version",
+          "method",
+          "split",
+          "seed",
+          "fold",
+          "calibrated",
+          "abstain_threshold",
+          "training_data_checksum",
+          "feature_config_hash",
+          "config_hash",
+          "frozen_config_hash",
+          "result_status",
+          "results",
+          "checks"
+        ],
+        "title": "ModelReport",
+        "type": "object"
+      },
+      "RankedService": {
+        "description": "One candidate service.",
+        "properties": {
+          "evidence": {
+            "$ref": "#/components/schemas/Evidence"
+          },
+          "score": {
+            "title": "Score",
+            "type": "number"
+          },
+          "service": {
+            "title": "Service",
+            "type": "string"
+          }
+        },
+        "required": [
+          "service",
+          "score",
+          "evidence"
+        ],
+        "title": "RankedService",
+        "type": "object"
+      },
+      "ResultValue": {
+        "description": "A committed result. Null values mean that it is missing, and the source says where from.",
+        "properties": {
+          "estimate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estimate"
+          },
+          "lower": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lower"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "upper": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Upper"
+          }
+        },
+        "required": [
+          "name",
+          "estimate",
+          "lower",
+          "upper",
+          "source"
+        ],
+        "title": "ResultValue",
+        "type": "object"
+      },
+      "ServiceTimeline": {
+        "description": "When a service turned anomalous and when its telemetry stopped, in Unix seconds.",
+        "properties": {
+          "anomalous_until": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anomalous Until"
+          },
+          "has_telemetry": {
+            "title": "Has Telemetry",
+            "type": "boolean"
+          },
+          "onset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Onset"
+          },
+          "service": {
+            "title": "Service",
+            "type": "string"
+          },
+          "telemetry_stopped": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Telemetry Stopped"
+          }
+        },
+        "required": [
+          "service",
+          "onset",
+          "anomalous_until",
+          "telemetry_stopped",
+          "has_telemetry"
+        ],
+        "title": "ServiceTimeline",
+        "type": "object"
+      },
+      "SettingsUpdate": {
+        "additionalProperties": false,
+        "description": "Decision settings. They affect new and re-run diagnoses, never stored ones.\n\nA null threshold uses the saved model's. A null window length uses each case's whole window.",
+        "properties": {
+          "abstain_threshold": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abstain Threshold"
+          },
+          "use_provided_topology": {
+            "default": true,
+            "title": "Use Provided Topology",
+            "type": "boolean"
+          },
+          "window_seconds": {
+            "anyOf": [
+              {
+                "maximum": 3600.0,
+                "minimum": 60.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window Seconds"
+          }
+        },
+        "title": "SettingsUpdate",
+        "type": "object"
+      },
+      "SettingsView": {
+        "additionalProperties": false,
+        "description": "The settings and the threshold a new diagnosis would use.",
+        "properties": {
+          "abstain_threshold": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abstain Threshold"
+          },
+          "effective_threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effective Threshold"
+          },
+          "model_threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Threshold"
+          },
+          "use_provided_topology": {
+            "default": true,
+            "title": "Use Provided Topology",
+            "type": "boolean"
+          },
+          "window_seconds": {
+            "anyOf": [
+              {
+                "maximum": 3600.0,
+                "minimum": 60.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window Seconds"
+          }
+        },
+        "required": [
+          "model_threshold",
+          "effective_threshold"
+        ],
+        "title": "SettingsView",
+        "type": "object"
+      },
+      "Timing": {
+        "description": "How long inference took, measured inside ``diagnose``.",
+        "properties": {
+          "total_seconds": {
+            "title": "Total Seconds",
+            "type": "number"
+          }
+        },
+        "required": [
+          "total_seconds"
+        ],
+        "title": "Timing",
+        "type": "object"
+      },
+      "TopologyEdge": {
+        "additionalProperties": false,
+        "description": "One directed call between two normalized service names.",
+        "properties": {
+          "callee": {
+            "minLength": 1,
+            "title": "Callee",
+            "type": "string"
+          },
+          "caller": {
+            "minLength": 1,
+            "title": "Caller",
+            "type": "string"
+          }
+        },
+        "required": [
+          "caller",
+          "callee"
+        ],
+        "title": "TopologyEdge",
+        "type": "object"
+      },
+      "Window": {
+        "additionalProperties": false,
+        "description": "The analysis window, in Unix seconds.",
+        "properties": {
+          "end": {
+            "title": "End",
+            "type": "integer"
+          },
+          "start": {
+            "title": "Start",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "Window",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "ranking of likely origin services, not proof of causation",
+    "title": "CascadeLens",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/incidents": {
+      "get": {
+        "description": "List incidents, newest first, with the top suspect and the decision.",
+        "operationId": "list_incidents_api_v1_incidents_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "open",
+                    "needs_feedback",
+                    "closed"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "severity",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "critical",
+                    "high",
+                    "medium",
+                    "low"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Severity"
+            }
+          },
+          {
+            "in": "query",
+            "name": "service",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Service"
+            }
+          },
+          {
+            "in": "query",
+            "name": "since",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Since"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^\\d{1,18}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "List Incidents"
+      },
+      "post": {
+        "description": "Diagnose a case and store it as a new incident.",
+        "operationId": "create_incident_api_v1_incidents_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IncidentCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Create Incident"
+      }
+    },
+    "/api/v1/incidents/{incident_id}": {
+      "get": {
+        "description": "Return an incident with its latest diagnosis.",
+        "operationId": "get_incident_api_v1_incidents__incident_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "title": "Incident Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Incident"
+      }
+    },
+    "/api/v1/incidents/{incident_id}/coverage": {
+      "get": {
+        "description": "Return telemetry coverage per service and metric family.",
+        "operationId": "incident_coverage_api_v1_incidents__incident_id__coverage_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "title": "Incident Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentCoverage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Incident Coverage"
+      }
+    },
+    "/api/v1/incidents/{incident_id}/graph": {
+      "get": {
+        "description": "Return the dependency graph, with node states from the latest diagnosis.",
+        "operationId": "incident_graph_api_v1_incidents__incident_id__graph_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "title": "Incident Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentGraph"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Incident Graph"
+      }
+    },
+    "/api/v1/incidents/{incident_id}/rerun": {
+      "post": {
+        "description": "Diagnose an incident again with the current model and settings.",
+        "operationId": "rerun_incident_api_v1_incidents__incident_id__rerun_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "title": "Incident Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Rerun Incident"
+      }
+    },
+    "/api/v1/incidents/{incident_id}/timeline": {
+      "get": {
+        "description": "Return each service's onset, anomalous period and any telemetry stop.",
+        "operationId": "incident_timeline_api_v1_incidents__incident_id__timeline_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "title": "Incident Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentTimeline"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Incident Timeline"
+      }
+    },
+    "/api/v1/integrations": {
+      "get": {
+        "description": "Return configuration records. Nothing connects to these systems.",
+        "operationId": "integrations_api_v1_integrations_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrationList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Integrations"
+      }
+    },
+    "/api/v1/model": {
+      "get": {
+        "description": "Return model provenance and results from committed result JSONs.",
+        "operationId": "model_report_api_v1_model_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelReport"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Model Report"
+      }
+    },
+    "/api/v1/settings": {
+      "get": {
+        "description": "Return the decision settings.",
+        "operationId": "get_settings_api_v1_settings_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingsView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Settings"
+      },
+      "put": {
+        "description": "Change the decision settings. Stored diagnoses keep the settings they were made with.",
+        "operationId": "put_settings_api_v1_settings_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettingsUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingsView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Put Settings"
+      }
+    },
+    "/diagnose": {
+      "post": {
+        "description": "Rank likely origin services for one case.",
+        "operationId": "post_diagnose_diagnose_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$defs": {
+                  "MetricRow": {
+                    "additionalProperties": false,
+                    "description": "One sample. A null value means the sample is missing.",
+                    "properties": {
+                      "metric": {
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "title": "Metric",
+                        "type": "string"
+                      },
+                      "service": {
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "title": "Service",
+                        "type": "string"
+                      },
+                      "ts": {
+                        "title": "Ts",
+                        "type": "integer"
+                      },
+                      "value": {
+                        "anyOf": [
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ],
+                        "title": "Value"
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "metric",
+                      "ts",
+                      "value"
+                    ],
+                    "title": "MetricRow",
+                    "type": "object"
+                  },
+                  "TopologyEdge": {
+                    "additionalProperties": false,
+                    "description": "One directed call between two normalized service names.",
+                    "properties": {
+                      "callee": {
+                        "minLength": 1,
+                        "title": "Callee",
+                        "type": "string"
+                      },
+                      "caller": {
+                        "minLength": 1,
+                        "title": "Caller",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "caller",
+                      "callee"
+                    ],
+                    "title": "TopologyEdge",
+                    "type": "object"
+                  },
+                  "Window": {
+                    "additionalProperties": false,
+                    "description": "The analysis window, in Unix seconds.",
+                    "properties": {
+                      "end": {
+                        "title": "End",
+                        "type": "integer"
+                      },
+                      "start": {
+                        "title": "Start",
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "start",
+                      "end"
+                    ],
+                    "title": "Window",
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false,
+                "description": "A case as JSON: the body of ``POST /diagnose`` and the form of a sample file.",
+                "properties": {
+                  "case_id": {
+                    "default": "case",
+                    "maxLength": 200,
+                    "minLength": 1,
+                    "title": "Case Id",
+                    "type": "string"
+                  },
+                  "metrics": {
+                    "items": {
+                      "$ref": "#/components/schemas/MetricRow"
+                    },
+                    "minItems": 1,
+                    "title": "Metrics",
+                    "type": "array"
+                  },
+                  "topology": {
+                    "anyOf": [
+                      {
+                        "items": {
+                          "$ref": "#/components/schemas/TopologyEdge"
+                        },
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "title": "Topology"
+                  },
+                  "window": {
+                    "$ref": "#/components/schemas/Window"
+                  }
+                },
+                "required": [
+                  "metrics",
+                  "window"
+                ],
+                "title": "CasePayload",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Post Diagnose Diagnose Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Post Diagnose"
+      }
+    },
+    "/health": {
+      "get": {
+        "description": "Report whether the model is loaded.",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Health Health Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health"
+      }
+    },
+    "/model-info": {
+      "get": {
+        "description": "Report the model's version, provenance and headline metrics.",
+        "operationId": "model_info_model_info_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Model Info Model Info Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Model Info"
+      }
+    }
+  }
+}
