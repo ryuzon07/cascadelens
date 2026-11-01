@@ -1,14 +1,8 @@
 UV ?= uv
-ifeq ($(OS),Windows_NT)
-# The bash on PATH on Windows is the WSL launcher, which hangs when WSL is missing.
-BASH ?= C:/Program Files/Git/bin/bash.exe
-else
-BASH ?= bash
-endif
-RUN := $(UV) run --frozen
+RUN ?= $(UV) run --frozen
 export UV
 
-.PHONY: install lint typecheck test smoke all
+.PHONY: install lint typecheck test smoke all report report-check
 
 install:
 	$(UV) sync --frozen --all-extras
@@ -27,4 +21,10 @@ smoke:
 	$(RUN) python scripts/smoke.py
 
 all:
-	"$(BASH)" scripts/reproduce_all.sh
+	$(RUN) python scripts/run_stages.py
+
+report:
+	$(RUN) python -m cascadelens.report build
+
+report-check:
+	$(RUN) python -m cascadelens.report check

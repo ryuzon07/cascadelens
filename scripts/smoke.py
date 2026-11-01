@@ -1,11 +1,13 @@
 """Run the pipeline end to end on the checked-in fixture, in a temporary directory.
 
 This is the 10-case smoke run of PRD 10.2. It needs no downloaded data, and any failing step stops
-it with a non-zero exit, including group overlap found by ``splits check``.
+it with a non-zero exit, including group overlap found by ``splits check``. It then regenerates the
+report from the committed result JSONs into the temporary folder and verifies its structure.
 """
 
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
 from pathlib import Path
@@ -21,7 +23,9 @@ STEPS = (
     ("features", "check", "--config", "configs/features.yaml"),
     ("baselines", "run", "--name", "frequency", "--split", "group_run"),
     ("baselines", "run", "--name", "rule", "--split", "group_run"),
+    ("train", "--split", "group_run", "--seed", "0"),
 )
+REPORT_TIME_LIMIT_SECONDS = 300
 
 
 def main() -> None:
@@ -35,7 +39,25 @@ def main() -> None:
         for step in STEPS:
             print("cascadelens", *step, flush=True)
             subprocess.run(["cascadelens", *step], cwd=project, check=True)
-    print(f"Smoke run passed in {time.perf_counter() - start:.1f} s.")
+        output = str(project / "generated")
+        for command in ("build", "verify"):
+            subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "cascadelens.report",
+                    command,
+                    "--root",
+                    str(ROOT),
+                    "--out",
+                    output,
+                ],
+                check=True,
+            )
+    elapsed = time.perf_counter() - start
+    if elapsed > REPORT_TIME_LIMIT_SECONDS:
+        raise SystemExit(f"Smoke run took {elapsed:.0f} s, over the limit")
+    print(f"Smoke run passed in {elapsed:.1f} s.")
 
 
 if __name__ == "__main__":

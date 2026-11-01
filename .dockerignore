@@ -3,8 +3,14 @@
 !uv.lock
 !README.md
 !LICENSE
+!Makefile
 !src
 !configs
+!scripts
+!docs
+!tests/fixtures
 !experiments/*/results.json
+!experiments/reproduction/*/results.json
+!experiments/probes/*.json
 !model
 **/__pycache__

@@ -25,3 +25,14 @@ jobs:
         run: make test
       - name: Smoke
         run: make smoke
+      - name: Generated documents match the result JSONs
+        run: make report-check
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the smoke image
+        run: docker build --target smoke -t cascadelens-smoke .
+      - name: Smoke inside the image, as a non-root user
+        run: docker run --rm --network none cascadelens-smoke

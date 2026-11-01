@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "CascadeLens"
+abstract: "Root-cause service ranking for microservices under imperfect telemetry, with a leakage-aware evaluation harness."
+type: software
+license: MIT
+# Replace both placeholders before publishing. See docs/CLAIMS_TODO.md.
+authors:
+  - name: "AUTHOR PLACEHOLDER"
+repository-code: "https://example.invalid/REPOSITORY-URL-PLACEHOLDER"

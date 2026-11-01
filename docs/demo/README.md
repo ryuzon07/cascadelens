@@ -94,7 +94,7 @@ labelled samples and is disabled for other cases. The label is never shown. Set
 Copy a saved model to `model/` in the repository first. Do not commit that folder.
 
 ```bash
-docker build -t cascadelens .
+docker build --target api -t cascadelens .
 ```
 
 ```bash
