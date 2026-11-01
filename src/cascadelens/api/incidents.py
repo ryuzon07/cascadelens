@@ -172,7 +172,11 @@ class IncidentService:
         incident.calibrated = result.calibrated
         return self.store.add_diagnosis(incident, record)
 
+    def case_of(self, incident: Incident, settings: SettingsUpdate) -> CaseInput:
+        """Return an incident's case as the model saw it under ``settings``."""
+        return self._case(stored_case(incident), settings)
+
     def context(self, incident: Incident, record: DiagnosisRecord) -> CaseContext:
         """Return the context of a stored diagnosis, under the settings it was made with."""
         settings = SettingsUpdate.model_validate(json.loads(record.settings_json))
-        return case_context(self._case(stored_case(incident), settings), self.model)
+        return case_context(self.case_of(incident, settings), self.model)

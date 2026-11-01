@@ -1,11 +1,11 @@
 """Request and response bodies of ``/api/v1``. No model here has a ground-truth field."""
 
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
 from cascadelens.config import StrictModel
-from cascadelens.inference import CasePayload, DiagnoseResult
+from cascadelens.inference import CasePayload, DiagnoseResult, FeatureContribution
 from cascadelens.models.diagnose import DISCLAIMER
 
 Severity = Literal["critical", "high", "medium", "low"]
@@ -13,6 +13,8 @@ Status = Literal["open", "needs_feedback", "closed"]
 Decision = Literal["confident", "abstained", "uncalibrated"]
 TopologySource = Literal["provided", "inferred", "none"]
 NodeState = Literal["top_suspect", "suspect", "anomalous", "healthy", "no_telemetry"]
+Outcome = Literal["top_1", "top_3", "missed", "unknown"]
+WhatIfPerturbation = Literal["P1", "P3", "P4", "P5", "P6", "P7", "P8", "P11", "P12", "P13"]
 
 
 class ErrorDetail(BaseModel):
@@ -137,6 +139,159 @@ class IncidentCoverage(BaseModel):
     families: list[str]
     cells: list[CoverageCell]
     overall: float = Field(ge=0, le=1)
+    disclaimer: str = DISCLAIMER
+
+
+class GroupValue(BaseModel):
+    """The summed contribution of one feature group."""
+
+    group: str
+    contribution: float
+
+
+class MetricPoint(BaseModel):
+    """One plotted sample. A null value means that no sample is present."""
+
+    ts: int
+    value: float | None
+
+
+class MetricSeries(BaseModel):
+    """One metric of a service, downsampled for plotting."""
+
+    metric: str
+    family: str
+    points: list[MetricPoint]
+
+
+class ServiceEvidence(BaseModel):
+    """Why a service ranks where it does. Contributions explain the score, not the cause."""
+
+    service: str
+    rank: int | None
+    score: float | None
+    groups: list[GroupValue]
+    features: list[FeatureContribution]
+    series: list[MetricSeries]
+    disclaimer: str = DISCLAIMER
+
+
+class WhatIfRequest(StrictModel):
+    """A simulated change to a copy of the case.
+
+    P2 is absent because it needs a label, which incidents do not hold. P9 and P10 are held-out
+    splits, not transforms.
+    """
+
+    perturbation: WhatIfPerturbation
+    params: dict[str, float | int | str] = Field(default_factory=dict)
+    seed: int = Field(default=0, ge=0, le=2**31 - 1)
+
+
+class ScenarioService(BaseModel):
+    """One service's place in a ranking."""
+
+    service: str
+    rank: int
+    score: float
+
+
+class Scenario(BaseModel):
+    """A ranking and its decision."""
+
+    ranking: list[ScenarioService]
+    confidence: float
+    decision: Decision
+
+
+class RankChange(BaseModel):
+    """How a service moved. A null rank means it was not ranked, and up is positive."""
+
+    service: str
+    original_rank: int | None
+    scenario_rank: int | None
+    change: int | None
+
+
+class CurvePoint(BaseModel):
+    """One intensity of the perturbation. Zero is the original case."""
+
+    intensity: float
+    confidence: float
+    top_service: str
+    decision: Decision
+
+
+class WhatIfResult(BaseModel):
+    """Original and simulated rankings. Nothing here is stored."""
+
+    perturbation: str
+    name: str
+    realism: str
+    parameters: dict[str, Any]
+    seed: int
+    original: Scenario
+    scenario: Scenario
+    rank_changes: list[RankChange]
+    intensity_parameter: str | None
+    curve: list[CurvePoint]
+    abstain_threshold: float | None
+    disclaimer: str = DISCLAIMER
+
+
+class FeedbackCreate(StrictModel):
+    """A person's verdict on the latest diagnosis."""
+
+    correct: bool
+    actual_service: str | None = Field(default=None, min_length=1, max_length=200)
+    note: str = Field(default="", max_length=2000)
+
+
+class FeedbackLabel(BaseModel):
+    """A stored verdict. ``actual_service`` is what a person confirmed, not benchmark truth."""
+
+    incident_id: str
+    title: str
+    correct: bool
+    predicted_service: str
+    actual_service: str | None
+    outcome: Outcome
+    confidence: float
+    decision: Decision
+    note: str
+    labelled_by: str
+    created_at: int
+    is_demo: bool
+    disclaimer: str = DISCLAIMER
+
+
+class WeekOutcomes(BaseModel):
+    """How many labels of each outcome fell in the week starting on this Monday."""
+
+    week_start: int
+    top_1: int
+    top_3: int
+    missed: int
+    unknown: int
+
+
+class MatchRate(BaseModel):
+    """A match rate over labelled incidents, with a group-bootstrap interval."""
+
+    estimate: float
+    lower: float
+    upper: float
+    labels: int
+
+
+class HistoryReport(BaseModel):
+    """Labelled incidents. A null rate means no label supports it."""
+
+    items: list[FeedbackLabel]
+    weeks: list[WeekOutcomes]
+    top_1: MatchRate | None
+    top_3: MatchRate | None
+    includes_demo: bool
     disclaimer: str = DISCLAIMER
 
 

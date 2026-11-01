@@ -1,4 +1,6 @@
-"""Graph, timeline and coverage of one case, computed from the features' own context."""
+"""Graph, timeline, coverage and evidence of one case, from the features' own context."""
+
+import math
 
 import polars as pl
 
@@ -6,18 +8,24 @@ from cascadelens.api.schemas import (
     CoverageCell,
     GraphEdge,
     GraphNode,
+    GroupValue,
     IncidentCoverage,
     IncidentGraph,
     IncidentTimeline,
+    MetricPoint,
+    MetricSeries,
     NodeState,
+    ServiceEvidence,
     ServiceTimeline,
     TopologySource,
 )
 from cascadelens.features.context import CaseContext
 from cascadelens.features.simple import metric_family
-from cascadelens.inference import DiagnoseResult
+from cascadelens.inference import DiagnoseResult, FeatureContribution
 
 SUSPECTS = 3
+MAX_POINTS = 120
+TOP_FEATURES = 8
 
 
 def topology_source(context: CaseContext) -> TopologySource:
@@ -119,6 +127,54 @@ def build_timeline(context: CaseContext) -> IncidentTimeline:
         window_end=case.window_end,
         baseline_end=round(cut),
         services=services,
+    )
+
+
+def _thinned(rows: pl.DataFrame) -> pl.DataFrame:
+    """Average a series into at most ``MAX_POINTS`` points. An empty bucket stays missing."""
+    step = math.ceil(rows.height / MAX_POINTS)
+    if step <= 1:
+        return rows.select("timestamp", "value")
+    return (
+        rows.with_row_index("row")
+        .with_columns(pl.col("row") // step)
+        .group_by("row", maintain_order=True)
+        .agg(pl.col("timestamp").first(), pl.col("value").mean())
+        .select("timestamp", "value")
+    )
+
+
+def build_series(context: CaseContext, service: str) -> list[MetricSeries]:
+    """Return a service's metrics, sorted by name, downsampled for plotting."""
+    rows = context.case.metrics.filter(pl.col("service") == service).sort("metric", "timestamp")
+    series = []
+    for (metric,), part in rows.group_by("metric", maintain_order=True):
+        points = [MetricPoint(ts=ts, value=value) for ts, value in _thinned(part).iter_rows()]
+        series.append(
+            MetricSeries(metric=str(metric), family=metric_family(str(metric)), points=points)
+        )
+    return series
+
+
+def build_evidence(
+    context: CaseContext,
+    result: DiagnoseResult,
+    service: str,
+    features: list[FeatureContribution],
+) -> ServiceEvidence:
+    """Return a service's grouped contributions, largest features and metric series."""
+    place = next((i for i, item in enumerate(result.ranking) if item.service == service), None)
+    totals: dict[str, float] = {}
+    for feature in features:
+        totals[feature.group] = totals.get(feature.group, 0.0) + feature.contribution
+    ordered = sorted(totals.items(), key=lambda item: (-abs(item[1]), item[0]))
+    return ServiceEvidence(
+        service=service,
+        rank=None if place is None else place + 1,
+        score=None if place is None else result.ranking[place].score,
+        groups=[GroupValue(group=group, contribution=value) for group, value in ordered],
+        features=features[:TOP_FEATURES],
+        series=build_series(context, service),
     )
 
 

@@ -13,7 +13,7 @@ import polars as pl
 from cascadelens.data.schema import Case
 from cascadelens.inference import CaseInput, CasePayload, case_from_payload
 from cascadelens.models.data import RankerError
-from cascadelens.perturb.base import Perturbation, crop_to_window
+from cascadelens.perturb.base import Perturbation, Stage, crop_to_window
 from cascadelens.perturb.pipeline import Pipeline
 from cascadelens.perturb.registry import build
 
@@ -79,8 +79,15 @@ def apply_damage(case: CaseInput, simulation: Simulation | None, damage: Damage)
         steps.append(build("P6", {"rate": damage.edge_deletion}))
     if not steps:
         return case
-    changed = Pipeline(steps).run(_as_case(case, simulation), SEED).case
-    if damage.window_shift:
+    return perturbed_case(case, simulation, steps, SEED)
+
+
+def perturbed_case(
+    case: CaseInput, simulation: Simulation | None, steps: list[Perturbation[Any]], seed: int
+) -> CaseInput:
+    """Return the case after ``steps``, cropped to any window they moved."""
+    changed = Pipeline(steps).run(_as_case(case, simulation), seed).case
+    if any(step.stage == Stage.WINDOW for step in steps):
         changed = crop_to_window(changed)
     return CaseInput(
         case.case_id,

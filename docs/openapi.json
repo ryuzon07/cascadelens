@@ -63,6 +63,40 @@
         "title": "CoverageCell",
         "type": "object"
       },
+      "CurvePoint": {
+        "description": "One intensity of the perturbation. Zero is the original case.",
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "decision": {
+            "enum": [
+              "confident",
+              "abstained",
+              "uncalibrated"
+            ],
+            "title": "Decision",
+            "type": "string"
+          },
+          "intensity": {
+            "title": "Intensity",
+            "type": "number"
+          },
+          "top_service": {
+            "title": "Top Service",
+            "type": "string"
+          }
+        },
+        "required": [
+          "intensity",
+          "confidence",
+          "top_service",
+          "decision"
+        ],
+        "title": "CurvePoint",
+        "type": "object"
+      },
       "DiagnoseResult": {
         "description": "A ranking of likely origin services, for a person to check.",
         "properties": {
@@ -212,6 +246,173 @@
         "title": "Evidence",
         "type": "object"
       },
+      "FeatureContribution": {
+        "description": "One feature's value and its LightGBM contribution to a service's score.",
+        "properties": {
+          "contribution": {
+            "title": "Contribution",
+            "type": "number"
+          },
+          "feature": {
+            "title": "Feature",
+            "type": "string"
+          },
+          "group": {
+            "title": "Group",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "feature",
+          "label",
+          "group",
+          "value",
+          "contribution"
+        ],
+        "title": "FeatureContribution",
+        "type": "object"
+      },
+      "FeedbackCreate": {
+        "additionalProperties": false,
+        "description": "A person's verdict on the latest diagnosis.",
+        "properties": {
+          "actual_service": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actual Service"
+          },
+          "correct": {
+            "title": "Correct",
+            "type": "boolean"
+          },
+          "note": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "correct"
+        ],
+        "title": "FeedbackCreate",
+        "type": "object"
+      },
+      "FeedbackLabel": {
+        "description": "A stored verdict. ``actual_service`` is what a person confirmed, not benchmark truth.",
+        "properties": {
+          "actual_service": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actual Service"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "correct": {
+            "title": "Correct",
+            "type": "boolean"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "integer"
+          },
+          "decision": {
+            "enum": [
+              "confident",
+              "abstained",
+              "uncalibrated"
+            ],
+            "title": "Decision",
+            "type": "string"
+          },
+          "disclaimer": {
+            "default": "ranking of likely origin services, not proof of causation",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "incident_id": {
+            "title": "Incident Id",
+            "type": "string"
+          },
+          "is_demo": {
+            "title": "Is Demo",
+            "type": "boolean"
+          },
+          "labelled_by": {
+            "title": "Labelled By",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "outcome": {
+            "enum": [
+              "top_1",
+              "top_3",
+              "missed",
+              "unknown"
+            ],
+            "title": "Outcome",
+            "type": "string"
+          },
+          "predicted_service": {
+            "title": "Predicted Service",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "incident_id",
+          "title",
+          "correct",
+          "predicted_service",
+          "actual_service",
+          "outcome",
+          "confidence",
+          "decision",
+          "note",
+          "labelled_by",
+          "created_at",
+          "is_demo"
+        ],
+        "title": "FeedbackLabel",
+        "type": "object"
+      },
       "GraphEdge": {
         "description": "One call. ``on_anomalous_path`` means anomalous callers lead along it to the top suspect.",
         "properties": {
@@ -301,6 +502,82 @@
           "contribution"
         ],
         "title": "GroupContribution",
+        "type": "object"
+      },
+      "GroupValue": {
+        "description": "The summed contribution of one feature group.",
+        "properties": {
+          "contribution": {
+            "title": "Contribution",
+            "type": "number"
+          },
+          "group": {
+            "title": "Group",
+            "type": "string"
+          }
+        },
+        "required": [
+          "group",
+          "contribution"
+        ],
+        "title": "GroupValue",
+        "type": "object"
+      },
+      "HistoryReport": {
+        "description": "Labelled incidents. A null rate means no label supports it.",
+        "properties": {
+          "disclaimer": {
+            "default": "ranking of likely origin services, not proof of causation",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "includes_demo": {
+            "title": "Includes Demo",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/FeedbackLabel"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "top_1": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MatchRate"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "top_3": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MatchRate"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "weeks": {
+            "items": {
+              "$ref": "#/components/schemas/WeekOutcomes"
+            },
+            "title": "Weeks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "weeks",
+          "top_1",
+          "top_3",
+          "includes_demo"
+        ],
+        "title": "HistoryReport",
         "type": "object"
       },
       "IncidentCoverage": {
@@ -818,6 +1095,61 @@
         "title": "IntegrationList",
         "type": "object"
       },
+      "MatchRate": {
+        "description": "A match rate over labelled incidents, with a group-bootstrap interval.",
+        "properties": {
+          "estimate": {
+            "title": "Estimate",
+            "type": "number"
+          },
+          "labels": {
+            "title": "Labels",
+            "type": "integer"
+          },
+          "lower": {
+            "title": "Lower",
+            "type": "number"
+          },
+          "upper": {
+            "title": "Upper",
+            "type": "number"
+          }
+        },
+        "required": [
+          "estimate",
+          "lower",
+          "upper",
+          "labels"
+        ],
+        "title": "MatchRate",
+        "type": "object"
+      },
+      "MetricPoint": {
+        "description": "One plotted sample. A null value means that no sample is present.",
+        "properties": {
+          "ts": {
+            "title": "Ts",
+            "type": "integer"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "ts",
+          "value"
+        ],
+        "title": "MetricPoint",
+        "type": "object"
+      },
       "MetricRow": {
         "additionalProperties": false,
         "description": "One sample. A null value means the sample is missing.",
@@ -857,6 +1189,33 @@
           "value"
         ],
         "title": "MetricRow",
+        "type": "object"
+      },
+      "MetricSeries": {
+        "description": "One metric of a service, downsampled for plotting.",
+        "properties": {
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "metric": {
+            "title": "Metric",
+            "type": "string"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/MetricPoint"
+            },
+            "title": "Points",
+            "type": "array"
+          }
+        },
+        "required": [
+          "metric",
+          "family",
+          "points"
+        ],
+        "title": "MetricSeries",
         "type": "object"
       },
       "ModelReport": {
@@ -970,6 +1329,56 @@
         "title": "ModelReport",
         "type": "object"
       },
+      "RankChange": {
+        "description": "How a service moved. A null rank means it was not ranked, and up is positive.",
+        "properties": {
+          "change": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change"
+          },
+          "original_rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Original Rank"
+          },
+          "scenario_rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Rank"
+          },
+          "service": {
+            "title": "Service",
+            "type": "string"
+          }
+        },
+        "required": [
+          "service",
+          "original_rank",
+          "scenario_rank",
+          "change"
+        ],
+        "title": "RankChange",
+        "type": "object"
+      },
       "RankedService": {
         "description": "One candidate service.",
         "properties": {
@@ -1046,6 +1455,129 @@
           "source"
         ],
         "title": "ResultValue",
+        "type": "object"
+      },
+      "Scenario": {
+        "description": "A ranking and its decision.",
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "decision": {
+            "enum": [
+              "confident",
+              "abstained",
+              "uncalibrated"
+            ],
+            "title": "Decision",
+            "type": "string"
+          },
+          "ranking": {
+            "items": {
+              "$ref": "#/components/schemas/ScenarioService"
+            },
+            "title": "Ranking",
+            "type": "array"
+          }
+        },
+        "required": [
+          "ranking",
+          "confidence",
+          "decision"
+        ],
+        "title": "Scenario",
+        "type": "object"
+      },
+      "ScenarioService": {
+        "description": "One service's place in a ranking.",
+        "properties": {
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          },
+          "score": {
+            "title": "Score",
+            "type": "number"
+          },
+          "service": {
+            "title": "Service",
+            "type": "string"
+          }
+        },
+        "required": [
+          "service",
+          "rank",
+          "score"
+        ],
+        "title": "ScenarioService",
+        "type": "object"
+      },
+      "ServiceEvidence": {
+        "description": "Why a service ranks where it does. Contributions explain the score, not the cause.",
+        "properties": {
+          "disclaimer": {
+            "default": "ranking of likely origin services, not proof of causation",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "features": {
+            "items": {
+              "$ref": "#/components/schemas/FeatureContribution"
+            },
+            "title": "Features",
+            "type": "array"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/GroupValue"
+            },
+            "title": "Groups",
+            "type": "array"
+          },
+          "rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rank"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "series": {
+            "items": {
+              "$ref": "#/components/schemas/MetricSeries"
+            },
+            "title": "Series",
+            "type": "array"
+          },
+          "service": {
+            "title": "Service",
+            "type": "string"
+          }
+        },
+        "required": [
+          "service",
+          "rank",
+          "score",
+          "groups",
+          "features",
+          "series"
+        ],
+        "title": "ServiceEvidence",
         "type": "object"
       },
       "ServiceTimeline": {
@@ -1243,6 +1775,179 @@
         "title": "TopologyEdge",
         "type": "object"
       },
+      "WeekOutcomes": {
+        "description": "How many labels of each outcome fell in the week starting on this Monday.",
+        "properties": {
+          "missed": {
+            "title": "Missed",
+            "type": "integer"
+          },
+          "top_1": {
+            "title": "Top 1",
+            "type": "integer"
+          },
+          "top_3": {
+            "title": "Top 3",
+            "type": "integer"
+          },
+          "unknown": {
+            "title": "Unknown",
+            "type": "integer"
+          },
+          "week_start": {
+            "title": "Week Start",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "week_start",
+          "top_1",
+          "top_3",
+          "missed",
+          "unknown"
+        ],
+        "title": "WeekOutcomes",
+        "type": "object"
+      },
+      "WhatIfRequest": {
+        "additionalProperties": false,
+        "description": "A simulated change to a copy of the case.\n\nP2 is absent because it needs a label, which incidents do not hold. P9 and P10 are held-out\nsplits, not transforms.",
+        "properties": {
+          "params": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "title": "Params",
+            "type": "object"
+          },
+          "perturbation": {
+            "enum": [
+              "P1",
+              "P3",
+              "P4",
+              "P5",
+              "P6",
+              "P7",
+              "P8",
+              "P11",
+              "P12",
+              "P13"
+            ],
+            "title": "Perturbation",
+            "type": "string"
+          },
+          "seed": {
+            "default": 0,
+            "maximum": 2147483647.0,
+            "minimum": 0.0,
+            "title": "Seed",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "perturbation"
+        ],
+        "title": "WhatIfRequest",
+        "type": "object"
+      },
+      "WhatIfResult": {
+        "description": "Original and simulated rankings. Nothing here is stored.",
+        "properties": {
+          "abstain_threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abstain Threshold"
+          },
+          "curve": {
+            "items": {
+              "$ref": "#/components/schemas/CurvePoint"
+            },
+            "title": "Curve",
+            "type": "array"
+          },
+          "disclaimer": {
+            "default": "ranking of likely origin services, not proof of causation",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "intensity_parameter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Intensity Parameter"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "original": {
+            "$ref": "#/components/schemas/Scenario"
+          },
+          "parameters": {
+            "additionalProperties": true,
+            "title": "Parameters",
+            "type": "object"
+          },
+          "perturbation": {
+            "title": "Perturbation",
+            "type": "string"
+          },
+          "rank_changes": {
+            "items": {
+              "$ref": "#/components/schemas/RankChange"
+            },
+            "title": "Rank Changes",
+            "type": "array"
+          },
+          "realism": {
+            "title": "Realism",
+            "type": "string"
+          },
+          "scenario": {
+            "$ref": "#/components/schemas/Scenario"
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "perturbation",
+          "name",
+          "realism",
+          "parameters",
+          "seed",
+          "original",
+          "scenario",
+          "rank_changes",
+          "intensity_parameter",
+          "curve",
+          "abstain_threshold"
+        ],
+        "title": "WhatIfResult",
+        "type": "object"
+      },
       "Window": {
         "additionalProperties": false,
         "description": "The analysis window, in Unix seconds.",
@@ -1272,6 +1977,103 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/history": {
+      "get": {
+        "description": "Return labelled incidents, weekly outcomes and match rates with intervals.",
+        "operationId": "get_history_api_v1_history_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "since",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Since"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryReport"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Get History"
+      }
+    },
     "/api/v1/incidents": {
       "get": {
         "description": "List incidents, newest first, with the top suspect and the decision.",
@@ -1424,6 +2226,16 @@
             },
             "description": "Unprocessable Entity"
           },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
           "500": {
             "content": {
               "application/json": {
@@ -1433,6 +2245,16 @@
               }
             },
             "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
           }
         },
         "summary": "List Incidents"
@@ -1491,6 +2313,16 @@
             },
             "description": "Unprocessable Entity"
           },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
           "500": {
             "content": {
               "application/json": {
@@ -1500,6 +2332,16 @@
               }
             },
             "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
           }
         },
         "summary": "Create Incident"
@@ -1561,6 +2403,16 @@
             },
             "description": "Unprocessable Entity"
           },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
           "500": {
             "content": {
               "application/json": {
@@ -1570,6 +2422,16 @@
               }
             },
             "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
           }
         },
         "summary": "Get Incident"
@@ -1631,6 +2493,16 @@
             },
             "description": "Unprocessable Entity"
           },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
           "500": {
             "content": {
               "application/json": {
@@ -1640,9 +2512,218 @@
               }
             },
             "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
           }
         },
         "summary": "Incident Coverage"
+      }
+    },
+    "/api/v1/incidents/{incident_id}/evidence/{service_name}": {
+      "get": {
+        "description": "Return one service's feature contributions and metric series.",
+        "operationId": "incident_evidence_api_v1_incidents__incident_id__evidence__service_name__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "title": "Incident Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "service_name",
+            "required": true,
+            "schema": {
+              "title": "Service Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceEvidence"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Incident Evidence"
+      }
+    },
+    "/api/v1/incidents/{incident_id}/feedback": {
+      "post": {
+        "description": "Store a verdict on the latest diagnosis and close the incident.",
+        "operationId": "incident_feedback_api_v1_incidents__incident_id__feedback_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "title": "Incident Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackLabel"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Incident Feedback"
       }
     },
     "/api/v1/incidents/{incident_id}/graph": {
@@ -1701,6 +2782,16 @@
             },
             "description": "Unprocessable Entity"
           },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
           "500": {
             "content": {
               "application/json": {
@@ -1710,6 +2801,16 @@
               }
             },
             "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
           }
         },
         "summary": "Incident Graph"
@@ -1771,6 +2872,16 @@
             },
             "description": "Unprocessable Entity"
           },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
           "500": {
             "content": {
               "application/json": {
@@ -1780,6 +2891,16 @@
               }
             },
             "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
           }
         },
         "summary": "Rerun Incident"
@@ -1841,6 +2962,16 @@
             },
             "description": "Unprocessable Entity"
           },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
           "500": {
             "content": {
               "application/json": {
@@ -1850,9 +2981,119 @@
               }
             },
             "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
           }
         },
         "summary": "Incident Timeline"
+      }
+    },
+    "/api/v1/incidents/{incident_id}/whatif": {
+      "post": {
+        "description": "Simulate a change to a copy of the case. Nothing is stored.",
+        "operationId": "incident_whatif_api_v1_incidents__incident_id__whatif_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "title": "Incident Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WhatIfRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WhatIfResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Incident Whatif"
       }
     },
     "/api/v1/integrations": {
@@ -1900,6 +3141,16 @@
             },
             "description": "Unprocessable Entity"
           },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
           "500": {
             "content": {
               "application/json": {
@@ -1909,6 +3160,16 @@
               }
             },
             "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
           }
         },
         "summary": "Integrations"
@@ -1959,6 +3220,16 @@
             },
             "description": "Unprocessable Entity"
           },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
           "500": {
             "content": {
               "application/json": {
@@ -1968,6 +3239,16 @@
               }
             },
             "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
           }
         },
         "summary": "Model Report"
@@ -2018,6 +3299,16 @@
             },
             "description": "Unprocessable Entity"
           },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
           "500": {
             "content": {
               "application/json": {
@@ -2027,6 +3318,16 @@
               }
             },
             "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
           }
         },
         "summary": "Get Settings"
@@ -2085,6 +3386,16 @@
             },
             "description": "Unprocessable Entity"
           },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
           "500": {
             "content": {
               "application/json": {
@@ -2094,6 +3405,16 @@
               }
             },
             "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
           }
         },
         "summary": "Put Settings"

@@ -48,6 +48,22 @@ class DiagnosisRecord(SQLModel, table=True):
     abstain_threshold: float | None = None
 
 
+class Feedback(SQLModel, table=True):
+    """A verdict on a diagnosis, with that diagnosis's summary. A newer verdict supersedes it."""
+
+    id: int | None = Field(default=None, primary_key=True)
+    incident_seq: int = Field(foreign_key="incident.seq", index=True)
+    created_at: int = Field(index=True)
+    correct: bool
+    actual_service: str | None = None
+    predicted_service: str
+    outcome: str
+    confidence: float
+    decision: str
+    note: str = ""
+    labelled_by: str
+
+
 class StoredSettings(SQLModel, table=True):
     """The decision settings, in a single row. A null falls back to the model or the case."""
 
@@ -109,6 +125,30 @@ class Store:
             session.commit()
             session.refresh(merged)
             return merged
+
+    def add_feedback(self, incident: Incident, feedback: Feedback) -> Feedback:
+        """Save a verdict and close the incident in one transaction."""
+        with Session(self.engine) as session:
+            session.add(feedback)
+            incident.status = "closed"
+            session.merge(incident)
+            session.commit()
+            session.refresh(feedback)
+            return feedback
+
+    def latest_feedback(self, since: int | None = None) -> list[tuple[Feedback, Incident]]:
+        """Return each incident's newest verdict, newest first, with its incident."""
+        query = select(Feedback, Incident).join(Incident).order_by(col(Feedback.id).desc())
+        with Session(self.engine) as session:
+            rows = session.exec(query).all()
+        newest: dict[int, tuple[Feedback, Incident]] = {}
+        for feedback, incident in rows:
+            newest.setdefault(feedback.incident_seq, (feedback, incident))
+        return [
+            (feedback, incident)
+            for feedback, incident in newest.values()
+            if since is None or feedback.created_at >= since
+        ]
 
     def incident(self, seq: int) -> Incident | None:
         """Return one incident."""

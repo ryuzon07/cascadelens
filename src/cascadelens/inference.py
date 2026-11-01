@@ -13,6 +13,7 @@ from typing import Any
 
 import lightgbm as lgb
 import numpy as np
+import numpy.typing as npt
 import polars as pl
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
@@ -22,7 +23,7 @@ from cascadelens.eval.metrics import ranked
 from cascadelens.features.config import FeaturesConfig
 from cascadelens.features.context import CaseContext, FeatureInput
 from cascadelens.features.mask import MISSING_COLUMN
-from cascadelens.features.registry import REGISTRY
+from cascadelens.features.registry import REGISTRY, build_case_features
 from cascadelens.models.artifacts import load_artifact, read_sidecar
 from cascadelens.models.calibration import SavedCalibration, load_calibration, model_hash
 from cascadelens.models.data import RankerError, model_features
@@ -160,6 +161,18 @@ class GroupContribution(BaseModel):
     contribution: float
 
 
+class FeatureContribution(BaseModel):
+    """One feature's value and its LightGBM contribution to a service's score."""
+
+    model_config = ConfigDict(frozen=True)
+
+    feature: str
+    label: str
+    group: str
+    value: float | None
+    contribution: float
+
+
 class Evidence(BaseModel):
     """Why a service ranks where it does. Null means the case could not support the value."""
 
@@ -216,11 +229,15 @@ def _group_of(column: str) -> str:
     raise RankerError(f"Column {column!r} belongs to no feature group")
 
 
-def contributions(table: pl.DataFrame, model: FittedFold) -> dict[str, list[GroupContribution]]:
-    """Return each service's largest feature-group contributions from Stage 2."""
+def _contribution_matrix(table: pl.DataFrame, model: FittedFold) -> npt.NDArray[np.float64]:
     booster: lgb.Booster = model.booster
     raw = booster.predict(model_features(table, model.columns), pred_contrib=True)
-    values = np.asarray(raw, dtype=np.float64)[:, :-1]
+    return np.asarray(raw, dtype=np.float64)[:, :-1]
+
+
+def contributions(table: pl.DataFrame, model: FittedFold) -> dict[str, list[GroupContribution]]:
+    """Return each service's largest feature-group contributions from Stage 2."""
+    values = _contribution_matrix(table, model)
     groups = [_group_of(column) for column in model.columns]
     result = {}
     for service, row in zip(table["service"].to_list(), values, strict=True):
@@ -230,6 +247,35 @@ def contributions(table: pl.DataFrame, model: FittedFold) -> dict[str, list[Grou
         largest = sorted(totals.items(), key=lambda item: (-abs(item[1]), item[0]))[:TOP_GROUPS]
         result[service] = [GroupContribution(group=g, contribution=v) for g, v in largest]
     return result
+
+
+def feature_label(column: str) -> str:
+    """Return a feature's name as words, without its group prefix."""
+    prefix = next(g.prefix for g in REGISTRY.values() if column.startswith(g.prefix))
+    return column.removeprefix(prefix).replace("_", " ").capitalize()
+
+
+def feature_contributions(
+    case_input: CaseInput, model: LoadedModel, service: str
+) -> list[FeatureContribution]:
+    """Return every Stage 2 feature's contribution to one service's score, largest first."""
+    table = build_case_features(_feature_input(case_input), model.features)
+    row = table.with_row_index("row").filter(pl.col("service") == service)
+    if row.is_empty():
+        raise RankerError(f"The case has no service {service!r}")
+    index = int(row["row"][0])
+    values = _contribution_matrix(table, model.fold)[index].tolist()
+    found = [
+        FeatureContribution(
+            feature=column,
+            label=feature_label(column),
+            group=_group_of(column),
+            value=_number(row[column][0]),
+            contribution=contribution,
+        )
+        for column, contribution in zip(model.fold.columns, values, strict=True)
+    ]
+    return sorted(found, key=lambda item: (-abs(item.contribution), item.feature))
 
 
 def _ranking(

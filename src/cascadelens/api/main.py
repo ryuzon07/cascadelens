@@ -17,10 +17,12 @@ from pydantic import BaseModel, ValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from cascadelens import __version__
+from cascadelens.api.failures import ApiFailure
 from cascadelens.api.incidents import IncidentService
 from cascadelens.api.model_report import frozen_config_hash, read_metrics
 from cascadelens.api.store import Store, open_engine
-from cascadelens.api.v1 import ApiFailure, build_router
+from cascadelens.api.v1 import build_router
+from cascadelens.api.whatif import WhatIfRunner
 from cascadelens.baselines.base import BaselineError
 from cascadelens.eval.errors import EvalError
 from cascadelens.features.context import FeatureError
@@ -60,6 +62,8 @@ class ApiSettings(BaseModel):
     # Without a path, incidents last as long as the process.
     database: Path | None = None
     cors_origins: tuple[str, ...] = ()
+    whatif_timeout_seconds: float = 20.0
+    whatif_per_minute: int = 30
 
 
 def _top1(rows: list[dict[str, Any]], method: str) -> dict[str, float] | None:
@@ -192,7 +196,8 @@ def create_app(settings: ApiSettings, model: LoadedModel | None = None) -> FastA
     async def read_body(request: Request) -> bytes:
         return await _body(request, settings.max_body_bytes)
 
-    app.include_router(build_router(service, settings.root, read_body))
+    runner = WhatIfRunner(settings.whatif_timeout_seconds, settings.whatif_per_minute)
+    app.include_router(build_router(service, settings.root, read_body, runner))
 
     @app.get("/health")
     def health() -> dict[str, Any]:

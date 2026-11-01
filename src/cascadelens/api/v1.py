@@ -7,10 +7,15 @@ from typing import Annotated, Any
 from fastapi import APIRouter, Query, Request, Response
 from fastapi.routing import APIRoute
 
-from cascadelens.api.incidents import IncidentService, detail, summary
+from cascadelens.api.failures import ApiFailure
+from cascadelens.api.feedback import history, label, new_feedback
+from cascadelens.api.incidents import IncidentService, decision_of, detail, summary
 from cascadelens.api.model_report import check_values, frozen_config_hash, result_values
 from cascadelens.api.schemas import (
     ErrorResponse,
+    FeedbackCreate,
+    FeedbackLabel,
+    HistoryReport,
     IncidentCoverage,
     IncidentCreate,
     IncidentDetail,
@@ -20,15 +25,24 @@ from cascadelens.api.schemas import (
     Integration,
     IntegrationList,
     ModelReport,
+    ServiceEvidence,
     SettingsUpdate,
     SettingsView,
     Severity,
     Status,
+    WhatIfRequest,
+    WhatIfResult,
 )
-from cascadelens.api.store import Incident, StoredSettings, parse_incident_id
-from cascadelens.api.views import build_coverage, build_graph, build_timeline
+from cascadelens.api.store import DiagnosisRecord, Incident, StoredSettings, parse_incident_id
+from cascadelens.api.views import build_coverage, build_evidence, build_graph, build_timeline
+from cascadelens.api.whatif import WhatIfRunner, run_whatif
 from cascadelens.features.context import CaseContext
-from cascadelens.inference import DiagnoseResult, LoadedModel, model_details
+from cascadelens.inference import (
+    DiagnoseResult,
+    LoadedModel,
+    feature_contributions,
+    model_details,
+)
 
 READ_ONLY = "CascadeLens is read-only: these records are configuration only and connect to nothing."
 INTEGRATIONS = (
@@ -38,19 +52,9 @@ INTEGRATIONS = (
     ("Slack", "notifications"),
 )
 ERRORS: dict[int | str, dict[str, type[ErrorResponse]]] = {
-    code: {"model": ErrorResponse} for code in (404, 413, 422, 500)
+    code: {"model": ErrorResponse} for code in (404, 413, 422, 429, 500, 503)
 }
 ReadBody = Callable[[Request], Awaitable[bytes]]
-
-
-class ApiFailure(Exception):
-    """A failure with a code a client can act on."""
-
-    def __init__(self, status: int, code: str, message: str) -> None:
-        super().__init__(message)
-        self.status = status
-        self.code = code
-        self.message = message
 
 
 def limited_route(read_body: ReadBody) -> type[APIRoute]:
@@ -85,6 +89,51 @@ def _settings_view(saved: SettingsUpdate, model: LoadedModel) -> SettingsView:
         model_threshold=threshold,
         effective_threshold=chosen if model.calibration else None,
     )
+
+
+def _diagnosis_routes(
+    router: APIRouter, service: IncidentService, root: Path, runner: WhatIfRunner
+) -> None:
+    def latest_of(text: str) -> tuple[Incident, DiagnosisRecord]:
+        incident = _found(service, text)
+        assert incident.seq is not None
+        return incident, service.store.latest_diagnosis(incident.seq)
+
+    @router.get("/incidents/{incident_id}/evidence/{service_name}")
+    def incident_evidence(incident_id: str, service_name: str) -> ServiceEvidence:
+        """Return one service's feature contributions and metric series."""
+        incident, record = latest_of(incident_id)
+        context = service.context(incident, record)
+        if service_name not in context.services:
+            raise ApiFailure(404, "service_not_found", "That service is not part of this incident")
+        settings = SettingsUpdate.model_validate_json(record.settings_json)
+        case = service.case_of(incident, settings)
+        result = DiagnoseResult.model_validate_json(record.result_json)
+        features = feature_contributions(case, service.model, service_name)
+        return build_evidence(context, result, service_name, features)
+
+    @router.post("/incidents/{incident_id}/whatif")
+    async def incident_whatif(
+        incident_id: str, body: WhatIfRequest, request: Request
+    ) -> WhatIfResult:
+        """Simulate a change to a copy of the case. Nothing is stored."""
+        incident, record = latest_of(incident_id)
+        client = request.client.host if request.client else "unknown"
+        return await runner.run(client, lambda: run_whatif(service, incident, record, body, root))
+
+    @router.post("/incidents/{incident_id}/feedback", status_code=201)
+    def incident_feedback(incident_id: str, body: FeedbackCreate) -> FeedbackLabel:
+        """Store a verdict on the latest diagnosis and close the incident."""
+        incident, record = latest_of(incident_id)
+        result = DiagnoseResult.model_validate_json(record.result_json)
+        services = service.context(incident, record).services
+        verdict = new_feedback(body, incident, result, decision_of(incident), services)
+        return label(service.store.add_feedback(incident, verdict), incident)
+
+    @router.get("/history")
+    def get_history(since: int | None = None) -> HistoryReport:
+        """Return labelled incidents, weekly outcomes and match rates with intervals."""
+        return history(service.store.latest_feedback(since))
 
 
 def _incident_routes(router: APIRouter, service: IncidentService) -> None:
@@ -159,10 +208,13 @@ def _incident_routes(router: APIRouter, service: IncidentService) -> None:
         return build_coverage(context_of(_found(service, incident_id)))
 
 
-def build_router(service: IncidentService, root: Path, read_body: ReadBody) -> APIRouter:
+def build_router(
+    service: IncidentService, root: Path, read_body: ReadBody, runner: WhatIfRunner
+) -> APIRouter:
     """Return every ``/api/v1`` route."""
     router = APIRouter(prefix="/api/v1", route_class=limited_route(read_body), responses=ERRORS)
     _incident_routes(router, service)
+    _diagnosis_routes(router, service, root, runner)
     model = service.model
 
     @router.get("/settings")
