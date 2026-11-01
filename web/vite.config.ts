@@ -16,6 +16,7 @@ export default defineConfig({
     // Tests must not depend on a developer's .env.local.
     env: { VITE_SHOW_COMPONENTS: "false", VITE_USE_MOCKS: "false" },
     setupFiles: "./src/test/setup.ts",
+    include: ["src/**/*.test.{ts,tsx}"],
     css: { modules: { classNameStrategy: "non-scoped" } },
   },
 });

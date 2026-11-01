@@ -73,6 +73,29 @@ which the API rejects as an unknown field, so post `checkout-unlabelled.json` or
 Invalid input gets a 422 with a message, and a body over the limit gets a 413. The built-in
 `/docs` pages are off, because they load scripts from a public CDN.
 
+## Web UI
+
+```bash
+make web-install
+```
+
+```bash
+make web-build
+```
+
+```bash
+python scripts/seed_demo.py
+```
+
+```bash
+cascadelens serve --ui
+```
+
+Open <http://127.0.0.1:8000>. Incidents, labels and settings are kept in `data/app.db`, which
+`--database` changes. For development, `make dev` runs the API and the Vite server together, and
+`make e2e` runs the Playwright and accessibility tests on a tiny model trained on synthetic data.
+Set `VITE_USE_MOCKS=true` in `web/.env.local` to work without the API.
+
 ## Streamlit demo
 
 ```bash
@@ -98,7 +121,14 @@ docker build --target api -t cascadelens .
 ```
 
 ```bash
-docker run --rm -p 127.0.0.1:8000:8000 cascadelens
+docker run --rm -p 127.0.0.1:8000:8000 -v cascadelens-data:/app/data cascadelens
+```
+
+The image serves the API and the UI on one port. The volume keeps incidents and labels between runs.
+To load the sample incidents into a running container:
+
+```bash
+docker exec <container> python scripts/seed_demo.py --model /app/model --database /app/data/app.db
 ```
 
 Use `--build-arg MODEL_DIR=<folder>` for another folder inside the build context. The image holds

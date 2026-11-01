@@ -6,6 +6,9 @@
 # Environments
 .venv/
 node_modules/
+web/dist-e2e/
+web/test-results/
+web/playwright-report/
 *.local
 
 # Python and tool caches

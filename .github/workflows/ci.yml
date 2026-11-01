@@ -28,6 +28,53 @@ jobs:
       - name: Generated documents match the result JSONs
         run: make report-check
 
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Unit tests
+        run: npm test
+      - name: Build
+        run: npm run build
+      - name: API types match the committed schema
+        run: |
+          npm run gen:api:snapshot
+          git diff --exit-code src/api/schema.d.ts
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install
+        run: |
+          uv sync --frozen --extra dev --extra api
+          make web-install
+          cd web && npx playwright install --with-deps chromium
+      - name: Playwright and accessibility scans, headless
+        run: make e2e
+
   docker:
     runs-on: ubuntu-latest
     steps:

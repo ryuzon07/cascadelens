@@ -12,7 +12,7 @@ from fastapi import FastAPI, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, ValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
@@ -64,6 +64,8 @@ class ApiSettings(BaseModel):
     cors_origins: tuple[str, ...] = ()
     whatif_timeout_seconds: float = 20.0
     whatif_per_minute: int = 30
+    # A built UI, served on the same origin as the API.
+    ui_dir: Path | None = None
 
 
 def _top1(rows: list[dict[str, Any]], method: str) -> dict[str, float] | None:
@@ -169,6 +171,23 @@ def _install_handlers(app: FastAPI) -> None:
         return _error(request, 500, "The case could not be analysed")
 
 
+def _serve_ui(app: FastAPI, folder: Path) -> None:
+    """Serve built files, and the app page for its client-side routes. API routes come first."""
+    root = folder.resolve()
+    page = root / "index.html"
+    if not page.is_file():
+        raise RuntimeError(f"No built UI at {root}. Run `make web-build`.")
+
+    @app.get("/{path:path}", include_in_schema=False)
+    def ui(path: str) -> FileResponse:
+        if path == API_PREFIX.lstrip("/") or path.startswith(API_PREFIX.lstrip("/") + "/"):
+            raise HTTPException(status_code=404, detail="Not Found")
+        target = (root / path).resolve()
+        if target.is_relative_to(root) and target.is_file():
+            return FileResponse(target)
+        return FileResponse(page)
+
+
 def create_app(settings: ApiSettings, model: LoadedModel | None = None) -> FastAPI:
     """Build the app. The model loads here, once, and a missing model is a startup error."""
     loaded = model if model is not None else load_model(settings.model_dir)
@@ -237,4 +256,6 @@ def create_app(settings: ApiSettings, model: LoadedModel | None = None) -> FastA
             raise HTTPException(status_code=422, detail=str(error)) from error
         return result.model_dump(mode="json")
 
+    if settings.ui_dir is not None:
+        _serve_ui(app, settings.ui_dir)
     return app

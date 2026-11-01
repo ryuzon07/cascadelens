@@ -1,3 +1,11 @@
+# node:22.23.4-bookworm-slim, pinned by digest. Only the built UI leaves this stage.
+FROM node@sha256:4b150b48b4116e2a22f2c39cc27025fbf4f153e2078fd3b14d159fdb5c7279da AS web
+WORKDIR /web
+COPY web/package.json web/package-lock.json ./
+RUN npm ci
+COPY web ./
+RUN npm run build
+
 # python:3.11.14-slim-bookworm, pinned by digest.
 FROM python@sha256:65a93d69fa75478d554f4ad27c85c1e69fa184956261b4301ebaf6dbb0a3543d AS base
 
@@ -31,13 +39,17 @@ RUN chown -R cascadelens /app
 USER cascadelens
 CMD ["make", "smoke", "RUN="]
 
-# The default target serves a saved model. MODEL_DIR is a folder inside the build context.
+# The default target serves a saved model and the UI on one port. MODEL_DIR is a folder inside
+# the build context.
 FROM base AS api
 ARG MODEL_DIR=model
 COPY ${MODEL_DIR} /app/model
-RUN chown -R cascadelens /app/model
+COPY --from=web /web/dist /app/web/dist
+COPY demo_data ./demo_data
+COPY scripts/seed_demo.py ./scripts/seed_demo.py
+RUN mkdir -p /app/data && chown -R cascadelens /app/model /app/data /app/web
 USER cascadelens
 EXPOSE 8000
 ENTRYPOINT ["cascadelens"]
 # Inside a container the port must bind all interfaces. Publish it to localhost only.
-CMD ["serve", "--host", "0.0.0.0", "--port", "8000", "--model", "/app/model"]
+CMD ["serve", "--host", "0.0.0.0", "--port", "8000", "--model", "/app/model", "--ui"]

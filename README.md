@@ -57,6 +57,37 @@ make test
 make smoke
 ```
 
+## Web UI
+
+A local, read-only interface for incidents: ranked suspects, the dependency graph, evidence, simulated
+what-if runs, feedback and the committed model results. Sample incidents are synthetic and labelled
+as sample data. There is no sign-in, so keep it on this machine and never expose it publicly.
+
+```bash
+make web-install
+```
+
+```bash
+make web-build
+```
+
+```bash
+python scripts/seed_demo.py
+```
+
+```bash
+cascadelens serve --ui
+```
+
+Open <http://localhost:8000>. For development, `make dev` runs the API and the Vite server together.
+The API needs a saved model; [the demo guide](docs/demo/README.md) shows how to train one.
+
+![Incidents overview with sample data](docs/demo/ui-incidents.png)
+
+![An incident with its decision, suspects and dependency graph](docs/demo/ui-incident.png)
+
+![A what-if run, labelled simulated](docs/demo/ui-what-if.png)
+
 ## Repository map
 
 ```text
@@ -66,6 +97,7 @@ experiments/  configs and committed result JSONs
 docs/         report, generated results, audits, reproduction notes
 scripts/      reproduction, environment checks, smoke run, clean-clone check
 tests/        unit, property, leakage, API, demo and reproduction tests
+web/          React UI, with component, end-to-end and accessibility tests
 demo_data/    small synthetic sample cases
 ```
 

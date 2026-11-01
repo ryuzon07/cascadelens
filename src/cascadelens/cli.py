@@ -35,6 +35,7 @@ from cascadelens.splits.cli import app as splits_app
 ALL_INTERFACES = "0.0.0.0"
 CORS_VARIABLE = "CASCADELENS_CORS_ORIGINS"
 DEFAULT_DATABASE = Path("data/app.db")
+DEFAULT_UI = Path("web/dist")
 
 app = typer.Typer(help="CascadeLens experiment pipeline.", no_args_is_help=True)
 app.add_typer(baselines_app, name="baselines")
@@ -144,6 +145,8 @@ def serve(
     database: Annotated[
         Path, typer.Option("--database", help="SQLite file holding incidents and settings.")
     ] = DEFAULT_DATABASE,
+    ui: Annotated[bool, typer.Option("--ui", help="Also serve the built web UI.")] = False,
+    ui_dir: Annotated[Path, typer.Option("--ui-dir", help="Folder of the built UI.")] = DEFAULT_UI,
 ) -> None:
     """Start the local read-only API. Needs the api extra."""
     try:
@@ -163,9 +166,10 @@ def serve(
             max_body_bytes=max_body_bytes,
             database=database,
             cors_origins=origins,
+            ui_dir=ui_dir if ui else None,
         )
         application = create_app(settings)
-    except FAILURES as error:
+    except (*FAILURES, RuntimeError) as error:
         raise _failed("serve", error) from error
     uvicorn.run(application, host=host, port=port)
 

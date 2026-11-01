@@ -13,4 +13,11 @@
 !experiments/reproduction/*/results.json
 !experiments/probes/*.json
 !model
+!web
+!demo_data
+web/node_modules
+web/dist
+web/dist-e2e
+web/test-results
+web/.env*.local
 **/__pycache__
