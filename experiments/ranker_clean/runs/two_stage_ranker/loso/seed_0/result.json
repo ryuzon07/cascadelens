@@ -18,7 +18,9 @@
       ],
       "num_boost_round": 500,
       "objective": "lambdarank",
-      "params": {}
+      "params": {
+        "num_threads": 1
+      }
     },
     "retrieval": {
       "cross_fit_folds": 5,
@@ -47,9 +49,9 @@
       "seed": 0
     }
   },
-  "config_hash": "6fd7f76234e5079f09d9417c4500768ba7852e7307083f7ecf62e894f3903761",
+  "config_hash": "155917ca0de84aa92d4db1aa4d8e6d5d7801a3f71e9a3a44312989812f12a65b",
   "data_checksum": "b1ae69bc89350088eef88b25483b46d520416ec1bdf2eb9c9e3a4c48690823d3",
-  "git_commit": "730077fa76b412ff8706854e936333b74b892cc7",
+  "git_commit": "a2d682625f561fb4445561db6c3da659605e7812",
   "metrics": {
     "avg5": 0.918933333333333,
     "fold_details": [
