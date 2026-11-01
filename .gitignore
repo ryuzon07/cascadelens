@@ -5,6 +5,8 @@
 
 # Environments
 .venv/
+node_modules/
+*.local
 
 # Python and tool caches
 __pycache__/

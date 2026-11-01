@@ -1,0 +1,26 @@
+:root {
+  --bg: #f1efe8; /* page */
+  --surface: #fbfaf7; /* cards */
+  --raised: #f4f2ec; /* inner panels, secondary buttons */
+  --hover: #e7e3d8;
+  --rule: #dad6cb; /* hairline borders */
+  --rule-strong: #c4beaf;
+  --ink: #1b1b18; /* text, primary buttons */
+  --muted: #57544b;
+  --faint: #6a665c;
+  --signal: #c8381a; /* top suspect, anomalous call path: the only strong colour */
+  --signal-bg: #f7e1d8;
+  --signal-2: #d9805f; /* lower-ranked suspects */
+  --link: #1e4f9c; /* links, selection, focus */
+  --link-bg: #e3eaf5;
+  --warn: #8a5a00; /* abstained */
+  --warn-bg: #f6ebcf;
+  --ok: #2f6b3a;
+  --ok-bg: #e3efe2;
+  --bad: #a3261a;
+  --bad-bg: #f7e0dc;
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --radius: 3px;
+  --radius-lg: 4px;
+}
