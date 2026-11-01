@@ -1,0 +1,144 @@
+.confident {
+  padding: 14px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.abstained {
+  padding: 14px;
+  border: 1px solid var(--warn);
+  border-radius: var(--radius-lg);
+  background: var(--warn-bg);
+}
+
+.eyebrow {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.service {
+  margin: 2px 0 4px;
+  color: var(--signal);
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.headline {
+  margin: 2px 0 8px;
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.reason {
+  margin-bottom: 12px;
+  color: var(--muted);
+}
+
+.reasons {
+  margin: 8px 0 12px;
+  padding-left: 18px;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  margin: 12px 0 0;
+}
+
+.facts div {
+  min-width: 0;
+}
+
+.facts dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.facts dd {
+  margin: 0;
+  font-family: var(--font-mono);
+}
+
+.suspects {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.suspect {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.suspect:hover {
+  background: var(--raised);
+}
+
+.suspect[aria-pressed="true"] {
+  background: var(--link-bg);
+}
+
+.suspectName {
+  font-family: var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+.suspectNote {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.score {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.choices {
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.choices legend {
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.choices label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-right: 12px;
+}
+
+.saved {
+  color: var(--ok);
+}

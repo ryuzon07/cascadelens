@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Bell } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { api, queryKeys } from "../api/client";
 import { useMocks } from "../config";
 import { Button } from "./Button";
@@ -76,6 +76,7 @@ function Notifications() {
 export function TopBar() {
   const search = useRef<HTMLInputElement>(null);
   const sample = useSampleData();
+  const navigate = useNavigate();
 
   useEffect(() => {
     function focusSearch(event: KeyboardEvent) {
@@ -91,9 +92,23 @@ export function TopBar() {
   return (
     <header className={styles.topBar}>
       <Breadcrumbs />
-      <div className={styles.search}>
-        <TextInput ref={search} type="search" label="Search" hideLabel placeholder="Search  /" />
-      </div>
+      <form
+        role="search"
+        className={styles.search}
+        onSubmit={(event) => {
+          event.preventDefault();
+          const text = search.current?.value.trim() ?? "";
+          navigate(text ? `/incidents?q=${encodeURIComponent(text)}` : "/incidents");
+        }}
+      >
+        <TextInput
+          ref={search}
+          type="search"
+          label="Search incidents"
+          hideLabel
+          placeholder="Search incidents  /"
+        />
+      </form>
       {sample && <SampleDataBadge />}
       <Notifications />
     </header>

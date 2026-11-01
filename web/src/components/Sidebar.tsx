@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Beaker, Boxes, FlaskConical, History, Network, Plug, Siren } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 import { api, queryKeys } from "../api/client";
+import { formatUnit } from "../format";
 import { PENDING } from "./Card";
 import { Select } from "./Fields";
 import styles from "./shell.module.css";
@@ -24,7 +25,7 @@ function ModelHealth() {
   const rows = [
     ["Version", data?.model_version],
     ["Calibrated", data && (data.calibrated ? "yes" : "no")],
-    ["Threshold", threshold == null ? undefined : threshold.toFixed(2)],
+    ["Threshold", threshold == null ? undefined : formatUnit(threshold)],
     ["Frozen", data?.frozen_config_hash?.slice(0, 8) ?? (data ? "not frozen" : undefined)],
   ];
   return (

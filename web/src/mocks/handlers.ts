@@ -26,6 +26,9 @@ export const handlers = [
     HttpResponse.json(fixtures.serviceEvidence(String(params.service))),
   ),
   http.post(`${API}/incidents/:id/whatif`, () => HttpResponse.json(fixtures.whatIf)),
+  http.post(`${API}/incidents/:id/feedback`, () =>
+    HttpResponse.json(fixtures.label, { status: 201 }),
+  ),
   http.get(`${API}/history`, () => HttpResponse.json(fixtures.history)),
   http.get(`${API}/model`, () => HttpResponse.json(fixtures.model)),
   http.get(`${API}/settings`, () => HttpResponse.json(fixtures.settings)),

@@ -1,0 +1,201 @@
+.gauge {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gaugeLabels {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.gaugeTrack {
+  position: relative;
+  height: 10px;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--raised);
+}
+
+.gaugeFill {
+  height: 100%;
+  background: var(--ink);
+}
+
+.gaugeFillLow {
+  background: var(--warn);
+}
+
+.gaugeMark {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: var(--signal);
+}
+
+.contribution {
+  display: grid;
+  grid-template-columns: minmax(90px, 160px) minmax(0, 1fr) 56px;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  font-size: 13px;
+}
+
+.contributionTrack {
+  position: relative;
+  height: 10px;
+  background: var(--raised);
+}
+
+.contributionTrack::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: 50%;
+  width: 1px;
+  background: var(--rule-strong);
+}
+
+.contributionBar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.up {
+  background: var(--signal);
+}
+
+.down {
+  background: var(--muted);
+}
+
+.number {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: right;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.svg text {
+  fill: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.chartGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.chartTitle {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.stack {
+  display: flex;
+  gap: 2px;
+  height: 14px;
+}
+
+.stackLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 6px 0 0;
+  padding: 0;
+  font-size: 12px;
+  list-style: none;
+}
+
+.stackLegend li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+}
+
+.heatmap td,
+.heatmap th {
+  text-align: center;
+}
+
+.heatmap th[scope="row"] {
+  font-family: var(--font-mono);
+  text-align: left;
+}
+
+.full {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+
+.partial {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+.none {
+  background: var(--bad-bg);
+  color: var(--bad);
+}
+
+.graphPanel {
+  overflow: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background-color: #fff;
+  background-image: radial-gradient(#d8d3c6 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.graph {
+  min-width: 420px;
+  height: 340px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 8px 0 0;
+  padding: 0;
+  color: var(--muted);
+  font-size: 12px;
+  list-style: none;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legendNode {
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--rule-strong);
+  background: #fff;
+}
+
+.legendEdge {
+  width: 18px;
+  border-top: 2px solid var(--rule-strong);
+}

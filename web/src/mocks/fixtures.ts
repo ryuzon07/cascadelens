@@ -1,4 +1,5 @@
 import type {
+  FeedbackLabel,
   HistoryReport,
   IncidentCoverage,
   IncidentDetail,
@@ -183,6 +184,22 @@ export const whatIf: WhatIfResult = {
     { intensity: 0.3, confidence: 0.6, top_service: "alpha", decision: "confident" },
   ],
   abstain_threshold: 0.5,
+  disclaimer: DISCLAIMER,
+};
+
+export const label: FeedbackLabel = {
+  incident_id: "INC-0002",
+  title: "Sample slowdown",
+  correct: true,
+  predicted_service: "alpha",
+  actual_service: "alpha",
+  outcome: "top_1",
+  confidence: 0.9,
+  decision: "confident",
+  note: "",
+  labelled_by: "local user",
+  created_at: START + 900,
+  is_demo: true,
   disclaimer: DISCLAIMER,
 };
 

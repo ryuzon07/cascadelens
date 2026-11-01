@@ -70,7 +70,7 @@ describe("app shell", () => {
 
   it("focuses the search on / unless someone is typing", async () => {
     renderApp(<App />);
-    const search = screen.getByRole("searchbox", { name: "Search" });
+    const search = screen.getByRole("searchbox", { name: "Search incidents" });
     await userEvent.keyboard("/");
     expect(search).toHaveFocus();
     expect(search).toHaveValue("");
