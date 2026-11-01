@@ -1,7 +1,9 @@
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
+import matplotlib as mpl
 import polars as pl
 import pytest
 from baseline_factory import build_project, handle, make_case, make_metrics
@@ -157,6 +159,32 @@ def test_a_missing_library_says_what_to_install(monkeypatch: pytest.MonkeyPatch)
 
     with pytest.raises(BaselineError, match="uv sync --extra published"):
         adapter.call_library("baro", pl.DataFrame({"time": [1]}))
+
+
+def test_importing_the_library_leaves_the_plot_style_alone(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    package = tmp_path / "RCAEval"
+    package.mkdir()
+    (package / "__init__.py").write_text("", encoding="utf-8")
+    (package / "e2e.py").write_text(
+        "import matplotlib.pyplot as plt\n"
+        'plt.style.use("fivethirtyeight")\n'
+        "def baro(data):\n"
+        "    return {}\n",
+        encoding="utf-8",
+    )
+    monkeypatch.syspath_prepend(tmp_path)
+    for name in ("RCAEval", "RCAEval.e2e"):
+        monkeypatch.delitem(sys.modules, name, raising=False)
+    before = dict(mpl.rcParams)
+
+    try:
+        assert adapter.call_library("baro", pl.DataFrame({"time": [1]})) == {}
+        assert dict(mpl.rcParams) == before
+    finally:
+        for name in ("RCAEval", "RCAEval.e2e"):
+            sys.modules.pop(name, None)
 
 
 @pytest.mark.parametrize("method", list(PUBLISHED.values()))

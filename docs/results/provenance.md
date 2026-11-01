@@ -97,6 +97,9 @@ S6 reads `docs/results/reproduction_log.md`.
 | s3_masking | 14.8 [9.0, 20.8] | robustness |
 | s4 | 11.0 [7.0, 15.2] | calibration |
 | s5 | -0.187 [-0.240, -0.118] | calibration |
+| s6_limitation | **S6 covers exploratory results only.** The logged full run regenerated the committed tables, but no frozen config has been run. | docs/results/reproduction_log.md |
+| s6_summary | S6 passed from a fresh clone on the real data, on exploratory results. | docs/results/reproduction_log.md |
+| s6_todo | - [x] S6: a completed full run from a fresh clone on the real data, logged in `docs/results/reproduction_log.md` | docs/results/reproduction_log.md |
 | single_stage_clean | -1.8 [-5.7, 1.9] | robustness |
 | single_stage_p2 | 7.7 [3.6, 11.9] | robustness |
 | status | exploratory | robustness |

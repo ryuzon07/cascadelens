@@ -27,7 +27,7 @@ from cascadelens.eval.calibration import (
     risk_coverage,
     selective_accuracy,
 )
-from cascadelens.eval.robustness import derive_stage, load_context
+from cascadelens.eval.robustness import derive_stage, freeze_variants, load_context
 from cascadelens.models import abstain
 from cascadelens.models.abstain import (
     abstain_flags,
@@ -416,3 +416,14 @@ def test_s4_joins_the_holm_family_of_the_robustness_results(tmp_path: Path) -> N
     holm = abstain.primary_family(0.5, tmp_path)
     assert set(holm) == {"S1", "S2", "S3:lightgbm_flat", "S4"}
     assert holm["S4"] == pytest.approx(0.5)
+
+
+def test_experiment_runs_on_a_frozen_config(calibrated: Path) -> None:
+    derive_stage(load_context(True, calibrated))
+    with pytest.raises(RankerError, match="not frozen"):
+        run_calibration(False, calibrated)
+    freeze_variants("final", calibrated)
+    frozen = run_calibration(False, calibrated)
+    assert frozen["status"] == "frozen"
+    text = (calibrated / "docs/calibration_summary.md").read_text(encoding="utf-8")
+    assert "The config is frozen." in text

@@ -11,6 +11,7 @@ works without the ``published`` extra.
 from dataclasses import dataclass
 from typing import Any
 
+import matplotlib as mpl
 import polars as pl
 
 from cascadelens.baselines.base import BaselineError
@@ -110,7 +111,9 @@ def fill_gaps(frame: pl.DataFrame) -> pl.DataFrame:
 def call_library(method: str, frame: pl.DataFrame, **kwargs: Any) -> dict[str, Any]:  # noqa: ANN401
     """Call ``RCAEval.e2e.<method>`` on a frame. This is the one place the library is touched."""
     try:
-        from RCAEval import e2e
+        # RCAEval sets a global Matplotlib style on import, which would restyle later figures.
+        with mpl.rc_context():
+            from RCAEval import e2e
     except ImportError as error:
         raise BaselineError("RCAEval is not installed; run `uv sync --extra published`") from error
     if not hasattr(e2e, method):

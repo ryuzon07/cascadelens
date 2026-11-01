@@ -169,7 +169,7 @@ On held-out folds it was unstable, and the pooled figure hides that.
 - **Two stages did not help on clean data.**
 - **Augmentation cost clean accuracy:** the ranker went from {{plain_clean}} to {{ranker_clean}}, and
   flat LightGBM from {{flat_clean}} to {{masking_clean}}.
-- **S6 is not demonstrated** on the real data. See the reproduction statement.
+- {{s6_limitation}}
 - **ICA-LiNGAM missed tolerance on one system.**
 
 ## Failure analysis

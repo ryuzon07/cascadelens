@@ -17,8 +17,7 @@ The checklist is PRD section 14, and the table is regenerated from the documents
 
 ## Also open
 
-- [ ] S6: a completed full run from a fresh clone on the real data, logged in
-  `docs/results/reproduction_log.md`
+- [x] S6: a completed full run from a fresh clone on the real data, logged in `docs/results/reproduction_log.md`
 - [ ] Freeze the config, rerun without `--exploratory`, and regenerate every document
 - [ ] Author and repository URL in `CITATION.cff`
 - [ ] Export `docs/REPORT.pdf`: pandoc is not installed here

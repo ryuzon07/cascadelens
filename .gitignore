@@ -1,5 +1,7 @@
 # Datasets. Anchored so that src/cascadelens/data/ stays tracked.
 /data/
+# A saved model copied in for a Docker build.
+/model/
 
 # Environments
 .venv/

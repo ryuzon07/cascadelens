@@ -124,7 +124,7 @@ are test cases of another. The system abstains below a threshold chosen on valid
 | S3 vs baro | Margin growth, P2 at 30% (simulated) | -18.0 [-24.1, -12.2] | 0.0016 | fail |
 | S4 | Top-1 at 50% coverage minus full coverage and random abstention | 11.0 [7.0, 15.2] | 0.0018 | pass |
 | S5 (secondary) | ECE after minus ECE before calibration | -0.187 [-0.240, -0.118] | - | pass |
-| S6 | Fresh clone plus one command regenerates all tables on the real data | no completed full run logged | - | not demonstrated |
+| S6 | Fresh clone plus one command regenerates all tables on the real data | 2026-11-01 full | - | pass |
 | S7 baro (observed) | Reproduced Avg@5 within tolerance on all three suites | see the reproduction table | - | pass |
 | S7 lingam_randomwalk (observed) | Reproduced Avg@5 within tolerance on all three suites | see the reproduction table | - | fail |
 
@@ -313,7 +313,7 @@ On held-out folds it was unstable, and the pooled figure hides that.
 - **Two stages did not help on clean data.**
 - **Augmentation cost clean accuracy:** the ranker went from 90.6 [85.8, 94.8] to 88.7 [83.6, 93.1], and
   flat LightGBM from 94.0 [90.1, 97.4] to 89.7 [84.2, 94.7].
-- **S6 is not demonstrated** on the real data. See the reproduction statement.
+- **S6 covers exploratory results only.** The logged full run regenerated the committed tables, but no frozen config has been run.
 - **ICA-LiNGAM missed tolerance on one system.**
 
 ## Failure analysis

@@ -23,7 +23,7 @@ from cascadelens.report.build import (
 )
 from cascadelens.report.sources import REPRODUCTION_LOG, SOURCES, ReportError, Store
 from cascadelens.report.tables import MARKER, Table, all_tables, full_run, headline
-from cascadelens.report.values import Value, all_values
+from cascadelens.report.values import Value, all_values, s6_values
 
 REPO = Path(__file__).parents[2]
 GENERATED_BLOCK = re.compile(r"<!-- generated:(\w+);.*?-->(.*?)<!-- /generated -->", re.DOTALL)
@@ -172,6 +172,25 @@ def test_s6_needs_a_full_run_that_passed(tmp_path: Path) -> None:
     assert full_run(tmp_path) == "2026-11-01 full"
 
 
+def test_s6_prose_follows_the_log(fixture_root: Path) -> None:
+    path = fixture_root / REPRODUCTION_LOG
+    path.parent.mkdir(parents=True, exist_ok=True)
+    header = "| Date | Kind | Commit | Machine | Runtime (s) | Outcome |\n"
+    path.write_text(header, encoding="utf-8")
+    assert "not demonstrated" in s6_values(Store(fixture_root))["s6_limitation"].text
+    path.write_text(header + "| 2026-11-01 | full | `a` | x | 1 | pass |\n", encoding="utf-8")
+    values = s6_values(Store(fixture_root))
+    assert "not demonstrated" not in values["s6_limitation"].text
+    assert values["s6_todo"].text.startswith("- [x]")
+
+
+def test_no_template_states_the_s6_verdict_by_hand() -> None:
+    for template in DOCUMENTS:
+        text = (TEMPLATES / template).read_text(encoding="utf-8")
+        assert "not demonstrated" not in text
+        assert "not been demonstrated" not in text
+
+
 def test_headline_says_s6_is_not_demonstrated_without_a_logged_run() -> None:
     if full_run(REPO) is None:
         text = (REPO / HEADLINE_PATH).read_text(encoding="utf-8")
@@ -270,3 +289,9 @@ def test_smoke_finishes_inside_the_limit(monkeypatch: pytest.MonkeyPatch) -> Non
     started = time.perf_counter()
     smoke.main()
     assert time.perf_counter() - started < 300
+
+
+def test_a_full_run_compares_tables_with_the_committed_ones() -> None:
+    text = (REPO / "scripts/clean_clone_check.sh").read_text(encoding="utf-8")
+    assert "git diff --exit-code" in text
+    assert "docs/results/headline_table.md" in text

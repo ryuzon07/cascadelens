@@ -2,8 +2,16 @@
 
 from dataclasses import dataclass
 
-from cascadelens.report.sources import Store, ci, fraction, pct
-from cascadelens.report.tables import CLEAN, PLAIN, RANKER, S3_POINT, SHIFT_POINT, _grid
+from cascadelens.report.sources import REPRODUCTION_LOG, Store, ci, fraction, pct
+from cascadelens.report.tables import (
+    CLEAN,
+    PLAIN,
+    RANKER,
+    S3_POINT,
+    SHIFT_POINT,
+    _grid,
+    full_run,
+)
 
 
 @dataclass(frozen=True)
@@ -97,4 +105,27 @@ def all_values(store: Store) -> dict[str, Value]:
     values["mask_only"] = Value(ci(mask["top1"]), "probe_mask")
     values["mask_floor"] = Value(pct(mask["uniform_floor"]), "probe_mask")
     values["lingam_gap"] = Value(f"{lingam['difference']:+.3f}", "lingam")
-    return values
+    return values | s6_values(store)
+
+
+def s6_values(store: Store) -> dict[str, Value]:
+    """Return the S6 phrases, which follow the reproduction log like the headline table does."""
+    run = full_run(store.root)
+    log = "`docs/results/reproduction_log.md`"
+    if run is None:
+        phrases = {
+            "s6_limitation": "**S6 is not demonstrated** on the real data. See the reproduction "
+            "statement.",
+            "s6_summary": "S6 has not been demonstrated on the real data.",
+            "s6_todo": f"- [ ] S6: a completed full run from a fresh clone on the real data, "
+            f"logged in {log}",
+        }
+    else:
+        phrases = {
+            "s6_limitation": "**S6 covers exploratory results only.** The logged full run "
+            "regenerated the committed tables, but no frozen config has been run.",
+            "s6_summary": "S6 passed from a fresh clone on the real data, on exploratory results.",
+            "s6_todo": f"- [x] S6: a completed full run from a fresh clone on the real data, "
+            f"logged in {log}",
+        }
+    return {name: Value(text, REPRODUCTION_LOG) for name, text in phrases.items()}

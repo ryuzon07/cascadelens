@@ -21,7 +21,7 @@ synthetic sample cases, so this shows behaviour and not accuracy.
 **2:00, the honest summary.** Show the P2 curve, labelled simulated. At 30% failure-correlated loss
 the ranker scores 74.7 [67.8, 81.1] against 63.3 [55.9, 70.5] for flat LightGBM. On clean data flat LightGBM
 still wins, 94.0 [90.1, 97.4] against 88.7 [83.6, 93.1]. S3 passes against learned baselines and fails
-against non-learned ones. S6 has not been demonstrated on the real data.
+against non-learned ones. S6 passed from a fresh clone on the real data, on exploratory results.
 
 **2:30, close.** Show the repository link [VERIFY: repository URL] and how to reproduce.
 

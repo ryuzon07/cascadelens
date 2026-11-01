@@ -12,6 +12,6 @@
 | S3 vs baro | Margin growth, P2 at 30% (simulated) | -18.0 [-24.1, -12.2] | 0.0016 | fail |
 | S4 | Top-1 at 50% coverage minus full coverage and random abstention | 11.0 [7.0, 15.2] | 0.0018 | pass |
 | S5 (secondary) | ECE after minus ECE before calibration | -0.187 [-0.240, -0.118] | - | pass |
-| S6 | Fresh clone plus one command regenerates all tables on the real data | no completed full run logged | - | not demonstrated |
+| S6 | Fresh clone plus one command regenerates all tables on the real data | 2026-11-01 full | - | pass |
 | S7 baro (observed) | Reproduced Avg@5 within tolerance on all three suites | see the reproduction table | - | pass |
 | S7 lingam_randomwalk (observed) | Reproduced Avg@5 within tolerance on all three suites | see the reproduction table | - | fail |

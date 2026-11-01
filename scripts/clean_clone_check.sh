@@ -7,8 +7,12 @@
 # S6 needs the manual full run, on the real data:
 #   DATA_DIR=/path/to/raw bash scripts/clean_clone_check.sh --full
 # DATA_DIR must hold RE1-OB, RE1-SS and RE1-TT. It copies them to the clone, runs
-# `bash scripts/reproduce_all.sh` there (about 6 hours), checks that the result is in sync, and logs a
-# `full` row. Only such a row can change the S6 verdict. Set FROZEN=1 after a freeze.
+# `bash scripts/reproduce_all.sh` there (about 6 hours), fails if any regenerated table differs from
+# the committed one, and logs a `full` row. Only such a row can change the S6 verdict.
+# Set FROZEN=1 after a freeze; a frozen run replaces exploratory numbers, so run its comparison
+# against a commit that holds frozen results.
+#
+# WORK_DIR=<folder> keeps the clone there, so a stopped full run resumes from its last stage.
 set -euo pipefail
 
 repository="$(git rev-parse --show-toplevel)"
@@ -23,29 +27,39 @@ if [ "${1:-}" = "--full" ]; then
     fi
 fi
 
-folder="$(mktemp -d)"
-trap 'rm -rf "$folder"' EXIT
+folder="${WORK_DIR:-$(mktemp -d)}"
 started="$(date +%s)"
 outcome=fail
 
-record() {
+finish() {
     runtime=$(($(date +%s) - started))
     commit="$(git -C "$repository" rev-parse --short=12 HEAD)"
     row="| $(date -u +%Y-%m-%d) | $kind | \`$commit\` | $(uname -sm) | $runtime | $outcome |"
     echo "$row" >>"$log"
     echo "$row"
+    if [ -z "${WORK_DIR:-}" ]; then
+        rm -rf "$folder"
+    fi
 }
-trap 'record; rm -rf "$folder"' EXIT
+trap finish EXIT
 
-git clone --quiet "$repository" "$folder/repo"
+if [ ! -d "$folder/repo" ]; then
+    mkdir -p "$folder"
+    git clone --quiet "$repository" "$folder/repo"
+fi
 cd "$folder/repo"
 "$UV" sync --frozen --extra dev --extra api --quiet
 
 if [ "$kind" = "full" ]; then
-    mkdir -p data
-    cp -r "$DATA_DIR" data/raw
+    if [ ! -d data/raw ]; then
+        mkdir -p data
+        cp -r "$DATA_DIR" data/raw
+    fi
     "$UV" sync --frozen --all-extras --quiet
     bash scripts/reproduce_all.sh
+    # The documents above were rebuilt from the new results, so a sync check alone proves nothing.
+    # The committed tables are the claim being reproduced.
+    git diff --exit-code --stat -- docs/results/tables docs/results/headline_table.md
 else
     make smoke
 fi
