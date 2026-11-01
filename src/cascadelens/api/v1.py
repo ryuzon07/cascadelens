@@ -10,7 +10,15 @@ from fastapi.routing import APIRoute
 from cascadelens.api.failures import ApiFailure
 from cascadelens.api.feedback import history, label, new_feedback
 from cascadelens.api.incidents import IncidentService, decision_of, detail, summary
-from cascadelens.api.model_report import check_values, frozen_config_hash, result_values
+from cascadelens.api.model_report import (
+    CALIBRATED_METHOD,
+    check_values,
+    frozen_config_hash,
+    reliability_bins,
+    result_values,
+    risk_coverage,
+    robustness_points,
+)
 from cascadelens.api.schemas import (
     ErrorResponse,
     FeedbackCreate,
@@ -246,6 +254,10 @@ def build_router(
             result_status=status,
             results=results,
             checks=check_values(root),
+            calibrated_method=CALIBRATED_METHOD,
+            reliability=reliability_bins(root),
+            risk_coverage=risk_coverage(root),
+            robustness=robustness_points(root),
         )
 
     return router

@@ -235,6 +235,10 @@ export const model: ModelReport = {
     },
   ],
   checks: [{ name: "Identity probe", passed: null, source: "experiments/probes/identity.json" }],
+  calibrated_method: "ranker_augmented",
+  reliability: null,
+  risk_coverage: [],
+  robustness: [],
   disclaimer: DISCLAIMER,
 };
 

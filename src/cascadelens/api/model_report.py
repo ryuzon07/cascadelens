@@ -6,7 +6,13 @@ from typing import Any
 
 import yaml
 
-from cascadelens.api.schemas import CheckValue, ResultValue
+from cascadelens.api.schemas import (
+    CheckValue,
+    CoveragePoint,
+    ReliabilityBin,
+    ResultValue,
+    RobustnessPoint,
+)
 
 FROZEN_DIR = Path("configs/frozen")
 CALIBRATION_RESULTS = "experiments/calibration/results.json"
@@ -92,6 +98,43 @@ def result_values(root: Path) -> tuple[str | None, list[ResultValue]]:
     calibration = read_metrics(root / CALIBRATION_RESULTS)
     status = ranker["status"] if ranker else None
     return status, [*_clean_rows(robustness), *_criteria(robustness), *_calibration(calibration)]
+
+
+def _clean_calibration(root: Path) -> dict[str, Any]:
+    calibration = read_metrics(root / CALIBRATION_RESULTS) or {}
+    clean: dict[str, Any] = calibration.get("results", {}).get(CALIBRATED_METHOD, {}).get(CLEAN, {})
+    return clean
+
+
+def reliability_bins(root: Path) -> list[ReliabilityBin] | None:
+    """Return reliability bins, or None: Part 10 saved them only as figures so far."""
+    bins = _clean_calibration(root).get("reliability")
+    return [ReliabilityBin.model_validate(item) for item in bins] if bins else None
+
+
+def risk_coverage(root: Path) -> list[CoveragePoint]:
+    """Return Top-1 on the kept cases at each coverage, lowest coverage first."""
+    selective = _clean_calibration(root).get("selective", {})
+    return [
+        CoveragePoint(coverage=float(coverage), **selective[coverage])
+        for coverage in sorted(selective, key=float)
+    ]
+
+
+def robustness_points(root: Path) -> list[RobustnessPoint]:
+    """Return Top-1 of the compared methods at every grid point, in the committed order."""
+    robustness = read_metrics(root / ROBUSTNESS_RESULTS) or {}
+    return [
+        RobustnessPoint(
+            method=row["method"],
+            perturbation=row["perturbation"],
+            point=row["point"],
+            realism=row["realism"],
+            **row["Top-1"],
+        )
+        for row in robustness.get("grid", [])
+        if row["method"] in METHODS
+    ]
 
 
 def check_values(root: Path) -> list[CheckValue]:

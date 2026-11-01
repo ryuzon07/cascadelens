@@ -322,6 +322,26 @@ def test_model_report_reads_committed_results(client: TestClient) -> None:
     assert_safe(report)
 
 
+def test_model_report_carries_committed_curves(client: TestClient) -> None:
+    report = client.get(f"{API}/model").json()
+    committed = json.loads((REPO / "experiments/calibration/results.json").read_text("utf-8"))
+    clean = committed["metrics"]["results"]["ranker_augmented"]["clean"]
+    assert report["calibrated_method"] == "ranker_augmented"
+    assert report["reliability"] is None
+    coverages = [point["coverage"] for point in report["risk_coverage"]]
+    assert coverages == sorted(coverages)
+    assert report["risk_coverage"][-1]["estimate"] == clean["selective"]["1.0"]["estimate"]
+    assert {row["method"] for row in report["robustness"]} == {
+        "ranker",
+        "ranker_augmented",
+        "lightgbm_flat",
+        "lightgbm_flat_masking",
+    }
+    simulated = [row for row in report["robustness"] if row["perturbation"] != "clean"]
+    assert simulated
+    assert all(row["realism"] == "simulated" for row in simulated)
+
+
 def test_missing_results_stay_null(trained_model: Path, tmp_path: Path) -> None:
     settings = ApiSettings(model_dir=trained_model, root=tmp_path)
     with TestClient(create_app(settings)) as empty:
@@ -330,6 +350,9 @@ def test_missing_results_stay_null(trained_model: Path, tmp_path: Path) -> None:
     assert report["results"]
     assert all(row["estimate"] is None for row in report["results"])
     assert all(check["passed"] is None for check in report["checks"])
+    assert report["reliability"] is None
+    assert report["risk_coverage"] == []
+    assert report["robustness"] == []
 
 
 def test_every_response_is_free_of_ground_truth(seeded: TestClient) -> None:

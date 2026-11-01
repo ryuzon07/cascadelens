@@ -48,7 +48,7 @@ export function LineChart({ series }: { series: Series }) {
     ((value - low) / Math.max(high - low, 1e-9)) * (HEIGHT - PAD.top - PAD.bottom);
 
   function nearest(position: number) {
-    const target = first + (position * (last - first)) / 1;
+    const target = first + position * (last - first);
     return series.points.reduce((best, point) =>
       Math.abs(point.ts - target) < Math.abs(best.ts - target) ? point : best,
     );

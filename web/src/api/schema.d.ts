@@ -363,6 +363,20 @@ export interface components {
             service: string;
         };
         /**
+         * CoveragePoint
+         * @description Top-1 on the cases kept at one coverage.
+         */
+        CoveragePoint: {
+            /** Coverage */
+            coverage: number;
+            /** Estimate */
+            estimate: number;
+            /** Lower */
+            lower: number;
+            /** Upper */
+            upper: number;
+        };
+        /**
          * CurvePoint
          * @description One intensity of the perturbation. Zero is the original case.
          */
@@ -875,6 +889,8 @@ export interface components {
             abstain_threshold: number | null;
             /** Calibrated */
             calibrated: boolean;
+            /** Calibrated Method */
+            calibrated_method: string;
             /** Checks */
             checks: components["schemas"]["CheckValue"][];
             /** Config Hash */
@@ -894,10 +910,16 @@ export interface components {
             method: string;
             /** Model Version */
             model_version: string;
+            /** Reliability */
+            reliability: components["schemas"]["ReliabilityBin"][] | null;
             /** Result Status */
             result_status: string | null;
             /** Results */
             results: components["schemas"]["ResultValue"][];
+            /** Risk Coverage */
+            risk_coverage: components["schemas"]["CoveragePoint"][];
+            /** Robustness */
+            robustness: components["schemas"]["RobustnessPoint"][];
             /** Seed */
             seed: number;
             /** Split */
@@ -931,6 +953,18 @@ export interface components {
             service: string;
         };
         /**
+         * ReliabilityBin
+         * @description One bin of a reliability diagram.
+         */
+        ReliabilityBin: {
+            /** Accuracy */
+            accuracy: number;
+            /** Cases */
+            cases: number;
+            /** Confidence */
+            confidence: number;
+        };
+        /**
          * ResultValue
          * @description A committed result. Null values mean that it is missing, and the source says where from.
          */
@@ -945,6 +979,26 @@ export interface components {
             source: string;
             /** Upper */
             upper: number | null;
+        };
+        /**
+         * RobustnessPoint
+         * @description Top-1 of one method at one perturbation grid point.
+         */
+        RobustnessPoint: {
+            /** Estimate */
+            estimate: number;
+            /** Lower */
+            lower: number;
+            /** Method */
+            method: string;
+            /** Perturbation */
+            perturbation: string;
+            /** Point */
+            point: string;
+            /** Realism */
+            realism: string;
+            /** Upper */
+            upper: number;
         };
         /**
          * Scenario

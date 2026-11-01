@@ -347,6 +347,35 @@ class CheckValue(BaseModel):
     source: str
 
 
+class ReliabilityBin(BaseModel):
+    """One bin of a reliability diagram."""
+
+    confidence: float
+    accuracy: float
+    cases: int
+
+
+class CoveragePoint(BaseModel):
+    """Top-1 on the cases kept at one coverage."""
+
+    coverage: float
+    estimate: float
+    lower: float
+    upper: float
+
+
+class RobustnessPoint(BaseModel):
+    """Top-1 of one method at one perturbation grid point."""
+
+    method: str
+    perturbation: str
+    point: str
+    realism: str
+    estimate: float
+    lower: float
+    upper: float
+
+
 class ModelReport(BaseModel):
     """The saved model's provenance and the committed results behind the Model screen."""
 
@@ -364,4 +393,8 @@ class ModelReport(BaseModel):
     result_status: str | None
     results: list[ResultValue]
     checks: list[CheckValue]
+    calibrated_method: str
+    reliability: list[ReliabilityBin] | None
+    risk_coverage: list[CoveragePoint]
+    robustness: list[RobustnessPoint]
     disclaimer: str = DISCLAIMER

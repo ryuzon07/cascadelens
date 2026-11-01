@@ -63,6 +63,35 @@
         "title": "CoverageCell",
         "type": "object"
       },
+      "CoveragePoint": {
+        "description": "Top-1 on the cases kept at one coverage.",
+        "properties": {
+          "coverage": {
+            "title": "Coverage",
+            "type": "number"
+          },
+          "estimate": {
+            "title": "Estimate",
+            "type": "number"
+          },
+          "lower": {
+            "title": "Lower",
+            "type": "number"
+          },
+          "upper": {
+            "title": "Upper",
+            "type": "number"
+          }
+        },
+        "required": [
+          "coverage",
+          "estimate",
+          "lower",
+          "upper"
+        ],
+        "title": "CoveragePoint",
+        "type": "object"
+      },
       "CurvePoint": {
         "description": "One intensity of the perturbation. Zero is the original case.",
         "properties": {
@@ -1236,6 +1265,10 @@
             "title": "Calibrated",
             "type": "boolean"
           },
+          "calibrated_method": {
+            "title": "Calibrated Method",
+            "type": "string"
+          },
           "checks": {
             "items": {
               "$ref": "#/components/schemas/CheckValue"
@@ -1279,6 +1312,20 @@
             "title": "Model Version",
             "type": "string"
           },
+          "reliability": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ReliabilityBin"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reliability"
+          },
           "result_status": {
             "anyOf": [
               {
@@ -1295,6 +1342,20 @@
               "$ref": "#/components/schemas/ResultValue"
             },
             "title": "Results",
+            "type": "array"
+          },
+          "risk_coverage": {
+            "items": {
+              "$ref": "#/components/schemas/CoveragePoint"
+            },
+            "title": "Risk Coverage",
+            "type": "array"
+          },
+          "robustness": {
+            "items": {
+              "$ref": "#/components/schemas/RobustnessPoint"
+            },
+            "title": "Robustness",
             "type": "array"
           },
           "seed": {
@@ -1324,7 +1385,11 @@
           "frozen_config_hash",
           "result_status",
           "results",
-          "checks"
+          "checks",
+          "calibrated_method",
+          "reliability",
+          "risk_coverage",
+          "robustness"
         ],
         "title": "ModelReport",
         "type": "object"
@@ -1402,6 +1467,30 @@
         "title": "RankedService",
         "type": "object"
       },
+      "ReliabilityBin": {
+        "description": "One bin of a reliability diagram.",
+        "properties": {
+          "accuracy": {
+            "title": "Accuracy",
+            "type": "number"
+          },
+          "cases": {
+            "title": "Cases",
+            "type": "integer"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          }
+        },
+        "required": [
+          "confidence",
+          "accuracy",
+          "cases"
+        ],
+        "title": "ReliabilityBin",
+        "type": "object"
+      },
       "ResultValue": {
         "description": "A committed result. Null values mean that it is missing, and the source says where from.",
         "properties": {
@@ -1455,6 +1544,50 @@
           "source"
         ],
         "title": "ResultValue",
+        "type": "object"
+      },
+      "RobustnessPoint": {
+        "description": "Top-1 of one method at one perturbation grid point.",
+        "properties": {
+          "estimate": {
+            "title": "Estimate",
+            "type": "number"
+          },
+          "lower": {
+            "title": "Lower",
+            "type": "number"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "perturbation": {
+            "title": "Perturbation",
+            "type": "string"
+          },
+          "point": {
+            "title": "Point",
+            "type": "string"
+          },
+          "realism": {
+            "title": "Realism",
+            "type": "string"
+          },
+          "upper": {
+            "title": "Upper",
+            "type": "number"
+          }
+        },
+        "required": [
+          "method",
+          "perturbation",
+          "point",
+          "realism",
+          "estimate",
+          "lower",
+          "upper"
+        ],
+        "title": "RobustnessPoint",
         "type": "object"
       },
       "Scenario": {

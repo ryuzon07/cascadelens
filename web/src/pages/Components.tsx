@@ -11,8 +11,10 @@ import { DependencyGraph, GraphLegend } from "../components/DependencyGraph";
 import { Disclaimer, SampleDataBadge } from "../components/Disclaimer";
 import { FeedbackForm } from "../components/FeedbackForm";
 import { Select, Slider, TextInput, Toggle } from "../components/Fields";
+import { CurveChart } from "../components/CurveChart";
 import { LineChart } from "../components/LineChart";
 import { OnsetTimeline } from "../components/OnsetTimeline";
+import { ReliabilityDiagram } from "../components/ReliabilityDiagram";
 import { StackedBars } from "../components/StackedBars";
 import { EmptyState, ErrorState, Skeleton, StaleIndicator } from "../components/States";
 import { SuspectRow } from "../components/SuspectRow";
@@ -187,6 +189,28 @@ export function Components() {
         />
         <CoverageHeatmap coverage={coverage} />
         <OnsetTimeline timeline={timeline} />
+        <CurveChart
+          label="Example curve"
+          xLabel="Intensity"
+          yLabel="Confidence"
+          threshold={0.5}
+          series={[
+            {
+              label: "Example",
+              points: [
+                { x: 0, y: 0.9 },
+                { x: 1, y: 0.4 },
+              ],
+            },
+          ]}
+        />
+        <ReliabilityDiagram bins={null} />
+        <ReliabilityDiagram
+          bins={[
+            { confidence: 0.3, accuracy: 0.25, cases: 10 },
+            { confidence: 0.8, accuracy: 0.85, cases: 20 },
+          ]}
+        />
       </Sample>
       <Sample title="Dependency graph">
         <DependencyGraph graph={graph} selected="gamma" />
