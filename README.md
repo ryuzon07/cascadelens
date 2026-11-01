@@ -69,6 +69,21 @@ methods should only be compared descriptively.
 - Known leak risk: the injection sits near the middle of every window, so the window itself reveals
   it (see the [data audit](docs/data_audit.md)).
 
+## Freezing the config
+
+Every result is tagged exploratory until a config is frozen. Run this once, after you have stopped
+changing `configs/ranker.yaml`, `configs/augment.yaml` and the feature config, and before the final
+reported run:
+
+```bash
+cascadelens freeze --name final
+```
+
+It records each ranker variant's validation choice for every fold under the config hash, in
+`configs/frozen/final.yaml`, using training and validation cases only. Then rerun the experiments
+without `--exploratory`. A frozen record is never rewritten, and any later config change needs a new
+name and a disclosed amendment in [PREREGISTRATION.md](PREREGISTRATION.md).
+
 ## Layout
 
 ```text

@@ -1,0 +1,13 @@
+# Masking augmentation for training cases only (PRD 8.4). Each case gets the copies below.
+seed: 0
+random_copies: 1
+failure_copies: 1
+# Each copy draws its masking rate uniformly from this range.
+rate_low: 0.1
+rate_high: 0.5
+# Failure-correlated copies use data only: distance from the earliest-onset service, and time since
+# the earliest detected onset. Neither reads the label or inject_time.
+near_hops: 1
+near_boost: 3.0
+after_boost: 3.0
+block_seconds: 30

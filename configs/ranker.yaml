@@ -20,7 +20,10 @@ reranker:
   ndcg_at: [1, 3, 5]
   num_boost_round: 500
   early_stopping_rounds: 30
-  params: {}
+  # One thread: LightGBM's bagging_by_query gives different models between runs on several threads,
+  # at the same seed. Stage 1 does not bag, so it keeps num_threads.
+  params:
+    num_threads: 1
 tuning:
   budget: 30  # Equal to lightgbm_flat, and K is drawn inside these 30 configurations.
   seed: 0

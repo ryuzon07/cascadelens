@@ -75,9 +75,9 @@ def _no_metrics() -> pl.DataFrame:
 
 
 def synthetic(
-    cases: int, services: int = 6, seed: int = 0, shuffled: bool = False
+    cases: int, services: int = 6, seed: int = 0, shuffled: bool = False, marker: str = SIGNAL
 ) -> tuple[list[CaseHandle], DictSource]:
-    """Return cases whose ``SIGNAL`` marks the truth, or an unrelated service when ``shuffled``."""
+    """Return cases whose ``marker`` marks the truth, or an unrelated service when ``shuffled``."""
     rng = np.random.default_rng(seed)
     names = [f"svc-{index}" for index in range(services)]
     columns = feature_columns(ALL_GROUPS)
@@ -91,7 +91,7 @@ def synthetic(
             "service": names,
             **{c: rng.normal(size=services).tolist() for c in columns},
         }
-        data[SIGNAL] = [float(name == marked) for name in names]
+        data[marker] = [float(name == marked) for name in names]
         tables[case_id] = pl.DataFrame(data)
         handles.append(CaseHandle(record(case_id, truth, f"run-{number // 2}"), _no_metrics))
     return handles, DictSource(tables)

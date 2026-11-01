@@ -1,0 +1,13 @@
+seed: 0
+n_resamples: 10000
+alpha: 0.05
+# Identity: a Top-1 drop below this is small, per PRD 6.5.
+identity_drop_limit: 0.05
+# Graph-only: within this many points of the frequency prior counts as near the floor.
+graph_floor_margin: 0.10
+# Window leak: accuracy at offset 0 above its neighbours by more than this, and more than twice the
+# largest step elsewhere on the curve, is a cliff.
+cliff_threshold: 0.05
+offsets: [-120, -90, -60, -45, -30, -15, 15, 30, 45, 60, 90, 120]
+random_window_jitter: [60, 120]
+window_methods: [ranker, ranker_augmented, lightgbm_flat]

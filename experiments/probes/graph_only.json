@@ -1,0 +1,61 @@
+{
+  "config": {
+    "alpha": 0.05,
+    "cliff_threshold": 0.05,
+    "graph_floor_margin": 0.1,
+    "identity_drop_limit": 0.05,
+    "n_resamples": 10000,
+    "offsets": [
+      -120,
+      -90,
+      -60,
+      -45,
+      -30,
+      -15,
+      15,
+      30,
+      45,
+      60,
+      90,
+      120
+    ],
+    "random_window_jitter": [
+      60,
+      120
+    ],
+    "seed": 0,
+    "window_methods": [
+      "ranker",
+      "ranker_augmented",
+      "lightgbm_flat"
+    ]
+  },
+  "config_hash": "b8bde8eec6941b24a407f1398aa13d37bd4151abd30a37dd8e4d83f829a7a4c9",
+  "data_checksum": "b1ae69bc89350088eef88b25483b46d520416ec1bdf2eb9c9e3a4c48690823d3",
+  "git_commit": "bf2468d76861a1bf38e75ecdfd3f67aa6eaf8e3e",
+  "metrics": {
+    "group_run": {
+      "frequency_prior": 0.2,
+      "near": true,
+      "top1": {
+        "estimate": 0.12266666666666666,
+        "lower": 0.09013333333333333,
+        "upper": 0.15839999999999999
+      },
+      "uniform_floor": 0.04434213138332132
+    },
+    "loso": {
+      "frequency_prior": 0.04434213138332129,
+      "near": true,
+      "top1": {
+        "estimate": 0.07413333333333333,
+        "lower": 0.054933333333333334,
+        "upper": 0.09440000000000001
+      },
+      "uniform_floor": 0.044342131383321305
+    },
+    "passed": true,
+    "status": "exploratory"
+  },
+  "seed": 0
+}

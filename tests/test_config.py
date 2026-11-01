@@ -83,3 +83,8 @@ def test_non_mapping_yaml_is_rejected(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="mapping"):
         load_config(path, DataConfig)
+
+
+def test_stage_two_runs_on_one_thread_so_bagging_is_repeatable() -> None:
+    config = load_config(CONFIGS / "ranker.yaml", RankerConfig)
+    assert config.reranker.params["num_threads"] == 1

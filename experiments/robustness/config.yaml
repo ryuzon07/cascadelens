@@ -1,0 +1,34 @@
+seed: 0
+n_resamples: 10000
+alpha: 0.05
+s2_margin: 0.12
+workers: 6
+ranker_config: configs/ranker.yaml
+augment_config: configs/augment.yaml
+# The CascadeLens ranker, and the plain Part 7 ranker reported beside it.
+ranker: ranker_augmented
+plain_ranker: ranker
+prior: frequency
+# Primary criteria of PRD 9.3. S4 needs Part 10 and S7 is an observed result, so neither is here yet.
+primary: [S1, S2, S3, S4, S7]
+s3_point: {id: P2, rate: 0.3}
+s3_baselines: [lightgbm_flat, lightgbm_flat_masking, frequency, rule, rule_upstream, baro]
+curve_methods:
+  supervised: [ranker_augmented, ranker, lightgbm_flat_masking, lightgbm_flat, single_stage_augmented, frequency]
+  unsupervised: [rule, rule_upstream]
+variants:
+  - {name: ranker, kind: two_stage}
+  - {name: ranker_augmented, kind: two_stage, augment: true}
+  - {name: lightgbm_flat, kind: flat}
+  - {name: lightgbm_flat_masking, kind: flat, augment: true}
+  - {name: ablate_signal, kind: two_stage, augment: true, drop_group: signal}
+  - {name: ablate_temporal, kind: two_stage, augment: true, drop_group: temporal}
+  - {name: ablate_graph, kind: two_stage, augment: true, drop_group: graph}
+  - {name: ablate_structural, kind: two_stage, augment: true, drop_group: structural}
+  - {name: ablate_mask, kind: two_stage, augment: true, drop_group: mask}
+  - {name: single_stage_augmented, kind: single_stage, augment: true}
+  - {name: frequency, kind: frequency}
+  - {name: rule, kind: rule}
+  - {name: rule_upstream, kind: rule_upstream}
+  # BARO costs about 1.4 s a case, so it runs only where S3 needs it. It imputes in its own adapter.
+  - {name: baro, kind: baro, points: s3}

@@ -6,12 +6,13 @@ from typing import Annotated
 import typer
 
 from cascadelens.baselines.base import BaselineError
+from cascadelens.eval.robustness import freeze_variants
 from cascadelens.features.context import FeatureError
 from cascadelens.models.artifacts import latest_artifact
 from cascadelens.models.diagnose import diagnose_case
 from cascadelens.models.experiment import ranker_clean
 from cascadelens.models.pipeline import evaluate as evaluate_method
-from cascadelens.models.pipeline import freeze_config, train_folds
+from cascadelens.models.pipeline import train_folds
 from cascadelens.splits.errors import SplitError
 
 FAILURES = (BaselineError, FeatureError, SplitError)
@@ -69,11 +70,10 @@ def evaluate(
 
 def freeze(
     name: Annotated[str, typer.Option("--name", help="Name of configs/frozen/<name>.yaml.")],
-    config: ConfigOption = Path("configs/ranker.yaml"),
 ) -> None:
-    """Record the choices made on validation for every fold of every split family."""
+    """Record the validation choices of every ranker variant on every split family."""
     try:
-        path = freeze_config(config, name)
+        path = freeze_variants(name)
     except FAILURES as error:
         raise _fail("freeze", error) from error
     typer.echo(f"Wrote {path}.")

@@ -8,6 +8,8 @@ from cascadelens.baselines.cli import experiments_app
 from cascadelens.baselines.published.cli import app as published_app
 from cascadelens.data.cli import app as data_app
 from cascadelens.eval.cli import app as eval_app
+from cascadelens.eval.robustness_cli import app as probes_app
+from cascadelens.eval.robustness_cli import run_robustness
 from cascadelens.features.cli import app as features_app
 from cascadelens.models.cli import diagnose, evaluate, freeze, run_ranker_clean, train
 from cascadelens.perturb.cli import app as perturb_app
@@ -21,12 +23,14 @@ app.add_typer(features_app, name="features")
 app.add_typer(experiments_app, name="experiments")
 app.add_typer(published_app, name="published")
 app.add_typer(perturb_app, name="perturb")
+app.add_typer(probes_app, name="probes")
 app.add_typer(splits_app, name="splits")
 app.command()(train)
 app.command()(evaluate)
 app.command()(freeze)
 app.command()(diagnose)
 experiments_app.command("ranker-clean")(run_ranker_clean)
+experiments_app.command("robustness")(run_robustness)
 
 NOT_IMPLEMENTED = "not implemented"
 
