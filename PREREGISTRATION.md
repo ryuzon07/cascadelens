@@ -114,3 +114,30 @@ is unvalidated against real call graphs, so the graph group must be ablated.
 **2026-10-31: `rule_upstream` tie-break.** After seeing its test scores, `rule_upstream` was changed
 to break z-score cap ties by anomaly duration (commit `d1f475a`), which raised its group_run Top-1
 from 20.5% to 28.0%. It is not the best baseline, so no criterion's comparator moved.
+
+The amendments below came after exploratory ranker results existed, so the sentence above does not
+cover them. No config has been frozen. The criteria, the 12-point margin and the S3 test are
+unchanged.
+
+**2026-11-01: Stage 2 runs on one thread.** LightGBM's `bagging_by_query` gave different models
+between runs at the same seed when it ran on several threads, so `configs/ranker.yaml` now sets
+`num_threads: 1` for Stage 2. This was found because the plain ranker's clean Top-1 differed between
+runs (92.1% and 90.7%). The setting was chosen for repeatability, not by test score: a refit of two
+folds then matched its saved outcomes on 750 of 750 cases. Part 7 was regenerated, and its group_run
+Top-1 moved from 90.7% to 90.6% with no verdict changed. Fold 1 remains fragile, with very early
+stopping and large swings across settings.
+
+**2026-11-01: P2 leaks the root cause.** P2 is the 30% failure-correlated loss in S3. It uses ground
+truth to place gaps near the fault, and missing share alone gave 16.8 to 24.5% Top-1 against a 4.4%
+floor before any ranker ran. Mask features can therefore gain from the gaps revealing the fault
+rather than from robustness. On exploratory numbers, `ablate_mask` loses 3.2 [1.2, 5.2] points at P2
+30%, and the mask-only probe reaches 31.5% [22.9, 40.7] on clean data. S3 is not changed, but any S3
+gain must be reported beside these two numbers.
+
+**2026-11-01: reading of "baselines" in S3.** The criterion names no baseline set and requires the
+augmentation-matched LightGBM. The comparators were set in `experiments/robustness/config.yaml`
+before any S3 result existed: both LightGBM flats, frequency, `rule`, `rule_upstream` and BARO. They
+stay in the Holm family and are reported one by one. The criterion is not narrowed to learned
+baselines after seeing that the four non-learned comparators fail: a baseline that ignores the lost
+data keeps its score, so its margin shrinks whenever the ranker loses accuracy. S3 is reported as
+split, not as a pass.

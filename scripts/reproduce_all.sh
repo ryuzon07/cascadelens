@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Regenerate every headline table from data/raw. Requires `make install` and the RE1 data.
-# The ranker is not implemented yet, so its tables are not part of this run.
 # PUBLISHED=1 also reruns the published baselines, which takes about two hours.
+# ROBUSTNESS=1 also runs the perturbation sweep and the probes, which takes about three hours.
+# FROZEN=1 drops --exploratory, once a config is frozen with `cascadelens freeze`.
 set -euo pipefail
 
 UV="${UV:-uv}"
@@ -24,6 +25,12 @@ cascadelens experiments leakage-demo
 cascadelens experiments baselines-clean
 cascadelens eval power --config configs/eval.yaml
 
+status=(--exploratory)
+if [ "${FROZEN:-0}" = "1" ]; then
+    status=()
+fi
+cascadelens experiments ranker-clean ${status[@]+"${status[@]}"}
+
 if [ "${PUBLISHED:-0}" = "1" ]; then
     published() {
         "$UV" run --frozen --extra published cascadelens published "$@"
@@ -31,4 +38,12 @@ if [ "${PUBLISHED:-0}" = "1" ]; then
     published reproduce --name baro
     published reproduce --name lingam_randomwalk
     published evaluate
+fi
+
+if [ "${ROBUSTNESS:-0}" = "1" ]; then
+    cascadelens perturb summarize --workers 4
+    cascadelens experiments robustness --stage all ${status[@]+"${status[@]}"}
+    for probe in identity graph-only mask-only window; do
+        cascadelens probes "$probe" ${status[@]+"${status[@]}"}
+    done
 fi

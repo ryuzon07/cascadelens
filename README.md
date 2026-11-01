@@ -4,9 +4,10 @@ CascadeLens ranks the likely origin services of a microservice incident from met
 to stay honest when telemetry is imperfect. It gives a ranking of likely origin services, not proof
 of causation, and it is a decision aid for read-only analysis, not an autonomous operator.
 
-**Status:** the evaluation harness is complete: data ingestion, leakage-safe splits, baselines,
-statistics and features. The ranker itself is not implemented yet, so no result here is a ranker
-result. Success criteria are fixed in [PREREGISTRATION.md](PREREGISTRATION.md).
+**Status:** the harness, the two-stage ranker, the perturbation engine, missingness-aware training
+and the robustness sweep are done. Calibration and abstention are not built yet, so S4 and S5 are
+untested. No config is frozen, so every ranker result here is exploratory. Success criteria are
+fixed in [PREREGISTRATION.md](PREREGISTRATION.md).
 
 ## Setup
 
@@ -41,9 +42,11 @@ data/raw/RE1-TT/...
 make all
 ```
 
-This rebuilds the processed data, splits, features and every current table. `PUBLISHED=1 make all`
+This rebuilds the processed data, splits, features and every clean table. `PUBLISHED=1 make all`
 also reruns BARO and ICA-LiNGAM, which takes about 2.5 hours and needs `make install` for the
-`published` extra.
+`published` extra. `ROBUSTNESS=1 make all` also runs the perturbation sweep and the probes, which
+takes about three hours and resumes where it stopped. `FROZEN=1` drops `--exploratory` after a
+freeze.
 
 Results are committed under `experiments/`. Each result JSON records its config hash, git commit,
 data checksum and seed.
@@ -56,6 +59,7 @@ methods should only be compared descriptively.
 | Method | Type | Top-1 % |
 | --- | --- | --- |
 | LightGBM flat | Supervised | 94.0 [90.1, 97.4] |
+| Two-stage ranker (exploratory) | Supervised | 90.6 [85.8, 94.8] |
 | Frequency prior | Supervised | 20.0 [12.0, 29.3] |
 | BARO | Unsupervised | 30.1 [21.9, 38.4] |
 | Max anomaly (`rule_upstream`) | Unsupervised | 28.0 [20.5, 35.7] |
@@ -68,6 +72,10 @@ methods should only be compared descriptively.
   [reproduction](docs/reproduction/PLAN.md).
 - Known leak risk: the injection sits near the middle of every window, so the window itself reveals
   it (see the [data audit](docs/data_audit.md)).
+- The ranker with masking augmentation scores 88.7 on clean data. Under simulated 30%
+  failure-correlated loss it scores 74.7, against 63.3 for LightGBM flat. S1 and S2 pass, and S3
+  is split: it passes against both LightGBM flats and fails against the four non-learned baselines.
+  See the [robustness summary](docs/robustness_summary.md), including its leak caveat.
 
 ## Freezing the config
 

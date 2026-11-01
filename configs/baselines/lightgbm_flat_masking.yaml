@@ -1,5 +1,0 @@
-name: lightgbm_flat_masking
-supervised: true
-seeds: [0, 1, 2, 3, 4]
-params:
-  masking_augmentation: true
