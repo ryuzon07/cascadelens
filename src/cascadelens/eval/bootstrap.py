@@ -18,8 +18,12 @@ import numpy.typing as npt
 from cascadelens.eval.calibration import (
     ArrayLike,
     Floats,
+    aurc,
     bin_index,
     ece,
+    random_abstention,
+    risk_coverage,
+    selective_accuracy,
     tie_averaged_correct,
     validated,
 )
@@ -27,6 +31,7 @@ from cascadelens.eval.errors import EvalError
 
 N_RESAMPLES = 10_000
 ALPHA = 0.05
+AURC_BATCH = 500
 
 
 @dataclass(frozen=True)
@@ -248,19 +253,106 @@ def selective_gain_bootstrap(
     positions, n_groups = group_positions(group_ids)
     if positions.size != confidences.size:
         raise EvalError(f"Expected {confidences.size} group ids, got {positions.size}")
+    counts = resample_counts(n_groups, n, seed)
+    selective, full = _resampled_selective(confidences, outcomes, positions, counts, coverage)
+    _, hits = tie_averaged_correct(confidences, outcomes)
+    kept = max(1, round(coverage * confidences.size))
+    estimate = float(hits[:kept].mean() - hits.mean())
+    return _paired(estimate, selective - full, n_groups, alpha)
+
+
+def _resampled_selective(
+    confidences: Floats,
+    outcomes: Floats,
+    positions: npt.NDArray[np.intp],
+    counts: npt.NDArray[np.float64],
+    coverage: float,
+) -> tuple[Floats, Floats]:
+    """Return each resample's selective accuracy and full-coverage accuracy."""
     order = np.argsort(-confidences, kind="stable")
     _, hits = tie_averaged_correct(confidences, outcomes)
-    counts = resample_counts(n_groups, n, seed)
-
     weights = counts[:, positions[order]]
     cases = np.cumsum(weights, axis=1)
     correct_cases = np.cumsum(weights * hits, axis=1)
     target = np.maximum(1.0, np.round(coverage * cases[:, -1]))
     last = np.argmax(cases >= target[:, None], axis=1)
-    rows = np.arange(n)
-    resampled: Floats = correct_cases[rows, last] / cases[rows, last] - (
-        correct_cases[:, -1] / cases[:, -1]
+    rows = np.arange(counts.shape[0])
+    selective: Floats = correct_cases[rows, last] / cases[rows, last]
+    full: Floats = correct_cases[:, -1] / cases[:, -1]
+    return selective, full
+
+
+def _scored(
+    conf: ArrayLike, correct: ArrayLike, group_ids: ArrayLike, alpha: float
+) -> tuple[Floats, Floats, npt.NDArray[np.intp], int]:
+    _check_alpha(alpha)
+    confidences, outcomes = validated(conf, correct)
+    positions, n_groups = group_positions(group_ids)
+    if positions.size != confidences.size:
+        raise EvalError(f"Expected {confidences.size} group ids, got {positions.size}")
+    return confidences, outcomes, positions, n_groups
+
+
+def ece_ci(
+    conf: ArrayLike,
+    correct: ArrayLike,
+    group_ids: ArrayLike,
+    bins: int = 10,
+    n: int = N_RESAMPLES,
+    seed: int = 0,
+    alpha: float = ALPHA,
+) -> BootstrapResult:
+    """Return ECE with a group-bootstrap interval, over fixed bins."""
+    confidences, outcomes, positions, n_groups = _scored(conf, correct, group_ids, alpha)
+    resampled = _resampled_ece(
+        confidences, outcomes, positions, resample_counts(n_groups, n, seed), bins
     )
-    kept = max(1, round(coverage * confidences.size))
-    estimate = float(hits[:kept].mean() - hits.mean())
-    return _paired(estimate, resampled, n_groups, alpha)
+    lower, upper = _interval(resampled, alpha)
+    return BootstrapResult(ece(confidences, outcomes, bins), lower, upper, n, n_groups, alpha)
+
+
+def selective_accuracy_ci(
+    conf: ArrayLike,
+    correct: ArrayLike,
+    group_ids: ArrayLike,
+    coverage: float,
+    n: int = N_RESAMPLES,
+    seed: int = 0,
+    alpha: float = ALPHA,
+) -> BootstrapResult:
+    """Return selective accuracy at ``coverage``, with the kept share recomputed per resample."""
+    confidences, outcomes, positions, n_groups = _scored(conf, correct, group_ids, alpha)
+    counts = resample_counts(n_groups, n, seed)
+    selective, _ = _resampled_selective(confidences, outcomes, positions, counts, coverage)
+    lower, upper = _interval(selective, alpha)
+    estimate = selective_accuracy(confidences, outcomes, coverage)
+    return BootstrapResult(estimate, lower, upper, n, n_groups, alpha)
+
+
+def aurc_difference_ci(
+    conf: ArrayLike,
+    correct: ArrayLike,
+    group_ids: ArrayLike,
+    n: int = N_RESAMPLES,
+    seed: int = 0,
+    alpha: float = ALPHA,
+) -> PairedResult:
+    """Return AURC minus the AURC of random abstention, so negative is an improvement.
+
+    Random abstention is flat at the error rate, so each resample compares with its own rate.
+    Resamples run in batches, because a batch costs resamples times cases in memory.
+    """
+    confidences, outcomes, positions, n_groups = _scored(conf, correct, group_ids, alpha)
+    order = np.argsort(-confidences, kind="stable")
+    _, hits = tie_averaged_correct(confidences, outcomes)
+    counts = resample_counts(n_groups, n, seed)
+    batches = []
+    for start in range(0, n, AURC_BATCH):
+        weights = counts[start : start + AURC_BATCH][:, positions[order]]
+        cases = np.cumsum(weights, axis=1)
+        errors = np.cumsum(weights * (1.0 - hits), axis=1)
+        risk = np.divide(errors, cases, out=np.zeros_like(errors), where=cases > 0)
+        area = (weights * risk).sum(axis=1) / cases[:, -1]
+        batches.append(area - errors[:, -1] / cases[:, -1])
+    estimate = aurc(risk_coverage(confidences, outcomes)) - aurc(random_abstention(outcomes))
+    return _paired(estimate, np.concatenate(batches), n_groups, alpha)

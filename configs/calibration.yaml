@@ -1,0 +1,9 @@
+seed: 0
+# auto chooses on validation; temperature or isotonic forces one.
+method: auto
+# Validation groups are cross-fitted to compare the calibrators, since isotonic always wins in-sample.
+cross_fit_folds: 5
+n_resamples: 10000
+alpha: 0.05
+target_coverage: 0.5
+coverages: [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3]

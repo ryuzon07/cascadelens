@@ -11,7 +11,15 @@ from cascadelens.eval.cli import app as eval_app
 from cascadelens.eval.robustness_cli import app as probes_app
 from cascadelens.eval.robustness_cli import run_robustness
 from cascadelens.features.cli import app as features_app
-from cascadelens.models.cli import diagnose, evaluate, freeze, run_ranker_clean, train
+from cascadelens.models.cli import (
+    calibrate,
+    diagnose,
+    evaluate,
+    freeze,
+    run_calibration,
+    run_ranker_clean,
+    train,
+)
 from cascadelens.perturb.cli import app as perturb_app
 from cascadelens.splits.cli import app as splits_app
 
@@ -28,7 +36,9 @@ app.add_typer(splits_app, name="splits")
 app.command()(train)
 app.command()(evaluate)
 app.command()(freeze)
+app.command()(calibrate)
 app.command()(diagnose)
+experiments_app.command("calibration")(run_calibration)
 experiments_app.command("ranker-clean")(run_ranker_clean)
 experiments_app.command("robustness")(run_robustness)
 

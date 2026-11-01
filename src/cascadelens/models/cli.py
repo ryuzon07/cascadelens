@@ -1,4 +1,4 @@
-"""The ranker commands: train, evaluate, freeze, diagnose and experiments ranker-clean."""
+"""The ranker commands: train, evaluate, freeze, calibrate, diagnose and the experiments."""
 
 from pathlib import Path
 from typing import Annotated
@@ -8,8 +8,10 @@ import typer
 from cascadelens.baselines.base import BaselineError
 from cascadelens.eval.robustness import freeze_variants
 from cascadelens.features.context import FeatureError
+from cascadelens.models.abstain import calibrate_split
+from cascadelens.models.abstain import run_calibration as calibration_experiment
 from cascadelens.models.artifacts import latest_artifact
-from cascadelens.models.diagnose import diagnose_case
+from cascadelens.models.diagnose import diagnose_report
 from cascadelens.models.experiment import ranker_clean
 from cascadelens.models.pipeline import evaluate as evaluate_method
 from cascadelens.models.pipeline import train_folds
@@ -88,14 +90,41 @@ def diagnose(
     """Rank likely origin services for a single case."""
     try:
         directory = model if model is not None else latest_artifact()
-        predictions = diagnose_case(case, directory)
+        report = diagnose_report(case, directory)
     except FAILURES as error:
         raise _fail("diagnose", error) from error
     typer.echo(f"Model: {directory}")
+    label = "calibrated" if report.calibrated else "uncalibrated"
+    typer.echo(f"Confidence ({label}): {report.confidence:.4f}")
+    typer.echo(f"Abstain: {str(report.abstain).lower()}")
     for rank, (service, score) in enumerate(
-        predictions.select("service", "score").iter_rows(), start=1
+        report.predictions.select("service", "score").iter_rows(), start=1
     ):
         typer.echo(f"{rank}. {service}  {score:.4f}")
+    for note in report.notes:
+        typer.echo(f"Note: {note}")
+
+
+def calibrate(
+    config: ConfigOption = Path("configs/ranker.yaml"),
+    split: SplitOption = "group_run",
+    method: MethodOption = "two_stage_ranker",
+) -> None:
+    """Fit a calibrator and tau on validation cases for each saved model. Reads no test case."""
+    try:
+        saved = calibrate_split(config, split, method)
+    except FAILURES as error:
+        raise _fail("calibrate", error) from error
+    typer.echo(f"Wrote {len(saved)} calibrators for {method} on {split}.")
+
+
+def run_calibration(exploratory: ExploratoryOption = False) -> None:
+    """Measure calibration and abstention on clean, held-out and perturbed test cases."""
+    try:
+        payload = calibration_experiment(exploratory)
+    except FAILURES as error:
+        raise _fail("calibration", error) from error
+    typer.echo(f"Wrote experiments/calibration ({payload['status']}).")
 
 
 def run_ranker_clean(exploratory: ExploratoryOption = False) -> None:
