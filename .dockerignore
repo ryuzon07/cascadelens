@@ -4,4 +4,7 @@
 !README.md
 !LICENSE
 !src
+!configs
+!experiments/*/results.json
+!model
 **/__pycache__

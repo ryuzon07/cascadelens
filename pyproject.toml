@@ -25,6 +25,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+    "httpx>=0.27",
     "hypothesis>=6.100",
     "mypy>=1.10",
     "pytest>=8.0",
@@ -35,6 +36,9 @@ dev = [
 api = [
     "fastapi>=0.110",
     "uvicorn>=0.29",
+]
+demo = [
+    "streamlit>=1.35",
 ]
 published = [
     "rcaeval[core]==1.11.0",
@@ -64,8 +68,8 @@ files = ["src", "tests"]
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
-# Untyped, and absent entirely without the published extra.
-module = ["RCAEval.*", "pandas"]
+# Untyped, or absent without the published or demo extra.
+module = ["RCAEval.*", "pandas", "streamlit.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

@@ -1,4 +1,4 @@
-"""Rank the services of one case with a saved model, with confidence and abstention."""
+"""Score one case with a saved model, with confidence and abstention."""
 
 from dataclasses import dataclass
 from pathlib import Path
@@ -7,13 +7,26 @@ import polars as pl
 
 from cascadelens.data.schema import METRICS_SCHEMA
 from cascadelens.eval.calibration import case_confidence
+from cascadelens.features.config import FeaturesConfig
 from cascadelens.features.context import FeatureInput
 from cascadelens.features.registry import build_case_features
 from cascadelens.models.artifacts import load_artifact
-from cascadelens.models.calibration import load_calibration
+from cascadelens.models.calibration import SavedCalibration, load_calibration
 from cascadelens.models.data import RankerError
+from cascadelens.models.ranker import FittedFold
 
 DISCLAIMER = "ranking of likely origin services, not proof of causation"
+
+
+@dataclass(frozen=True)
+class Scored:
+    """What the model made of a case: features, ranking, confidence and the abstention flag."""
+
+    table: pl.DataFrame
+    predictions: pl.DataFrame
+    confidence: float
+    calibrated: bool
+    abstain: bool
 
 
 @dataclass(frozen=True)
@@ -27,7 +40,24 @@ class Diagnosis:
     notes: list[str]
 
 
-def _read_metrics(case_file: Path) -> pl.DataFrame:
+def score_case(
+    case: FeatureInput,
+    model: FittedFold,
+    features: FeaturesConfig,
+    saved: SavedCalibration | None,
+) -> Scored:
+    """Run feature extraction, both stages, calibration and abstention on one case."""
+    table = build_case_features(case, features)
+    predictions, _ = model.rank(table)
+    if saved is None:
+        confidence = float(case_confidence(predictions)["confidence"][0])
+        return Scored(table, predictions, confidence, False, False)
+    confidence = float(saved.calibrator.apply(predictions)["confidence"][0])
+    return Scored(table, predictions, confidence, True, confidence < saved.tau)
+
+
+def read_metrics(case_file: Path) -> pl.DataFrame:
+    """Read a long metrics table saved as Parquet."""
     if not case_file.is_file():
         raise RankerError(f"No case file at {case_file}")
     metrics = pl.read_parquet(case_file)
@@ -38,14 +68,8 @@ def _read_metrics(case_file: Path) -> pl.DataFrame:
     return metrics
 
 
-def diagnose_case(case_file: Path, model_dir: Path) -> pl.DataFrame:
-    """Rank a long metrics table saved as Parquet, using its first and last sample as the window."""
-    return _rank(case_file, _read_metrics(case_file), model_dir)
-
-
-def _rank(case_file: Path, metrics: pl.DataFrame, model_dir: Path) -> pl.DataFrame:
-    model, features = load_artifact(model_dir)
-    case = FeatureInput(
+def _view(case_file: Path, metrics: pl.DataFrame) -> FeatureInput:
+    return FeatureInput(
         case_id=case_file.stem,
         metrics=metrics,
         window_start=int(metrics["timestamp"].min()),  # type: ignore[arg-type]
@@ -53,8 +77,11 @@ def _rank(case_file: Path, metrics: pl.DataFrame, model_dir: Path) -> pl.DataFra
         topology=None,
         known_services=(),
     )
-    predictions, _ = model.rank(build_case_features(case, features))
-    return predictions
+
+
+def diagnose_case(case_file: Path, model_dir: Path) -> pl.DataFrame:
+    """Rank a metrics file, using its first and last sample as the window."""
+    return diagnose_report(case_file, model_dir).predictions
 
 
 def services_with_gaps(metrics: pl.DataFrame) -> int:
@@ -65,13 +92,12 @@ def services_with_gaps(metrics: pl.DataFrame) -> int:
 
 def diagnose_report(case_file: Path, model_dir: Path) -> Diagnosis:
     """Rank a case, and add confidence, abstention and notes. It works without a calibrator."""
-    metrics = _read_metrics(case_file)
-    predictions = _rank(case_file, metrics, model_dir)
-    saved = load_calibration(model_dir)
+    metrics = read_metrics(case_file)
+    model, features = load_artifact(model_dir)
+    scored = score_case(_view(case_file, metrics), model, features, load_calibration(model_dir))
     notes = [f"{services_with_gaps(metrics)} services had missing telemetry.", DISCLAIMER]
-    if saved is None:
-        confidence = float(case_confidence(predictions)["confidence"][0])
+    if not scored.calibrated:
         notes.insert(0, "Confidence is uncalibrated: no calibrator is saved with this model.")
-        return Diagnosis(predictions, confidence, False, False, notes)
-    confidence = float(saved.calibrator.apply(predictions)["confidence"][0])
-    return Diagnosis(predictions, confidence, True, confidence < saved.tau, notes)
+    return Diagnosis(
+        scored.predictions, scored.confidence, scored.calibrated, scored.abstain, notes
+    )

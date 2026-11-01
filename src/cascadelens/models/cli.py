@@ -1,4 +1,4 @@
-"""The ranker commands: train, evaluate, freeze, calibrate, diagnose and the experiments."""
+"""The ranker commands: train, evaluate, freeze, calibrate and the experiments."""
 
 from pathlib import Path
 from typing import Annotated
@@ -10,8 +10,6 @@ from cascadelens.eval.robustness import freeze_variants
 from cascadelens.features.context import FeatureError
 from cascadelens.models.abstain import calibrate_split
 from cascadelens.models.abstain import run_calibration as calibration_experiment
-from cascadelens.models.artifacts import latest_artifact
-from cascadelens.models.diagnose import diagnose_report
 from cascadelens.models.experiment import ranker_clean
 from cascadelens.models.pipeline import evaluate as evaluate_method
 from cascadelens.models.pipeline import train_folds
@@ -79,30 +77,6 @@ def freeze(
     except FAILURES as error:
         raise _fail("freeze", error) from error
     typer.echo(f"Wrote {path}.")
-
-
-def diagnose(
-    case: Annotated[Path, typer.Option("--case", help="Metrics table of one case, as Parquet.")],
-    model: Annotated[
-        Path | None, typer.Option("--model", help="Saved model; the latest by default.")
-    ] = None,
-) -> None:
-    """Rank likely origin services for a single case."""
-    try:
-        directory = model if model is not None else latest_artifact()
-        report = diagnose_report(case, directory)
-    except FAILURES as error:
-        raise _fail("diagnose", error) from error
-    typer.echo(f"Model: {directory}")
-    label = "calibrated" if report.calibrated else "uncalibrated"
-    typer.echo(f"Confidence ({label}): {report.confidence:.4f}")
-    typer.echo(f"Abstain: {str(report.abstain).lower()}")
-    for rank, (service, score) in enumerate(
-        report.predictions.select("service", "score").iter_rows(), start=1
-    ):
-        typer.echo(f"{rank}. {service}  {score:.4f}")
-    for note in report.notes:
-        typer.echo(f"Note: {note}")
 
 
 def calibrate(
