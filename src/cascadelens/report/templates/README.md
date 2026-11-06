@@ -148,8 +148,11 @@ Both published methods run through RCAEval 1.11.0. See
 
 ## License and data notice
 
-Code is under the [MIT License](LICENSE). The dataset is not redistributed here, and checking and
-following its license is your responsibility. [VERIFY: RCAEval dataset license terms]
+Code is under the [MIT License](LICENSE). The RCAEval data is not redistributed here. As checked on
+2026-11-06, the RCAEval README releases its datasets under the MIT License, and the Zenodo record
+that `--download` uses ([DOI 10.5281/zenodo.14590730](https://doi.org/10.5281/zenodo.14590730))
+lists CC BY 4.0. Both allow use with attribution, so cite the dataset when you use it. This is a
+summary, not legal advice.
 
 ## Citation
 

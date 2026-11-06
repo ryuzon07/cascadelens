@@ -4,7 +4,6 @@ title: "CascadeLens"
 abstract: "Root-cause service ranking for microservices under imperfect telemetry, with a leakage-aware evaluation harness."
 type: software
 license: MIT
-# Replace both placeholders before publishing. See docs/CLAIMS_TODO.md.
 authors:
-  - name: "AUTHOR PLACEHOLDER"
-repository-code: "https://example.invalid/REPOSITORY-URL-PLACEHOLDER"
+  - alias: "ryuzon07"
+repository-code: "https://github.com/ryuzon07/cascadelens"

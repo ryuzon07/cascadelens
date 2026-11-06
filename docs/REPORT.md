@@ -372,8 +372,8 @@ is in the headline table. Results were not rerun to improve any number.
 
 This is a read-only decision aid for defensive use. It is not an autonomous operator, and it is not
 ready for production. A wrong ranking can mislead responders, so a person must check the evidence.
-The dataset is not redistributed, and its license is the user's to check.
-[VERIFY: RCAEval dataset license terms] See the [model card](../MODEL_CARD.md).
+The dataset is not redistributed. Its terms, MIT on RCAEval and CC BY 4.0 on Zenodo, are summarised
+in the [README](../README.md#license-and-data-notice). See the [model card](../MODEL_CARD.md).
 
 To export a PDF, install pandoc and run `pandoc docs/REPORT.md -o docs/REPORT.pdf`. Pandoc was not
 available when this file was generated, so no PDF is committed.

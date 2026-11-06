@@ -12,14 +12,15 @@ The checklist is PRD section 14, and the table is regenerated from the documents
 - [ ] The September 2026 retrieval-versus-reranking paper: title, authors, findings
 - [ ] AegisLab and "CascadeLens" name overlap (GitHub, arXiv, PyPI)
 - [ ] RCAEval case counts, fault types, systems, baseline implementations, against primary sources
-- [ ] Dataset licenses, download formats and sizes
+- [x] Dataset licenses: MIT on RCAEval and Hugging Face, CC BY 4.0 on Zenodo, checked 2026-11-06
+- [ ] Dataset download formats and sizes
 - [ ] BARO published numbers and the case subset they use
 
 ## Also open
 
 {{s6_todo}}
 - [ ] Freeze the config, rerun without `--exploratory`, and regenerate every document
-- [ ] Author and repository URL in `CITATION.cff`
+- [x] Author and repository URL in `CITATION.cff`
 - [ ] Export `docs/REPORT.pdf`: pandoc is not installed here
 
 ## Markers in the documents

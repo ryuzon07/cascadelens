@@ -12,14 +12,15 @@ The checklist is PRD section 14, and the table is regenerated from the documents
 - [ ] The September 2026 retrieval-versus-reranking paper: title, authors, findings
 - [ ] AegisLab and "CascadeLens" name overlap (GitHub, arXiv, PyPI)
 - [ ] RCAEval case counts, fault types, systems, baseline implementations, against primary sources
-- [ ] Dataset licenses, download formats and sizes
+- [x] Dataset licenses: MIT on RCAEval and Hugging Face, CC BY 4.0 on Zenodo, checked 2026-11-06
+- [ ] Dataset download formats and sizes
 - [ ] BARO published numbers and the case subset they use
 
 ## Also open
 
 - [x] S6: a completed full run from a fresh clone on the real data, logged in `docs/results/reproduction_log.md`
 - [ ] Freeze the config, rerun without `--exploratory`, and regenerate every document
-- [ ] Author and repository URL in `CITATION.cff`
+- [x] Author and repository URL in `CITATION.cff`
 - [ ] Export `docs/REPORT.pdf`: pandoc is not installed here
 
 ## Markers in the documents
@@ -28,8 +29,6 @@ The checklist is PRD section 14, and the table is regenerated from the documents
 
 | File | Marker | Count |
 | --- | --- | --- |
-| `MODEL_CARD.md` | `[VERIFY: RCAEval dataset license terms]` | 1 |
-| `README.md` | `[VERIFY: RCAEval dataset license terms]` | 1 |
 | `docs/CascadeLens Full Project Documentation (PRD, TRD, Protocol, Plan).md` | `[VERIFY exact suites, case counts, fault types, file formats, download sizes, license\]` | 1 |
 | `docs/CascadeLens Full Project Documentation (PRD, TRD, Protocol, Plan).md` | `[VERIFY existence, license, schema\]` | 2 |
 | `docs/CascadeLens Full Project Documentation (PRD, TRD, Protocol, Plan).md` | `[VERIFY sizes\]` | 1 |
@@ -41,7 +40,6 @@ The checklist is PRD section 14, and the table is regenerated from the documents
 | `docs/PRD_TRD.md` | `[VERIFY sizes]` | 1 |
 | `docs/PRD_TRD.md` | `[VERIFY suites, case counts, fault types]` | 1 |
 | `docs/PRD_TRD.md` | `[VERIFY]` | 5 |
-| `docs/REPORT.md` | `[VERIFY: RCAEval dataset license terms]` | 1 |
 | `docs/REPORT.md` | `[VERIFY: benchmark-critique citations]` | 1 |
 | `docs/REPORT.md` | `[VERIFY: survey citations for each family are not in this repository]` | 1 |
 

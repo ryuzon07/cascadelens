@@ -164,6 +164,8 @@ def test_a_missing_library_says_what_to_install(monkeypatch: pytest.MonkeyPatch)
 def test_importing_the_library_leaves_the_plot_style_alone(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    # The adapter hands RCAEval a pandas frame, and pandas comes with the published extra.
+    pytest.importorskip("pandas")
     package = tmp_path / "RCAEval"
     package.mkdir()
     (package / "__init__.py").write_text("", encoding="utf-8")

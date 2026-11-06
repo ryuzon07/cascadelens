@@ -75,4 +75,4 @@ group_run falls from {{ece_before}} to {{ece_after}}, and Brier from {{brier_bef
 
 A wrong ranking can send responders the wrong way during an incident, so a person must check the
 evidence. The tool makes no outbound request and changes nothing. It is for defensive use. The
-dataset is not redistributed. [VERIFY: RCAEval dataset license terms]
+dataset is not redistributed; its terms, MIT on RCAEval and CC BY 4.0 on Zenodo, are in the README.

@@ -27,7 +27,8 @@ from cascadelens.report.values import Value, all_values, s6_values
 
 REPO = Path(__file__).parents[2]
 GENERATED_BLOCK = re.compile(r"<!-- generated:(\w+);.*?-->(.*?)<!-- /generated -->", re.DOTALL)
-PROTOCOL_DECIMALS = {"2405.09330", "2408.13729", "1.11.0", "0.05", "1.00", "3.11"}
+# Citations, versions and licence names, not results.
+PROTOCOL_DECIMALS = {"2405.09330", "2408.13729", "1.11.0", "0.05", "1.00", "3.11", "10.5281", "4.0"}
 
 
 def script(name: str) -> ModuleType:
